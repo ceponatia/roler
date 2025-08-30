@@ -1,0 +1,10 @@
+module.exports = {
+  semi: true,
+  singleQuote: true,
+  printWidth: 100,
+  trailingComma: 'all',
+  plugins: ['prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
+  overrides: [
+    { files: '*.svelte', options: { parser: 'svelte' } }
+  ]
+};
