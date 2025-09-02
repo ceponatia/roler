@@ -7,6 +7,14 @@
 **Stack**: SvelteKit (TypeScript) • Postgres + pgvector (primary datastore) • Redis (ephemeral cache & queues) • Ollama (Mistral Instruct 7B, nomic-embed-text) • Prisma ORM • Zod (contracts)
 **Auth Flow**: SPA (SvelteKit) → API routes (+server.ts, validated w/ Zod) → Session token (JWT/Redis) → Role-scoped game/entity access (GM vs Player)
 
+## General Instructions
+
+- If there are instructions in comments in files, always obey them. Never change or go against them.
+- If you are unsure about something, ask for clarification.
+- Document your code and write clear commit messages.
+- Keep your code DRY (Don't Repeat Yourself).
+- Use meaningful variable and function names.
+
 ## TypeScript Instructions
 
 - Follow guidelines set by eslint in `~/eslint.cjs`

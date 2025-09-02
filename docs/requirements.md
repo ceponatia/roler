@@ -43,10 +43,6 @@ Note: Detailed stack choices are documented in Architecture Decision Records (AD
 - (R-023) Strict type safety configuration is mandatory (cannot be relaxed without approval).
 - (R-024) Contracts-first development: all external interfaces derive from shared schemas.
 
-## 5. (Moved) Development Standards
-
-The detailed coding and validation standards (now enumerated as DS-001 through DS-017, previously R-050 through R-060 and R-070 through R-082) are normative but relocated to Appendix A: Development Standards to reduce noise in core product requirements. Historical R-series IDs are deprecated; DS-series mapping preserves traceability.
-
 ## 6. Validation & Schema Strategy
 
 - (R-025) Shared schema layer defines environment, API, and data boundary contracts.
