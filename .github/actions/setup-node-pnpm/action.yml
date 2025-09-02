@@ -1,10 +1,12 @@
 # .github/actions/setup-node-pnpm/action.yml
 name: 'Setup Node & pnpm'
-description: 'Installs Node.js and pnpm with caching'
+description: 'Install pinned Node.js & pnpm, enable pnpm cache, verify availability'
 inputs:
   node:
+    description: 'Node.js major/minor version (e.g. 20)'
     required: true
   pnpm:
+    description: 'pnpm version (e.g. 9)'
     required: true
 runs:
   using: 'composite'
@@ -15,12 +17,28 @@ runs:
         node-version: ${{ inputs.node }}
         cache: pnpm
 
-    - name: Enable Corepack
-      shell: bash
-      run: corepack enable
-
     - name: Setup pnpm
       uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
       with:
         version: ${{ inputs.pnpm }}
-        standalone: true
+        run_install: false
+
+    - name: Add pnpm to PATH (fallback)
+      shell: bash
+      run: |
+        # pnpm/action-setup should export PNPM_HOME; add a defensive fallback
+        if [ -n "${PNPM_HOME}" ] && ! command -v pnpm >/dev/null 2>&1; then
+          echo "PNPM_HOME not on PATH; exporting manually" >&2
+          echo "${PNPM_HOME}" >> "$GITHUB_PATH"
+        fi
+        # Double-check typical install locations
+        for p in "$HOME/.pnpm" "$HOME/.local/share/pnpm"; do
+          if [ -d "$p" ] && ! echo "$PATH" | grep -q "$p"; then echo "$p" >> "$GITHUB_PATH"; fi
+        done
+
+    - name: Verify pnpm
+      shell: bash
+      run: |
+        echo "Node version: $(node -v)"
+        which pnpm || { echo 'pnpm not found on PATH' >&2; exit 1; }
+        pnpm --version
