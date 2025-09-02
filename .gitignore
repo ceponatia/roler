@@ -3,7 +3,8 @@ dist/
 *.tsbuildinfo
 
 #Ignore vscode AI rules
-.github/
+.github/copilot-instructions.md
+.github/instructions
 
 #Dependencies
 node_modules/
