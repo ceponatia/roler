@@ -1,0 +1,11 @@
+engines:
+  semgrep:
+    enabled: true
+    exclude_paths:
+      - ".github/workflows/ci.yml"
+      - ".github/actions/setup-node-pnpm/action.yml"
+      - "docs/**"
+    config:
+      rules:
+        - id: github-actions-pin-sha
+          enabled: false
