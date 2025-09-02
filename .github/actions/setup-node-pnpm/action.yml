@@ -1,6 +1,6 @@
-# setup-node-pnpm/action.yml
+# .github/actions/setup-node-pnpm/action.yml
 name: 'Setup Node & pnpm'
-description: 'Install Node.js, pnpm'
+description: 'Install Node.js and pnpm (with pnpm caching)'
 inputs:
   node:
     description: 'Node.js version'
@@ -8,18 +8,27 @@ inputs:
   pnpm:
     description: 'pnpm version'
     required: true
-  runs:
-    using: 'composite'
-    steps:
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ inputs.pnpm }}
-          run_install: false
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node }}
-          cache: 'pnpm'
-          cache-dependency-path: |-
-            pnpm-lock.yaml
-            **/pnpm-lock.yaml
+runs:
+  using: 'composite'
+  steps:
+    - name: Install pnpm (standalone binary on PATH)
+      uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
+      with:
+        version: ${{ inputs.pnpm }}
+        standalone: true
+        # If you still hit PATH issues, you can add:
+        # dest: ~/setup-pnpm
+
+    # If you used dest:, explicitly add it to PATH:
+    # - shell: bash
+    #   run: echo "$HOME/setup-pnpm" >> "$GITHUB_PATH"
+
+    - name: Install Node.js (enable pnpm cache)
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node }}
+        cache: pnpm
+        cache-dependency-path: |
+          pnpm-lock.yaml
+          **/pnpm-lock.yaml
