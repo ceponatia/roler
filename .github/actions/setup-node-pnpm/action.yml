@@ -1,15 +1,14 @@
-# .github/actions/setup-node-pnpm/action.yml
-name: 'Setup Node & pnpm'
-description: 'Install pinned Node.js & pnpm, enable pnpm cache, verify availability'
+name: Setup Node & pnpm
+description: Install Node.js and pnpm (via corepack) with caching and verification
 inputs:
   node:
     description: 'Node.js major/minor version (e.g. 20)'
     required: true
   pnpm:
-    description: 'pnpm version (e.g. 9)'
+    description: 'pnpm version (e.g. 9.0.0 or 9)'
     required: true
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Setup Node
       uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -17,28 +16,23 @@ runs:
         node-version: ${{ inputs.node }}
         cache: pnpm
 
-    - name: Setup pnpm
-      uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
-      with:
-        version: ${{ inputs.pnpm }}
-        run_install: false
-
-    - name: Add pnpm to PATH (fallback)
+    - name: Enable corepack & activate pnpm
       shell: bash
       run: |
-        # pnpm/action-setup should export PNPM_HOME; add a defensive fallback
-        if [ -n "${PNPM_HOME}" ] && ! command -v pnpm >/dev/null 2>&1; then
-          echo "PNPM_HOME not on PATH; exporting manually" >&2
-          echo "${PNPM_HOME}" >> "$GITHUB_PATH"
-        fi
-        # Double-check typical install locations
-        for p in "$HOME/.pnpm" "$HOME/.local/share/pnpm"; do
-          if [ -d "$p" ] && ! echo "$PATH" | grep -q "$p"; then echo "$p" >> "$GITHUB_PATH"; fi
-        done
+        set -euo pipefail
+        echo "Activating pnpm@${{ inputs.pnpm }} via corepack"
+        corepack enable
+        # Support shorthand major version or full semver
+        corepack prepare pnpm@${{ inputs.pnpm }} --activate
+        which pnpm || { echo 'pnpm not found after corepack prepare' >&2; exit 1; }
+        pnpm -v
 
-    - name: Verify pnpm
+    - name: Print environment diagnostics (debug)
+      if: ${{ runner.debug == '1' }}
       shell: bash
       run: |
-        echo "Node version: $(node -v)"
-        which pnpm || { echo 'pnpm not found on PATH' >&2; exit 1; }
-        pnpm --version
+        echo PATH=$PATH
+        which node
+        which pnpm
+        node -v
+        pnpm -v
