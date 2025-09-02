@@ -1,6 +1,6 @@
 # setup-node-pnpm/action.yml
-name: Setup Node & pnpm
-description: Install Node.js, pnpm
+name: 'Setup Node & pnpm'
+description: 'Install Node.js, pnpm'
 inputs:
   node:
     description: 'Node.js version'
@@ -11,14 +11,12 @@ inputs:
   runs:
     using: 'composite'
     steps:
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: ${{ inputs.pnpm }}
           run_install: false
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node }}
           cache: 'pnpm'
