@@ -1,0 +1,17 @@
+name: 'Setup Node & pnpm'
+description: 'Sets up Node.js and pnpm with caching'
+inputs:
+  node:
+    required: true
+  pnpm:
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: ${{ inputs.node }}
+        cache: pnpm
+    - uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
+      with:
+        version: ${{ inputs.pnpm }}
