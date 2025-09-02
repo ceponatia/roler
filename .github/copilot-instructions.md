@@ -92,20 +92,15 @@
 
 ### Monorepo Conventions
 
-- **Layout:**
+- **Package Publishing & Module Format**
 
-```tree
-apps/
-  web/           # SvelteKit app (deployable)
-  worker/        # BullMQ processors (deployable)
-packages/
-  contracts/     # Zod DTOs, primitives, error shape, env schema
-  db/            # Prisma client & migrations
-  ollama/        # chat + embeddings client
-  rag/           # retriever, chunking, attribute extraction
-  canon/         # ingestion/validation/versioning
-  games/         # clone/patch/merge/reembed
-```
+- Every package package.json MUST include "type": "module" and an "exports" map that points at built files under dist/. (Apps may also set "private": true.)
+- Libraries default to ESM-only. Add a require entry only if there is a confirmed CJS consumer.
+- tsconfig: "module": "NodeNext", "moduleResolution": "NodeNext", "target": "ES2022", "lib": ["ES2022"].
+- Imports must include file extensions when importing local files (e.g., import { x } from "./foo.js").
+- Bundled apps (e.g., SvelteKit in apps/web):
+- tsconfig: "module": "ESNext", "moduleResolution": "Bundler".
+- File extensions in imports are handled by the bundler.
 
 - **Build & Tasks:** Turborepo pipelines (build → dist/**, lint per package, test depends on build) with affected-only CI.
 - **Exports:** packages expose only dist via "exports"; deep imports are blocked by ESLint.
