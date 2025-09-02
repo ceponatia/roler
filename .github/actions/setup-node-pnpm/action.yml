@@ -1,38 +1,27 @@
+# setup-node-pnpm/action.yml
 name: Setup Node & pnpm
-description: Install Node.js and pnpm (via corepack) with caching and verification
+description: Install Node.js, pnpm
 inputs:
   node:
-    description: 'Node.js major/minor version (e.g. 20)'
+    description: 'Node.js version'
     required: true
   pnpm:
-    description: 'pnpm version (e.g. 9.0.0 or 9)'
+    description: 'pnpm version'
     required: true
-runs:
-  using: composite
-  steps:
-    - name: Setup Node
-      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-      with:
-        node-version: ${{ inputs.node }}
-        cache: pnpm
+  runs:
+    using: 'composite'
+    steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm }}
+          run_install: false
 
-    - name: Enable corepack & activate pnpm
-      shell: bash
-      run: |
-        set -euo pipefail
-        echo "Activating pnpm@${{ inputs.pnpm }} via corepack"
-        corepack enable
-        # Support shorthand major version or full semver
-        corepack prepare pnpm@${{ inputs.pnpm }} --activate
-        which pnpm || { echo 'pnpm not found after corepack prepare' >&2; exit 1; }
-        pnpm -v
-
-    - name: Print environment diagnostics (debug)
-      if: ${{ runner.debug == '1' }}
-      shell: bash
-      run: |
-        echo PATH=$PATH
-        which node
-        which pnpm
-        node -v
-        pnpm -v
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+          cache: 'pnpm'
+          cache-dependency-path: |-
+            pnpm-lock.yaml
+            **/pnpm-lock.yaml

@@ -2,8 +2,8 @@ engines:
   semgrep:
     enabled: true
     exclude_paths:
-      - ".github/workflows/ci.yml"
-      - ".github/actions/setup-node-pnpm/action.yml"
+      - ".github/workflows/**"
+      - ".github/actions/**"
       - "docs/**"
     config:
       rules:
