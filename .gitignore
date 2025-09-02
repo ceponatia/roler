@@ -1,5 +1,13 @@
-
+#Ignore build output
+dist/
+*.tsbuildinfo
 
 #Ignore vscode AI rules
-.github/instructions/
-.github/copilot-instructions.md
+.github/
+
+#Dependencies
+node_modules/
+
+#Environment and configuration
+.env
+.DS_Store
