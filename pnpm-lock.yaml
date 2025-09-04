@@ -50,6 +50,9 @@ importers:
       typescript-eslint:
         specifier: ^8.41.0
         version: 8.42.0(eslint@9.34.0)(typescript@5.9.2)
+      vitest:
+        specifier: ^1.6.0
+        version: 1.6.1
 
   packages/schemas:
     dependencies:
