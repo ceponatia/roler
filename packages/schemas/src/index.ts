@@ -9,7 +9,6 @@ export * from './entity/canonical/item.js';
 export * from './entity/canonical/relationship-type.js';
 export * from './entity/canonical/prompt-template.js';
 export * from './entity/canonical/migrations.js';
-
 export * from './entity/instance/index.js';
 export * from './entity/instance/character-instance.js';
 export * from './entity/instance/item-instance.js';

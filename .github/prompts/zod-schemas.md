@@ -185,5 +185,6 @@ Centralized enums: `EntityKind`, `HairColor`, `EducationLevel`, `ContentRating`,
 - [x] Include test factories and schema snapshots.
 
 ### Status (appended this turn)
+
 Completed: Core schemas (canonical & instance with romance + content controls), enums extended, attribute model, RAG + LLM + API contracts, error model, factories, snapshot & factory tests (currently fixing ULID generation), discriminated unions restored.
 Remaining / Next Opportunities: Tier B/C advanced policy refinements (rate limiting, evidence enforcement) not yet encoded; potential migration/versioning helpers; client/server differential refinements (placeholders only); improve ULID generator robustness if needed; add more factory coverage & negative tests.
