@@ -1,8 +1,6 @@
 // packages/schemas/src/common.ts
 import { z } from "zod";
 
-export const EntityKind = z.enum(["character", "location", "item"]); // extend over time
-
 // ---- Type-specific payloads ----
 export const CharacterPayload = z.object({
   name: z.string(),

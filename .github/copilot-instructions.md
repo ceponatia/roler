@@ -114,3 +114,21 @@
 - **Outbox for Sync:** chunk_outbox ensures reliable mirroring to Qdrant and safe dual-read cutovers.
 - **Security/Provenance:** AttrAtom.meta.restricted gates GM-only fields and prompt assembly; GameEntity.canonVersionId preserves lineage for diff/merge.
 - **Errors & Logging:** One shared error shape in @contracts/errors unifies logs and responses across services.
+
+### Testing (Per-Package Vitest & Coverage)
+
+Each package has its own `vitest.config.ts` (no root config to avoid leakage). Coverage is enabled per package and emitted to `coverage/` inside that package with reporters `text` and `lcov` producing `coverage/lcov.info`.
+
+Root CI runs each package in isolation (ensures per-package coverage output) using recursive scripts:
+
+"test": "pnpm -r test"
+"test:ci": "pnpm -r --workspace-concurrency=1 test:ci && pnpm coverage:merge"
+
+Per-package `test:ci` adds `--coverage` to emit `coverage/lcov.info`.
+
+Per-package scripts (example from `packages/schemas`):
+"test": "vitest --run",
+"test:watch": "vitest",
+"test:ci": "vitest --run --reporter=dot"
+
+After CI run, coverage reports are concatenated into `coverage/monorepo-lcov.info` via `scripts/merge-lcov.mjs` invoked by `pnpm coverage:merge`. Add new packages by creating a `vitest.config.ts` with coverage enabled and adding the standard test scripts.

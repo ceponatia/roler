@@ -1,0 +1,87 @@
+import { z } from 'zod';
+
+export const EntityKindEnum = z.enum([
+  'character',
+  'location',
+  'item',
+  'relationshipType',
+  'promptTemplate',
+  'characterInstance',
+  'itemInstance',
+  'relationship',
+  'scene',
+  'episode',
+  'memory'
+]);
+export type EntityKind = z.infer<typeof EntityKindEnum>;
+
+export const ContentRatingEnum = z.enum(['g', 'pg', 'pg13', 'r', 'nc17']);
+export type ContentRating = z.infer<typeof ContentRatingEnum>;
+
+export const RelationshipStageEnum = z.enum(['acquaintance', 'friendly', 'close', 'romantic', 'intimate', 'estranged']);
+export type RelationshipStage = z.infer<typeof RelationshipStageEnum>;
+
+export const MemoryScopeEnum = z.enum(['L1', 'L2', 'L3']);
+export type MemoryScope = z.infer<typeof MemoryScopeEnum>;
+
+export const ErrorCodeEnum = z.enum(['parse', 'refine', 'policy', 'safety']);
+export type ErrorCode = z.infer<typeof ErrorCodeEnum>;
+
+// Additional controlled vocabularies
+export const HairColorEnum = z.enum([
+  'black',
+  'brown',
+  'blonde',
+  'red',
+  'auburn',
+  'gray',
+  'white',
+  'blue',
+  'green',
+  'pink',
+  'purple',
+  'dyed',
+  'bald'
+]);
+export type HairColor = z.infer<typeof HairColorEnum>;
+
+export const EducationLevelEnum = z.enum([
+  'none',
+  'primary',
+  'secondary',
+  'associate',
+  'bachelor',
+  'master',
+  'doctorate',
+  'vocational',
+  'other'
+]);
+export type EducationLevel = z.infer<typeof EducationLevelEnum>;
+
+export const ToneTagEnum = z.enum([
+  'serious',
+  'humorous',
+  'sarcastic',
+  'romantic',
+  'tense',
+  'mysterious',
+  'cheerful',
+  'grim',
+  'hopeful',
+  'melancholic'
+]);
+export type ToneTag = z.infer<typeof ToneTagEnum>;
+
+// Simple emotional valence/arousal/dominance tags (coarse buckets)
+export const EmotionVADTagEnum = z.enum([
+  'calm',
+  'excited',
+  'happy',
+  'sad',
+  'angry',
+  'fearful',
+  'disgusted',
+  'surprised',
+  'neutral'
+]);
+export type EmotionVADTag = z.infer<typeof EmotionVADTagEnum>;

@@ -7,7 +7,10 @@
   "scripts": {
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+  "test": "vitest --run --coverage",
+  "test:watch": "vitest --watch",
+  "test:changed": "vitest --changed --coverage",
+  "test:ci": "vitest --run --reporter=dot --coverage"
   },
   "dependencies": {
     "zod": "^3.25.76"
