@@ -1,4 +1,5 @@
 import { expect, test } from 'vitest';
+
 import { CanonContent } from './canon-content.schema.js';
 
 // Minimal smoke test for schema discriminated union
