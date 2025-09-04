@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitest/config';
 
-// Root workspace Vitest defaults (packages provide their own vitest.config.ts)
 export default defineConfig({
   test: {
+    include: ['src/**/*.{test,spec}.ts'],
     environment: 'node'
   }
 });
