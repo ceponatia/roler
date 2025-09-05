@@ -1,8 +1,12 @@
 import { z } from 'zod';
 
-// ULID (26 char Crockford base32) simplistic validation; refine for production if needed
-export const UlidSchema = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/i, 'invalid ulid');
+// Branded ULID (26 char Crockford base32). Brand prevents accidental string mixing.
+export const UlidSchema = z
+  .string()
+  .regex(/^[0-9A-HJKMNP-TV-Z]{26}$/i, 'invalid ulid')
+  .brand<'Ulid'>();
 export type Ulid = z.infer<typeof UlidSchema>;
+export const isUlid = (value: unknown): value is Ulid => typeof value === 'string' && /^[0-9A-HJKMNP-TV-Z]{26}$/i.test(value);
 
 // ISO 8601 instant (toISOString output)
 export const IsoDateTimeSchema = z.string().datetime({ offset: true });

@@ -7,8 +7,14 @@ import { IsoDateTimeSchema, UlidSchema } from '../../base/primitives.js';
 export const ChangePolicySchema = z.object({
   allowedKeys: z.array(z.string()).default([]),
   requiresEvidence: z.boolean().default(false),
-  rateLimit: z.object({ perMinute: z.number().int().positive().optional() }).default({}),
-  stability: z.enum(['volatile','stable','locked']).default('stable')
+  stability: z.enum(['volatile', 'stable', 'locked']).default('stable'),
+  cooldown: z.number().int().nonnegative().default(0), // milliseconds between accepted changes
+  rateWindow: z.number().int().positive().default(60000), // window size ms for maxChanges
+  maxChanges: z.number().int().nonnegative().default(0), // 0 = unlimited
+  // legacy field retained for backward compatibility; prefer rateWindow/maxChanges
+  rateLimit: z
+    .object({ perMinute: z.number().int().positive().optional() })
+    .default({})
 });
 export type ChangePolicy = z.infer<typeof ChangePolicySchema>;
 

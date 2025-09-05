@@ -19,20 +19,11 @@ export const CanonicalBaseCore = {
   updatedBy: UlidSchema,
   source: z.string().optional(),
   contentRating: ContentRatingEnum.default('g'),
-  nsfwTags: z.array(z.string()).default([]),
   blockedTags: z.array(z.string()).default([]),
   ageCheck: z.boolean().default(false),
   attributes: z.array(AttributeSchema).default([])
 };
 
-export const CanonicalBaseSchema = z.object(CanonicalBaseCore).superRefine((val, ctx) => {
-  for (const tag of val.blockedTags) {
-    if (val.nsfwTags.includes(tag)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `tag '${tag}' cannot appear in nsfwTags because it is blocked`, path: ['nsfwTags'] });
-    }
-  }
-  if (['g', 'pg'].includes(val.contentRating) && val.nsfwTags.length > 0) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'nsfwTags not allowed for G/PG content', path: ['nsfwTags'] });
-  }
-});
-export type CanonicalBase = z.infer<typeof CanonicalBaseSchema>;
+export const CanonicalBaseObjectSchema = z.object(CanonicalBaseCore);
+export const CanonicalBaseSchema = CanonicalBaseObjectSchema; // refinement removed: nsfwTags no longer supported
+export type CanonicalBase = z.infer<typeof CanonicalBaseObjectSchema>;

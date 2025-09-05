@@ -1,0 +1,986 @@
+packages/schemas
+├── coverage
+│   ├── lcov.info
+│   └── lcov-report
+│       ├── base.css
+│       ├── block-navigation.js
+│       ├── favicon.png
+│       ├── index.html
+│       ├── prettify.css
+│       ├── prettify.js
+│       ├── sort-arrow-sprite.png
+│       ├── sorter.js
+│       └── src
+│           ├── api
+│           │   ├── chat.ts.html
+│           │   ├── index.html
+│           │   ├── memory.ts.html
+│           │   └── scene.ts.html
+│           ├── base
+│           │   ├── attribute.ts.html
+│           │   ├── enums.ts.html
+│           │   ├── index.html
+│           │   └── primitives.ts.html
+│           ├── canon-content.schema.ts.html
+│           ├── client.ts.html
+│           ├── entity
+│           │   ├── canonical
+│           │   │   ├── base-canonical.ts.html
+│           │   │   ├── character.ts.html
+│           │   │   ├── index.html
+│           │   │   ├── index.ts.html
+│           │   │   ├── item.ts.html
+│           │   │   ├── location.ts.html
+│           │   │   ├── migrations.ts.html
+│           │   │   ├── prompt-template.ts.html
+│           │   │   └── relationship-type.ts.html
+│           │   └── instance
+│           │       ├── base-instance.ts.html
+│           │       ├── character-instance.ts.html
+│           │       ├── episode.ts.html
+│           │       ├── index.html
+│           │       ├── index.ts.html
+│           │       ├── item-instance.ts.html
+│           │       ├── memory.ts.html
+│           │       ├── relationship.ts.html
+│           │       └── scene.ts.html
+│           ├── factories
+│           │   ├── index.html
+│           │   └── index.ts.html
+│           ├── index.html
+│           ├── index.ts.html
+│           ├── llm
+│           │   ├── create-scene.ts.html
+│           │   ├── index.html
+│           │   ├── propose-change.ts.html
+│           │   └── retrieve-context.ts.html
+│           ├── rag
+│           │   ├── embedding.ts.html
+│           │   ├── index.html
+│           │   └── retrieval.ts.html
+│           ├── server.ts.html
+│           └── system
+│               ├── change-proposal.ts.html
+│               ├── error.ts.html
+│               ├── index.html
+│               ├── permission.ts.html
+│               ├── session.ts.html
+│               ├── state-change-event.ts.html
+│               └── user.ts.html
+├── node_modules
+│   ├── .bin
+│   │   ├── tsc
+│   │   ├── tsserver
+│   │   └── vitest
+│   ├── .modules.yaml
+│   ├── .pnpm
+│   │   ├── acorn@8.15.0
+│   │   │   └── node_modules
+│   │   │       └── acorn
+│   │   │           ├── bin
+│   │   │           ├── CHANGELOG.md
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── acorn-walk@8.3.4
+│   │   │   └── node_modules
+│   │   │       ├── acorn -> ../../acorn@8.15.0/node_modules/acorn
+│   │   │       └── acorn-walk
+│   │   │           ├── CHANGELOG.md
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── ansi-styles@5.2.0
+│   │   │   └── node_modules
+│   │   │       └── ansi-styles
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── assertion-error@1.1.0
+│   │   │   └── node_modules
+│   │   │       └── assertion-error
+│   │   │           ├── History.md
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── cac@6.7.14
+│   │   │   └── node_modules
+│   │   │       └── cac
+│   │   │           ├── deno
+│   │   │           ├── dist
+│   │   │           ├── index-compat.js
+│   │   │           ├── LICENSE
+│   │   │           ├── mod.js
+│   │   │           ├── mod.ts
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── chai@4.5.0
+│   │   │   └── node_modules
+│   │   │       ├── assertion-error -> ../../assertion-error@1.1.0/node_modules/assertion-error
+│   │   │       ├── chai
+│   │   │       │   ├── bower.json
+│   │   │       │   ├── chai.js
+│   │   │       │   ├── CODE_OF_CONDUCT.md
+│   │   │       │   ├── CODEOWNERS
+│   │   │       │   ├── CONTRIBUTING.md
+│   │   │       │   ├── History.md
+│   │   │       │   ├── index.js
+│   │   │       │   ├── index.mjs
+│   │   │       │   ├── karma.conf.js
+│   │   │       │   ├── karma.sauce.js
+│   │   │       │   ├── lib
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   ├── README.md
+│   │   │       │   ├── register-assert.js
+│   │   │       │   ├── register-expect.js
+│   │   │       │   ├── register-should.js
+│   │   │       │   ├── ReleaseNotes.md
+│   │   │       │   └── sauce.browsers.js
+│   │   │       ├── check-error -> ../../check-error@1.0.3/node_modules/check-error
+│   │   │       ├── deep-eql -> ../../deep-eql@4.1.4/node_modules/deep-eql
+│   │   │       ├── get-func-name -> ../../get-func-name@2.0.2/node_modules/get-func-name
+│   │   │       ├── loupe -> ../../loupe@2.3.7/node_modules/loupe
+│   │   │       ├── pathval -> ../../pathval@1.1.1/node_modules/pathval
+│   │   │       └── type-detect -> ../../type-detect@4.1.0/node_modules/type-detect
+│   │   ├── check-error@1.0.3
+│   │   │   └── node_modules
+│   │   │       ├── check-error
+│   │   │       │   ├── check-error.js
+│   │   │       │   ├── index.js
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       └── get-func-name -> ../../get-func-name@2.0.2/node_modules/get-func-name
+│   │   ├── confbox@0.1.8
+│   │   │   └── node_modules
+│   │   │       └── confbox
+│   │   │           ├── dist
+│   │   │           ├── json5.d.ts
+│   │   │           ├── jsonc.d.ts
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           ├── toml.d.ts
+│   │   │           └── yaml.d.ts
+│   │   ├── cross-spawn@7.0.6
+│   │   │   └── node_modules
+│   │   │       ├── cross-spawn
+│   │   │       │   ├── index.js
+│   │   │       │   ├── lib
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── node_modules
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       ├── path-key -> ../../path-key@3.1.1/node_modules/path-key
+│   │   │       ├── shebang-command -> ../../shebang-command@2.0.0/node_modules/shebang-command
+│   │   │       └── which -> ../../which@2.0.2/node_modules/which
+│   │   ├── debug@4.4.1
+│   │   │   └── node_modules
+│   │   │       ├── debug
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   ├── README.md
+│   │   │       │   └── src
+│   │   │       └── ms -> ../../ms@2.1.3/node_modules/ms
+│   │   ├── deep-eql@4.1.4
+│   │   │   └── node_modules
+│   │   │       ├── deep-eql
+│   │   │       │   ├── deep-eql.js
+│   │   │       │   ├── index.js
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       └── type-detect -> ../../type-detect@4.1.0/node_modules/type-detect
+│   │   ├── diff-sequences@29.6.3
+│   │   │   └── node_modules
+│   │   │       └── diff-sequences
+│   │   │           ├── build
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── esbuild@0.21.5
+│   │   │   └── node_modules
+│   │   │       ├── @esbuild
+│   │   │       │   └── linux-x64 -> ../../../@esbuild+linux-x64@0.21.5/node_modules/@esbuild/linux-x64
+│   │   │       └── esbuild
+│   │   │           ├── bin
+│   │   │           ├── install.js
+│   │   │           ├── lib
+│   │   │           ├── LICENSE.md
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── @esbuild+linux-x64@0.21.5
+│   │   │   └── node_modules
+│   │   │       └── @esbuild
+│   │   │           └── linux-x64
+│   │   ├── estree-walker@3.0.3
+│   │   │   └── node_modules
+│   │   │       ├── estree-walker
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   ├── README.md
+│   │   │       │   ├── src
+│   │   │       │   └── types
+│   │   │       └── @types
+│   │   │           └── estree -> ../../../@types+estree@1.0.8/node_modules/@types/estree
+│   │   ├── execa@8.0.1
+│   │   │   └── node_modules
+│   │   │       ├── cross-spawn -> ../../cross-spawn@7.0.6/node_modules/cross-spawn
+│   │   │       ├── execa
+│   │   │       │   ├── index.d.ts
+│   │   │       │   ├── index.js
+│   │   │       │   ├── lib
+│   │   │       │   ├── license
+│   │   │       │   ├── package.json
+│   │   │       │   └── readme.md
+│   │   │       ├── get-stream -> ../../get-stream@8.0.1/node_modules/get-stream
+│   │   │       ├── human-signals -> ../../human-signals@5.0.0/node_modules/human-signals
+│   │   │       ├── is-stream -> ../../is-stream@3.0.0/node_modules/is-stream
+│   │   │       ├── merge-stream -> ../../merge-stream@2.0.0/node_modules/merge-stream
+│   │   │       ├── npm-run-path -> ../../npm-run-path@5.3.0/node_modules/npm-run-path
+│   │   │       ├── onetime -> ../../onetime@6.0.0/node_modules/onetime
+│   │   │       ├── signal-exit -> ../../signal-exit@4.1.0/node_modules/signal-exit
+│   │   │       └── strip-final-newline -> ../../strip-final-newline@3.0.0/node_modules/strip-final-newline
+│   │   ├── get-func-name@2.0.2
+│   │   │   └── node_modules
+│   │   │       └── get-func-name
+│   │   │           ├── get-func-name.js
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── get-stream@8.0.1
+│   │   │   └── node_modules
+│   │   │       └── get-stream
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           ├── readme.md
+│   │   │           └── source
+│   │   ├── human-signals@5.0.0
+│   │   │   └── node_modules
+│   │   │       └── human-signals
+│   │   │           ├── build
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── isexe@2.0.0
+│   │   │   └── node_modules
+│   │   │       └── isexe
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── mode.js
+│   │   │           ├── .npmignore
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           ├── test
+│   │   │           └── windows.js
+│   │   ├── is-stream@3.0.0
+│   │   │   └── node_modules
+│   │   │       └── is-stream
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── @jest+schemas@29.6.3
+│   │   │   └── node_modules
+│   │   │       ├── @jest
+│   │   │       │   └── schemas
+│   │   │       └── @sinclair
+│   │   │           └── typebox -> ../../../@sinclair+typebox@0.27.8/node_modules/@sinclair/typebox
+│   │   ├── @jridgewell+sourcemap-codec@1.5.5
+│   │   │   └── node_modules
+│   │   │       └── @jridgewell
+│   │   │           └── sourcemap-codec
+│   │   ├── js-tokens@9.0.1
+│   │   │   └── node_modules
+│   │   │       └── js-tokens
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── local-pkg@0.5.1
+│   │   │   └── node_modules
+│   │   │       ├── local-pkg
+│   │   │       │   ├── dist
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       ├── mlly -> ../../mlly@1.8.0/node_modules/mlly
+│   │   │       └── pkg-types -> ../../pkg-types@1.3.1/node_modules/pkg-types
+│   │   ├── lock.yaml
+│   │   ├── loupe@2.3.7
+│   │   │   └── node_modules
+│   │   │       ├── get-func-name -> ../../get-func-name@2.0.2/node_modules/get-func-name
+│   │   │       └── loupe
+│   │   │           ├── CHANGELOG.md
+│   │   │           ├── index.js
+│   │   │           ├── lib
+│   │   │           ├── LICENSE
+│   │   │           ├── loupe.js
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── magic-string@0.30.18
+│   │   │   └── node_modules
+│   │   │       ├── @jridgewell
+│   │   │       │   └── sourcemap-codec -> ../../../@jridgewell+sourcemap-codec@1.5.5/node_modules/@jridgewell/sourcemap-codec
+│   │   │       └── magic-string
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── merge-stream@2.0.0
+│   │   │   └── node_modules
+│   │   │       └── merge-stream
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── mimic-fn@4.0.0
+│   │   │   └── node_modules
+│   │   │       └── mimic-fn
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── mlly@1.8.0
+│   │   │   └── node_modules
+│   │   │       ├── acorn -> ../../acorn@8.15.0/node_modules/acorn
+│   │   │       ├── mlly
+│   │   │       │   ├── dist
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── node_modules
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       ├── pathe -> ../../pathe@2.0.3/node_modules/pathe
+│   │   │       ├── pkg-types -> ../../pkg-types@1.3.1/node_modules/pkg-types
+│   │   │       └── ufo -> ../../ufo@1.6.1/node_modules/ufo
+│   │   ├── ms@2.1.3
+│   │   │   └── node_modules
+│   │   │       └── ms
+│   │   │           ├── index.js
+│   │   │           ├── license.md
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── nanoid@3.3.11
+│   │   │   └── node_modules
+│   │   │       └── nanoid
+│   │   │           ├── async
+│   │   │           ├── bin
+│   │   │           ├── index.browser.cjs
+│   │   │           ├── index.browser.js
+│   │   │           ├── index.cjs
+│   │   │           ├── index.d.cts
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── nanoid.js
+│   │   │           ├── node_modules
+│   │   │           ├── non-secure
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── url-alphabet
+│   │   ├── node_modules
+│   │   │   ├── acorn -> ../acorn@8.15.0/node_modules/acorn
+│   │   │   ├── acorn-walk -> ../acorn-walk@8.3.4/node_modules/acorn-walk
+│   │   │   ├── ansi-styles -> ../ansi-styles@5.2.0/node_modules/ansi-styles
+│   │   │   ├── assertion-error -> ../assertion-error@1.1.0/node_modules/assertion-error
+│   │   │   ├── .bin
+│   │   │   │   ├── acorn
+│   │   │   │   ├── esbuild
+│   │   │   │   ├── nanoid
+│   │   │   │   ├── node-which
+│   │   │   │   ├── rollup
+│   │   │   │   ├── vite
+│   │   │   │   ├── vite-node
+│   │   │   │   └── why-is-node-running
+│   │   │   ├── cac -> ../cac@6.7.14/node_modules/cac
+│   │   │   ├── chai -> ../chai@4.5.0/node_modules/chai
+│   │   │   ├── check-error -> ../check-error@1.0.3/node_modules/check-error
+│   │   │   ├── confbox -> ../confbox@0.1.8/node_modules/confbox
+│   │   │   ├── cross-spawn -> ../cross-spawn@7.0.6/node_modules/cross-spawn
+│   │   │   ├── debug -> ../debug@4.4.1/node_modules/debug
+│   │   │   ├── deep-eql -> ../deep-eql@4.1.4/node_modules/deep-eql
+│   │   │   ├── diff-sequences -> ../diff-sequences@29.6.3/node_modules/diff-sequences
+│   │   │   ├── @esbuild
+│   │   │   │   └── linux-x64 -> ../../@esbuild+linux-x64@0.21.5/node_modules/@esbuild/linux-x64
+│   │   │   ├── esbuild -> ../esbuild@0.21.5/node_modules/esbuild
+│   │   │   ├── estree-walker -> ../estree-walker@3.0.3/node_modules/estree-walker
+│   │   │   ├── execa -> ../execa@8.0.1/node_modules/execa
+│   │   │   ├── get-func-name -> ../get-func-name@2.0.2/node_modules/get-func-name
+│   │   │   ├── get-stream -> ../get-stream@8.0.1/node_modules/get-stream
+│   │   │   ├── human-signals -> ../human-signals@5.0.0/node_modules/human-signals
+│   │   │   ├── isexe -> ../isexe@2.0.0/node_modules/isexe
+│   │   │   ├── is-stream -> ../is-stream@3.0.0/node_modules/is-stream
+│   │   │   ├── @jest
+│   │   │   │   └── schemas -> ../../@jest+schemas@29.6.3/node_modules/@jest/schemas
+│   │   │   ├── @jridgewell
+│   │   │   │   └── sourcemap-codec -> ../../@jridgewell+sourcemap-codec@1.5.5/node_modules/@jridgewell/sourcemap-codec
+│   │   │   ├── js-tokens -> ../js-tokens@9.0.1/node_modules/js-tokens
+│   │   │   ├── local-pkg -> ../local-pkg@0.5.1/node_modules/local-pkg
+│   │   │   ├── loupe -> ../loupe@2.3.7/node_modules/loupe
+│   │   │   ├── magic-string -> ../magic-string@0.30.18/node_modules/magic-string
+│   │   │   ├── merge-stream -> ../merge-stream@2.0.0/node_modules/merge-stream
+│   │   │   ├── mimic-fn -> ../mimic-fn@4.0.0/node_modules/mimic-fn
+│   │   │   ├── mlly -> ../mlly@1.8.0/node_modules/mlly
+│   │   │   ├── ms -> ../ms@2.1.3/node_modules/ms
+│   │   │   ├── nanoid -> ../nanoid@3.3.11/node_modules/nanoid
+│   │   │   ├── npm-run-path -> ../npm-run-path@5.3.0/node_modules/npm-run-path
+│   │   │   ├── onetime -> ../onetime@6.0.0/node_modules/onetime
+│   │   │   ├── pathe -> ../pathe@1.1.2/node_modules/pathe
+│   │   │   ├── path-key -> ../path-key@3.1.1/node_modules/path-key
+│   │   │   ├── pathval -> ../pathval@1.1.1/node_modules/pathval
+│   │   │   ├── picocolors -> ../picocolors@1.1.1/node_modules/picocolors
+│   │   │   ├── pkg-types -> ../pkg-types@1.3.1/node_modules/pkg-types
+│   │   │   ├── p-limit -> ../p-limit@5.0.0/node_modules/p-limit
+│   │   │   ├── postcss -> ../postcss@8.5.6/node_modules/postcss
+│   │   │   ├── pretty-format -> ../pretty-format@29.7.0/node_modules/pretty-format
+│   │   │   ├── react-is -> ../react-is@18.3.1/node_modules/react-is
+│   │   │   ├── @rollup
+│   │   │   │   ├── rollup-linux-x64-gnu -> ../../@rollup+rollup-linux-x64-gnu@4.50.0/node_modules/@rollup/rollup-linux-x64-gnu
+│   │   │   │   └── rollup-linux-x64-musl -> ../../@rollup+rollup-linux-x64-musl@4.50.0/node_modules/@rollup/rollup-linux-x64-musl
+│   │   │   ├── rollup -> ../rollup@4.50.0/node_modules/rollup
+│   │   │   ├── shebang-command -> ../shebang-command@2.0.0/node_modules/shebang-command
+│   │   │   ├── shebang-regex -> ../shebang-regex@3.0.0/node_modules/shebang-regex
+│   │   │   ├── siginfo -> ../siginfo@2.0.0/node_modules/siginfo
+│   │   │   ├── signal-exit -> ../signal-exit@4.1.0/node_modules/signal-exit
+│   │   │   ├── @sinclair
+│   │   │   │   └── typebox -> ../../@sinclair+typebox@0.27.8/node_modules/@sinclair/typebox
+│   │   │   ├── source-map-js -> ../source-map-js@1.2.1/node_modules/source-map-js
+│   │   │   ├── stackback -> ../stackback@0.0.2/node_modules/stackback
+│   │   │   ├── std-env -> ../std-env@3.9.0/node_modules/std-env
+│   │   │   ├── strip-final-newline -> ../strip-final-newline@3.0.0/node_modules/strip-final-newline
+│   │   │   ├── strip-literal -> ../strip-literal@2.1.1/node_modules/strip-literal
+│   │   │   ├── tinybench -> ../tinybench@2.9.0/node_modules/tinybench
+│   │   │   ├── tinypool -> ../tinypool@0.8.4/node_modules/tinypool
+│   │   │   ├── tinyspy -> ../tinyspy@2.2.1/node_modules/tinyspy
+│   │   │   ├── type-detect -> ../type-detect@4.1.0/node_modules/type-detect
+│   │   │   ├── @types
+│   │   │   │   └── estree -> ../../@types+estree@1.0.8/node_modules/@types/estree
+│   │   │   ├── ufo -> ../ufo@1.6.1/node_modules/ufo
+│   │   │   ├── vite -> ../vite@5.4.19/node_modules/vite
+│   │   │   ├── vite-node -> ../vite-node@1.6.1/node_modules/vite-node
+│   │   │   ├── @vitest
+│   │   │   │   ├── expect -> ../../@vitest+expect@1.6.1/node_modules/@vitest/expect
+│   │   │   │   ├── runner -> ../../@vitest+runner@1.6.1/node_modules/@vitest/runner
+│   │   │   │   ├── snapshot -> ../../@vitest+snapshot@1.6.1/node_modules/@vitest/snapshot
+│   │   │   │   ├── spy -> ../../@vitest+spy@1.6.1/node_modules/@vitest/spy
+│   │   │   │   └── utils -> ../../@vitest+utils@1.6.1/node_modules/@vitest/utils
+│   │   │   ├── which -> ../which@2.0.2/node_modules/which
+│   │   │   ├── why-is-node-running -> ../why-is-node-running@2.3.0/node_modules/why-is-node-running
+│   │   │   └── yocto-queue -> ../yocto-queue@1.2.1/node_modules/yocto-queue
+│   │   ├── npm-run-path@5.3.0
+│   │   │   └── node_modules
+│   │   │       ├── npm-run-path
+│   │   │       │   ├── index.d.ts
+│   │   │       │   ├── index.js
+│   │   │       │   ├── license
+│   │   │       │   ├── package.json
+│   │   │       │   └── readme.md
+│   │   │       └── path-key -> ../../path-key@4.0.0/node_modules/path-key
+│   │   ├── onetime@6.0.0
+│   │   │   └── node_modules
+│   │   │       ├── mimic-fn -> ../../mimic-fn@4.0.0/node_modules/mimic-fn
+│   │   │       └── onetime
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── pathe@1.1.2
+│   │   │   └── node_modules
+│   │   │       └── pathe
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── utils.d.ts
+│   │   ├── pathe@2.0.3
+│   │   │   └── node_modules
+│   │   │       └── pathe
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── utils.d.ts
+│   │   ├── path-key@3.1.1
+│   │   │   └── node_modules
+│   │   │       └── path-key
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── path-key@4.0.0
+│   │   │   └── node_modules
+│   │   │       └── path-key
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── pathval@1.1.1
+│   │   │   └── node_modules
+│   │   │       └── pathval
+│   │   │           ├── CHANGELOG.md
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── pathval.js
+│   │   │           └── README.md
+│   │   ├── picocolors@1.1.1
+│   │   │   └── node_modules
+│   │   │       └── picocolors
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── picocolors.browser.js
+│   │   │           ├── picocolors.d.ts
+│   │   │           ├── picocolors.js
+│   │   │           ├── README.md
+│   │   │           └── types.d.ts
+│   │   ├── pkg-types@1.3.1
+│   │   │   └── node_modules
+│   │   │       ├── confbox -> ../../confbox@0.1.8/node_modules/confbox
+│   │   │       ├── mlly -> ../../mlly@1.8.0/node_modules/mlly
+│   │   │       ├── pathe -> ../../pathe@2.0.3/node_modules/pathe
+│   │   │       └── pkg-types
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── p-limit@5.0.0
+│   │   │   └── node_modules
+│   │   │       ├── p-limit
+│   │   │       │   ├── async-hooks-stub.js
+│   │   │       │   ├── index.d.ts
+│   │   │       │   ├── index.js
+│   │   │       │   ├── license
+│   │   │       │   ├── package.json
+│   │   │       │   └── readme.md
+│   │   │       └── yocto-queue -> ../../yocto-queue@1.2.1/node_modules/yocto-queue
+│   │   ├── postcss@8.5.6
+│   │   │   └── node_modules
+│   │   │       ├── nanoid -> ../../nanoid@3.3.11/node_modules/nanoid
+│   │   │       ├── picocolors -> ../../picocolors@1.1.1/node_modules/picocolors
+│   │   │       ├── postcss
+│   │   │       │   ├── lib
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── node_modules
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       └── source-map-js -> ../../source-map-js@1.2.1/node_modules/source-map-js
+│   │   ├── pretty-format@29.7.0
+│   │   │   └── node_modules
+│   │   │       ├── ansi-styles -> ../../ansi-styles@5.2.0/node_modules/ansi-styles
+│   │   │       ├── @jest
+│   │   │       │   └── schemas -> ../../../@jest+schemas@29.6.3/node_modules/@jest/schemas
+│   │   │       ├── pretty-format
+│   │   │       │   ├── build
+│   │   │       │   ├── LICENSE
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       └── react-is -> ../../react-is@18.3.1/node_modules/react-is
+│   │   ├── react-is@18.3.1
+│   │   │   └── node_modules
+│   │   │       └── react-is
+│   │   │           ├── cjs
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── umd
+│   │   ├── rollup@4.50.0
+│   │   │   └── node_modules
+│   │   │       ├── @rollup
+│   │   │       │   ├── rollup-linux-x64-gnu -> ../../../@rollup+rollup-linux-x64-gnu@4.50.0/node_modules/@rollup/rollup-linux-x64-gnu
+│   │   │       │   └── rollup-linux-x64-musl -> ../../../@rollup+rollup-linux-x64-musl@4.50.0/node_modules/@rollup/rollup-linux-x64-musl
+│   │   │       ├── rollup
+│   │   │       │   ├── dist
+│   │   │       │   ├── LICENSE.md
+│   │   │       │   ├── node_modules
+│   │   │       │   ├── package.json
+│   │   │       │   └── README.md
+│   │   │       └── @types
+│   │   │           └── estree -> ../../../@types+estree@1.0.8/node_modules/@types/estree
+│   │   ├── @rollup+rollup-linux-x64-gnu@4.50.0
+│   │   │   └── node_modules
+│   │   │       └── @rollup
+│   │   │           └── rollup-linux-x64-gnu
+│   │   ├── @rollup+rollup-linux-x64-musl@4.50.0
+│   │   │   └── node_modules
+│   │   │       └── @rollup
+│   │   │           └── rollup-linux-x64-musl
+│   │   ├── shebang-command@2.0.0
+│   │   │   └── node_modules
+│   │   │       ├── shebang-command
+│   │   │       │   ├── index.js
+│   │   │       │   ├── license
+│   │   │       │   ├── package.json
+│   │   │       │   └── readme.md
+│   │   │       └── shebang-regex -> ../../shebang-regex@3.0.0/node_modules/shebang-regex
+│   │   ├── shebang-regex@3.0.0
+│   │   │   └── node_modules
+│   │   │       └── shebang-regex
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── siginfo@2.0.0
+│   │   │   └── node_modules
+│   │   │       └── siginfo
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           ├── test.js
+│   │   │           └── .travis.yml
+│   │   ├── signal-exit@4.1.0
+│   │   │   └── node_modules
+│   │   │       └── signal-exit
+│   │   │           ├── dist
+│   │   │           ├── LICENSE.txt
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── @sinclair+typebox@0.27.8
+│   │   │   └── node_modules
+│   │   │       └── @sinclair
+│   │   │           └── typebox
+│   │   ├── source-map-js@1.2.1
+│   │   │   └── node_modules
+│   │   │       └── source-map-js
+│   │   │           ├── lib
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           ├── source-map.d.ts
+│   │   │           └── source-map.js
+│   │   ├── stackback@0.0.2
+│   │   │   └── node_modules
+│   │   │       └── stackback
+│   │   │           ├── formatstack.js
+│   │   │           ├── index.js
+│   │   │           ├── .npmignore
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           ├── test.js
+│   │   │           └── .travis.yml
+│   │   ├── std-env@3.9.0
+│   │   │   └── node_modules
+│   │   │       └── std-env
+│   │   │           ├── dist
+│   │   │           ├── LICENCE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── strip-final-newline@3.0.0
+│   │   │   └── node_modules
+│   │   │       └── strip-final-newline
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   ├── strip-literal@2.1.1
+│   │   │   └── node_modules
+│   │   │       ├── js-tokens -> ../../js-tokens@9.0.1/node_modules/js-tokens
+│   │   │       └── strip-literal
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── tinybench@2.9.0
+│   │   │   └── node_modules
+│   │   │       └── tinybench
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── tinypool@0.8.4
+│   │   │   └── node_modules
+│   │   │       └── tinypool
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── tinyspy@2.2.1
+│   │   │   └── node_modules
+│   │   │       └── tinyspy
+│   │   │           ├── dist
+│   │   │           ├── LICENCE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── type-detect@4.1.0
+│   │   │   └── node_modules
+│   │   │       └── type-detect
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── index.ts
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── type-detect.js
+│   │   ├── typescript@5.9.2
+│   │   │   └── node_modules
+│   │   │       └── typescript
+│   │   │           ├── bin
+│   │   │           ├── lib
+│   │   │           ├── LICENSE.txt
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           ├── SECURITY.md
+│   │   │           └── ThirdPartyNoticeText.txt
+│   │   ├── @types+estree@1.0.8
+│   │   │   └── node_modules
+│   │   │       └── @types
+│   │   │           └── estree
+│   │   ├── ufo@1.6.1
+│   │   │   └── node_modules
+│   │   │       └── ufo
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── vite@5.4.19
+│   │   │   └── node_modules
+│   │   │       ├── esbuild -> ../../esbuild@0.21.5/node_modules/esbuild
+│   │   │       ├── postcss -> ../../postcss@8.5.6/node_modules/postcss
+│   │   │       ├── rollup -> ../../rollup@4.50.0/node_modules/rollup
+│   │   │       └── vite
+│   │   │           ├── bin
+│   │   │           ├── client.d.ts
+│   │   │           ├── dist
+│   │   │           ├── index.cjs
+│   │   │           ├── index.d.cts
+│   │   │           ├── LICENSE.md
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── types
+│   │   ├── vite-node@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── cac -> ../../cac@6.7.14/node_modules/cac
+│   │   │       ├── debug -> ../../debug@4.4.1/node_modules/debug
+│   │   │       ├── pathe -> ../../pathe@1.1.2/node_modules/pathe
+│   │   │       ├── picocolors -> ../../picocolors@1.1.1/node_modules/picocolors
+│   │   │       ├── vite -> ../../vite@5.4.19/node_modules/vite
+│   │   │       └── vite-node
+│   │   │           ├── dist
+│   │   │           ├── LICENSE
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── vite-node.mjs
+│   │   ├── vitest@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── acorn-walk -> ../../acorn-walk@8.3.4/node_modules/acorn-walk
+│   │   │       ├── chai -> ../../chai@4.5.0/node_modules/chai
+│   │   │       ├── debug -> ../../debug@4.4.1/node_modules/debug
+│   │   │       ├── execa -> ../../execa@8.0.1/node_modules/execa
+│   │   │       ├── local-pkg -> ../../local-pkg@0.5.1/node_modules/local-pkg
+│   │   │       ├── magic-string -> ../../magic-string@0.30.18/node_modules/magic-string
+│   │   │       ├── pathe -> ../../pathe@1.1.2/node_modules/pathe
+│   │   │       ├── picocolors -> ../../picocolors@1.1.1/node_modules/picocolors
+│   │   │       ├── std-env -> ../../std-env@3.9.0/node_modules/std-env
+│   │   │       ├── strip-literal -> ../../strip-literal@2.1.1/node_modules/strip-literal
+│   │   │       ├── tinybench -> ../../tinybench@2.9.0/node_modules/tinybench
+│   │   │       ├── tinypool -> ../../tinypool@0.8.4/node_modules/tinypool
+│   │   │       ├── vite -> ../../vite@5.4.19/node_modules/vite
+│   │   │       ├── vite-node -> ../../vite-node@1.6.1/node_modules/vite-node
+│   │   │       ├── @vitest
+│   │   │       │   ├── expect -> ../../../@vitest+expect@1.6.1/node_modules/@vitest/expect
+│   │   │       │   ├── runner -> ../../../@vitest+runner@1.6.1/node_modules/@vitest/runner
+│   │   │       │   ├── snapshot -> ../../../@vitest+snapshot@1.6.1/node_modules/@vitest/snapshot
+│   │   │       │   ├── spy -> ../../../@vitest+spy@1.6.1/node_modules/@vitest/spy
+│   │   │       │   └── utils -> ../../../@vitest+utils@1.6.1/node_modules/@vitest/utils
+│   │   │       ├── vitest
+│   │   │       │   ├── browser.d.ts
+│   │   │       │   ├── config.d.ts
+│   │   │       │   ├── coverage.d.ts
+│   │   │       │   ├── dist
+│   │   │       │   ├── environments.d.ts
+│   │   │       │   ├── execute.d.ts
+│   │   │       │   ├── globals.d.ts
+│   │   │       │   ├── import-meta.d.ts
+│   │   │       │   ├── importMeta.d.ts
+│   │   │       │   ├── index.cjs
+│   │   │       │   ├── index.d.cts
+│   │   │       │   ├── jsdom.d.ts
+│   │   │       │   ├── LICENSE.md
+│   │   │       │   ├── node.d.ts
+│   │   │       │   ├── node_modules
+│   │   │       │   ├── package.json
+│   │   │       │   ├── README.md
+│   │   │       │   ├── reporters.d.ts
+│   │   │       │   ├── runners.d.ts
+│   │   │       │   ├── snapshot.d.ts
+│   │   │       │   ├── suite.d.ts
+│   │   │       │   ├── suppress-warnings.cjs
+│   │   │       │   ├── utils.d.ts
+│   │   │       │   ├── vitest.mjs
+│   │   │       │   └── workers.d.ts
+│   │   │       └── why-is-node-running -> ../../why-is-node-running@2.3.0/node_modules/why-is-node-running
+│   │   ├── @vitest+expect@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── chai -> ../../chai@4.5.0/node_modules/chai
+│   │   │       └── @vitest
+│   │   │           ├── expect
+│   │   │           ├── spy -> ../../../@vitest+spy@1.6.1/node_modules/@vitest/spy
+│   │   │           └── utils -> ../../../@vitest+utils@1.6.1/node_modules/@vitest/utils
+│   │   ├── @vitest+runner@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── pathe -> ../../pathe@1.1.2/node_modules/pathe
+│   │   │       ├── p-limit -> ../../p-limit@5.0.0/node_modules/p-limit
+│   │   │       └── @vitest
+│   │   │           ├── runner
+│   │   │           └── utils -> ../../../@vitest+utils@1.6.1/node_modules/@vitest/utils
+│   │   ├── @vitest+snapshot@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── magic-string -> ../../magic-string@0.30.18/node_modules/magic-string
+│   │   │       ├── pathe -> ../../pathe@1.1.2/node_modules/pathe
+│   │   │       ├── pretty-format -> ../../pretty-format@29.7.0/node_modules/pretty-format
+│   │   │       └── @vitest
+│   │   │           └── snapshot
+│   │   ├── @vitest+spy@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── tinyspy -> ../../tinyspy@2.2.1/node_modules/tinyspy
+│   │   │       └── @vitest
+│   │   │           └── spy
+│   │   ├── @vitest+utils@1.6.1
+│   │   │   └── node_modules
+│   │   │       ├── diff-sequences -> ../../diff-sequences@29.6.3/node_modules/diff-sequences
+│   │   │       ├── estree-walker -> ../../estree-walker@3.0.3/node_modules/estree-walker
+│   │   │       ├── loupe -> ../../loupe@2.3.7/node_modules/loupe
+│   │   │       ├── pretty-format -> ../../pretty-format@29.7.0/node_modules/pretty-format
+│   │   │       └── @vitest
+│   │   │           └── utils
+│   │   ├── which@2.0.2
+│   │   │   └── node_modules
+│   │   │       ├── isexe -> ../../isexe@2.0.0/node_modules/isexe
+│   │   │       └── which
+│   │   │           ├── bin
+│   │   │           ├── CHANGELOG.md
+│   │   │           ├── LICENSE
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           ├── README.md
+│   │   │           └── which.js
+│   │   ├── why-is-node-running@2.3.0
+│   │   │   └── node_modules
+│   │   │       ├── siginfo -> ../../siginfo@2.0.0/node_modules/siginfo
+│   │   │       ├── stackback -> ../../stackback@0.0.2/node_modules/stackback
+│   │   │       └── why-is-node-running
+│   │   │           ├── cli.js
+│   │   │           ├── example.js
+│   │   │           ├── .github
+│   │   │           ├── include.js
+│   │   │           ├── index.js
+│   │   │           ├── LICENSE
+│   │   │           ├── node_modules
+│   │   │           ├── package.json
+│   │   │           └── README.md
+│   │   ├── yocto-queue@1.2.1
+│   │   │   └── node_modules
+│   │   │       └── yocto-queue
+│   │   │           ├── index.d.ts
+│   │   │           ├── index.js
+│   │   │           ├── license
+│   │   │           ├── package.json
+│   │   │           └── readme.md
+│   │   └── zod@3.25.76
+│   │       └── node_modules
+│   │           └── zod
+│   │               ├── index.cjs
+│   │               ├── index.d.cts
+│   │               ├── index.d.ts
+│   │               ├── index.js
+│   │               ├── LICENSE
+│   │               ├── package.json
+│   │               ├── README.md
+│   │               ├── src
+│   │               ├── v3
+│   │               ├── v4
+│   │               └── v4-mini
+│   ├── .pnpm-workspace-state-v1.json
+│   ├── typescript -> ../../../node_modules/.pnpm/typescript@5.9.2/node_modules/typescript
+│   ├── .vite
+│   │   └── vitest
+│   │       └── results.json
+│   ├── vitest -> ../../../node_modules/.pnpm/vitest@1.6.1/node_modules/vitest
+│   └── zod -> ../../../node_modules/.pnpm/zod@3.25.76/node_modules/zod
+├── package.json
+├── pnpm-lock.yaml
+├── src
+│   ├── api
+│   │   ├── chat.ts
+│   │   ├── memory.ts
+│   │   └── scene.ts
+│   ├── base
+│   │   ├── attribute.ts
+│   │   ├── enums.ts
+│   │   └── primitives.ts
+│   ├── canon-content.schema.test.ts
+│   ├── canon-content.schema.ts
+│   ├── canon-release.schema.ts
+│   ├── client.ts
+│   ├── entity
+│   │   ├── canonical
+│   │   │   ├── base-canonical.ts
+│   │   │   ├── character.ts
+│   │   │   ├── index.ts
+│   │   │   ├── item.ts
+│   │   │   ├── location.ts
+│   │   │   ├── migrations.ts
+│   │   │   ├── prompt-template.ts
+│   │   │   └── relationship-type.ts
+│   │   └── instance
+│   │       ├── base-instance.ts
+│   │       ├── character-instance.ts
+│   │       ├── episode.ts
+│   │       ├── index.ts
+│   │       ├── item-instance.ts
+│   │       ├── memory.ts
+│   │       ├── relationship.ts
+│   │       └── scene.ts
+│   ├── errors.schema.ts
+│   ├── factories
+│   │   └── index.ts
+│   ├── game-instance.schema.ts
+│   ├── index.ts
+│   ├── llm
+│   │   ├── create-scene.ts
+│   │   ├── propose-change.ts
+│   │   └── retrieve-context.ts
+│   ├── rag
+│   │   ├── embedding.ts
+│   │   └── retrieval.ts
+│   ├── server.ts
+│   ├── system
+│   │   ├── change-proposal.ts
+│   │   ├── error.ts
+│   │   ├── permission.ts
+│   │   ├── session.ts
+│   │   ├── state-change-event.ts
+│   │   └── user.ts
+│   ├── __tests__
+│   │   ├── factories.test.ts
+│   │   ├── negative.validation.test.ts
+│   │   ├── schemas.snapshot.test.ts
+│   │   └── __snapshots__
+│   │       └── schemas.snapshot.test.ts.snap
+│   └── text-chunk.schema.ts
+├── tsconfig.json
+├── tsconfig.tsbuildinfo
+└── vitest.config.ts
+
+530 directories, 454 files

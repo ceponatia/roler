@@ -37,7 +37,7 @@ export function makeCharacterInstance(overrides?: Record<string, unknown>) {
     updatedAt: new Date().toISOString(),
     createdBy: nextUlid(),
     updatedBy: nextUlid(),
-    changePolicy: { allowedKeys: [], requiresEvidence: false, stability: 'stable' },
+  changePolicy: { allowedKeys: [], requiresEvidence: false, stability: 'stable', cooldown: 0, rateWindow: 60000, maxChanges: 0, rateLimit: {} },
     name: 'Instance Char'
   };
   return CharacterInstanceSchema.parse({ ...base, ...overrides });
@@ -51,7 +51,7 @@ export function makeSceneInstance(overrides?: Record<string, unknown>) {
     updatedAt: new Date().toISOString(),
     createdBy: nextUlid(),
     updatedBy: nextUlid(),
-    changePolicy: { allowedKeys: ['summary'], requiresEvidence: false, stability: 'volatile' },
+  changePolicy: { allowedKeys: ['summary'], requiresEvidence: false, stability: 'volatile', cooldown: 0, rateWindow: 60000, maxChanges: 0, rateLimit: {} },
     sessionId: 'sess1',
     title: 'Opening Scene'
   };
