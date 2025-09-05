@@ -1,26 +1,37 @@
 #!/usr/bin/env node
 /* eslint-env node */
-import { readFile, writeFile, readdir, stat, mkdir } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { mkdir } from 'node:fs/promises';
+import { join, dirname, resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const scriptDir = dirname(fileURLToPath(import.meta.url));
-const rootDir = join(scriptDir, '..');
+import { createSafeFs, asSafePath } from './safe-fs.mjs';
 
-async function findPackageCoverageFiles(baseDir) {
-  const entries = await readdir(baseDir, { withFileTypes: true });
+// Resolve and freeze base directories to avoid path manipulation or traversal outside repo root.
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const rootDir = resolve(join(scriptDir, '..'));
+
+async function findPackageCoverageFiles(baseDir, safe) {
+  const resolved = resolve(baseDir);
+  if (resolved !== packagesDir) {
+    throw new Error(`Unsafe directory access attempt: ${baseDir}`);
+  }
+  const dirPath = asSafePath(rootDir, 'packages');
+  const entries = await safe.readdirSafe(dirPath);
   const files = [];
   for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const pkgCoverage = join(baseDir, entry.name, 'coverage', 'lcov.info');
-      try {
-        const s = await stat(pkgCoverage);
-        if (s.isFile()) files.push(pkgCoverage);
-      } catch {
-        // ignore
+    if (!entry.isDirectory()) continue;
+    if (entry.name.startsWith('.')) continue;
+    const coveragePath = asSafePath(rootDir, `packages/${entry.name}/coverage/lcov.info`);
+    try {
+      const st = await safe.statSafe(coveragePath);
+      if (st.isFile()) {
+        files.push(coveragePath);
       }
+    } catch {
+      // ignore missing or unreadable
     }
   }
+  files.sort((a, b) => a.localeCompare(b));
   return files;
 }
 
@@ -30,15 +41,36 @@ const outputFile = join(outputDir, 'monorepo-lcov.info');
 
 async function merge() {
   await mkdir(outputDir, { recursive: true });
-  const files = await findPackageCoverageFiles(packagesDir);
-  if (!files.length) {
+  const safe = createSafeFs(rootDir, { maxBytes: 5 * 1024 * 1024 });
+  const files = await findPackageCoverageFiles(packagesDir, safe);
+  if (files.length === 0) {
     globalThis.console.error('No package coverage files found.');
     globalThis.process.exit(1);
   }
-  const parts = await Promise.all(files.map(f => readFile(f, 'utf8')));
+  // Read sequentially to limit memory pressure if many packages (still small here but defensive)
+  const parts = [];
+  for (const f of files) {
+    const rel = relative(rootDir, f.toString());
+    try {
+      const data = await safe.readFileSafe(f, 'utf8');
+      parts.push(`# >> BEGIN ${rel}\n${data.trim()}\n# << END ${rel}`);
+    } catch (e) {
+      globalThis.console.warn(`Skipping unreadable coverage file ${rel}:`, e);
+    }
+  }
+  if (!parts.length) {
+    globalThis.console.error('All coverage files unreadable.');
+    globalThis.process.exit(1);
+  }
   const merged = parts.join('\n');
-  await writeFile(outputFile, merged, 'utf8');
-  globalThis.console.log(`Merged ${files.length} coverage files into ${outputFile}`);
+  const outPath = asSafePath(rootDir, 'coverage/monorepo-lcov.info');
+  const fh = await safe.openForWriteSafe(outPath);
+  try {
+    await fh.writeFile(merged, 'utf8');
+  } finally {
+    await fh.close();
+  }
+  globalThis.console.log(`Merged ${parts.length} coverage files into ${outputFile}`);
 }
 
 merge().catch(err => {

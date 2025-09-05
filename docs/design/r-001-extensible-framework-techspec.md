@@ -1,8 +1,7 @@
 ---
 title: R-001 Extensible Framework Technical Specification
 status: Draft
-owner: Architecture
-last-updated: 2025-09-04
+last-updated: 2025-09-05
 related-prd: ../prd/r-001-extensible-framework-prd.md
 revision: 0.1.0
 ---
@@ -37,6 +36,13 @@ Out-of-Scope (this spec):
 | Incompatible version rejection | Early bootstrap guard | Error code: `EXT_VERSION_INCOMPATIBLE` |
 | Attribute enrichment flows into retrieval | Retrieval enrichment hook aggregates contexts | Weighted merge ordering |
 | Performance overhead <5% | Benchmark harness + metrics instrumentation | Abort (warn) if over budget |
+| Chat-phase hooks (preChatTurn → postModelDraft → postModeration → prePersistTurn) | Chat hook interfaces & ordered pipeline (Sections 5, 15) | Deterministic ordering, each phase optional |
+| State transaction support & conflict policies | StateTransaction schema + merge engine (Sections 5, 15) | first-wins / last-wins / weighted / resolver placeholder |
+| Per-hook token & latency budgets | hookBudgets manifest + enforcement (Sections 4, 5) | Soft budgets + truncation + metrics |
+| Data class scope gating & logging | dataClassScopes manifest + security filter (Section 11) | Strip & log unauthorized scopes |
+| Per-extension concurrency limiting | concurrencyLimit manifest + limiter (Section 5) | Prevent saturation (default 4) |
+| Kill-switch operational control | killSwitchEnabled + runtime flag (Sections 5, 12) | Fast disable with metric increment |
+| Overhead gating (<5% pass, 5–7% warn, >7% fail) | Benchmark harness + CI gate (Section 12) | Enforces performance acceptance criterion |
 
 ## 3. High-Level Architecture
 
@@ -71,6 +77,18 @@ New schemas (to be added in `@roler/schemas` under `system/extensions` path):
   - priority (integer, default 0; higher runs earlier) – ties broken by `id` lexical order.
   - unsafeCapabilities?: readonly array (GM gated; must declare) – validated against allowlist.
   - configSchema?: JSON schema reference name (points to a Zod schema in extension bundle) for structured per-extension config.
+  - chatHooks?: { preChatTurn?: string[]; postModelDraft?: string[]; postModeration?: string[]; prePersistTurn?: string[] } (optional explicit export names; falls back to convention if omitted)
+  - hookBudgets?: { [hookName: string]: { maxTokens?: number; maxLatencyMs?: number } } (per-hook soft budgets; enforced + metered)
+  - concurrencyLimit?: number (max simultaneous hook executions for this extension; default 4)
+  - killSwitchEnabled?: boolean (default true; host can disable extension rapidly)
+  - dataClassScopes?: readonly string[] (declared sensitive data classes requested; host must allow) (e.g. `attr:private`, `memory:l2-graph`, `rag:external-source`)
+  - stateTransactionSupport?: boolean (declares that certain hooks return state transactions instead of direct deltas)
+
+Additional Manifest Notes:
+
+- Budgets are advisory; overruns trigger warnings & optional enforcement (configurable) before hard timeout.
+- Data class scopes augment `unsafeCapabilities`; granting requires operator policy alignment.
+- Concurrency limit prevents a single extension saturating event loop under bursty chat phases.
 
 Supporting internal schema(s):
 
@@ -89,6 +107,35 @@ Phases:
 2. Retrieval Enrichment: `(ctx: RetrievalContext) -> HookResult<RetrievalAugmentation>`
 3. Pre-Save Validation: `(candidate: EntityStateSnapshot) -> HookResult<void>` (no mutation).
 
+Chat-Aware Conversation Phases (added for RPG game loop):
+4. preChatTurn: `(ctx: ChatTurnContext) -> HookResult<ChatTurnPreparation>` executed before model prompt assembly (inject additional RAG snippets, adjust tone directives, enforce house rules preliminarily).
+5. postModelDraft: `(ctx: ModelDraftContext) -> HookResult<ModelDraftAdjustment>` executed immediately after raw model draft tokens arrive (before moderation). May trim, tag, or suggest rewrites (bounded by token budget).
+6. postModeration: `(ctx: ModerationContext) -> HookResult<ModeratedAdjustment>` after safety filters pass; can annotate with metadata (relationship deltas, XP accrual suggestions).
+7. prePersistTurn: `(ctx: PersistContext) -> HookResult<StateTransaction | void>` just before persisting chat turn + derived memory; final chance to attach state transaction proposals.
+
+Unified Context Requirements:
+`BaseHookContext = { tenantId: string; sessionId: string; role: 'GM' | 'Player'; timeBudgetMs?: number; tokenBudget?: number; requestId: string }` present in every hook context (existing normalization/retrieval contexts extended to include these properties) ensuring consistent authorization & telemetry dimensions.
+
+State Transactions:
+Extensions MAY return a `StateTransaction` object instead of or in addition to direct deltas in chat-phase & normalization hooks if `stateTransactionSupport` is true.
+`StateTransaction = { txId: string; originExtension: string; operations: readonly TxOp[]; conflictPolicy: 'first-wins' | 'last-wins' | 'weighted' | 'resolver'; weight?: number; resolverId?: string; metadata?: Record<string, unknown> }`
+`TxOp = { path: string; op: 'set' | 'increment' | 'append'; value?: unknown; delta?: number }`
+Merge Strategy:
+
+- Gather transactions in a deterministic order (priority DESC, weight DESC where applicable, then extension id ASC).
+- Apply conflictPolicy rules:
+      - first-wins: first op on a path wins; later conflicting ops skipped.
+      - last-wins: later op overwrites earlier on same path.
+      - weighted: choose op with highest `weight` for conflicting path; ties resolved by priority then id.
+      - resolver: delegate conflicting path set to a named resolver hook (future extension; placeholder). If resolver missing → warning + fallback to first-wins.
+- Produce consolidated idempotent delta (operations reduced: e.g., consecutive increments combined) before persistence.
+
+Budgets Enforcement:
+
+- Each context derives effective `timeBudgetMs` & `tokenBudget` from manifest hookBudgets + host defaults.
+- Exceeding tokenBudget results in truncation of added content & warning metric (does not hard fail unless strict flag).
+- Exceeding timeBudget triggers soft timeout logic earlier than generic per-hook limits.
+
 Ordering:
 
 - Extensions sorted by priority DESC then id ASC.
@@ -98,6 +145,14 @@ Timeouts & Guards:
 
 - Per-hook soft timeout (default 50ms normalization, 30ms retrieval enrichment, 40ms validation); exceed → warn + continue unless `strictMode` enabled.
 - Circuit breaker: 3 consecutive failures → skip extension for remainder of request; metrics increment.
+
+Concurrency:
+
+- Per-extension concurrency capped (default 4 or manifest override) across asynchronous hook executions; additional invocations queue (FIFO) to avoid CPU spikes.
+
+Kill-Switch:
+
+- Host config may mark an extension disabled at runtime (in-memory flag) → all subsequent hook invocations short-circuit with noop & a metric increment (`disabled_invocations_total`).
 
 ## 6. Registration & Loading Flow
 
@@ -129,6 +184,11 @@ Exposed via new package `packages/extensions`:
 - Utility: `createExtension(manifest: ExtensionManifest, hooks: HookBundle)` (validates at build-time using Zod + types).
 - Minimal logger interface (subset of core logger) to avoid leaking full internals.
 
+Additional Exports (chat & transactions):
+
+- Types: `PreChatTurnHook`, `PostModelDraftHook`, `PostModerationHook`, `PrePersistTurnHook`, `StateTransaction`, `TxOp`, `ChatTurnContext`, `ModelDraftContext`, `ModerationContext`, `PersistContext`.
+- Helper: `composeStateTransactions(...txs: StateTransaction[]): StateTransaction` (utility for extensions delegating to sub-modules).
+
 Forbidden: Direct imports from internal game/entity modules; extension authors must rely only on types & helpers surfaced by `@roler/extensions` and `@roler/schemas`.
 
 ## 9. Error Handling & Codes
@@ -142,6 +202,9 @@ Extend existing standardized error shape (see R-028/R-029) with domain `extensio
 - `EXT_HOOK_FAILURE`
 - `EXT_UNSAFE_CAPABILITY_DENIED`
 - `EXT_CONFIG_INVALID`
+- `EXT_TOKEN_BUDGET_EXCEEDED`
+- `EXT_TIME_BUDGET_EXCEEDED`
+- `EXT_STATE_TX_CONFLICT` (unexpected unresolved conflict after merge phase)
 
 All errors carry: `code`, `message`, `extensionId?`, `hook?`, `causes?` (array), `severity` (warn|error|fatal). Logged through shared logger with request / correlation IDs.
 
@@ -151,6 +214,15 @@ All errors carry: `code`, `message`, `extensionId?`, `hook?`, `causes?` (array),
 - Read-only entity snapshots for validation; mutation only via explicit normalization delta path.
 - No direct DB handle; provide narrow service proxies (e.g., `vectorSearch(query)`) that enforce auth context.
 - Isolation: Single process for now; future sandbox adapter interface left open.
+
+Data Class Scopes (granular capabilities, must be explicitly declared & allowed):
+
+- `attr:private` (private / sensitive attribute subsets)
+- `memory:l2-graph` (second-level associative memory graph access)
+- `rag:external-source` (ability to inject externally sourced context snippets)
+- `chat:moderation-flags` (read moderation classification metadata)
+
+Operators can globally deny any subset; denied scopes removed from manifest at registry build with warning.
 
 ## 11. Performance Considerations
 
@@ -167,6 +239,20 @@ Benchmark Harness (new script):
 - Simulate N entities normalization with M extensions; output latency distribution & overhead percentage.
 - Threshold gate in CI: warn if overhead >5%, fail if >7%.
 
+Per-Hook p95 Targets (Advisory):
+
+| Hook | p95 Target (ms) | Notes |
+|------|-----------------|-------|
+| normalization | 50 | existing default |
+| retrievalEnrichment | 30 | before RAG assembly |
+| preSaveValidate | 40 | must be fast; no blocking I/O |
+| preChatTurn | 40 | before prompt build; includes small RAG adds |
+| postModelDraft | 25 | token buffer pruning/annotation only |
+| postModeration | 20 | metadata tagging, light adjustments |
+| prePersistTurn | 30 | state transaction consolidation |
+
+Budget Relationship: timeBudgetMs per hook MUST be ≤ these targets; CI can assert configuration.
+
 ## 12. Observability & Metrics
 
 Per extension + hook:
@@ -176,6 +262,10 @@ Per extension + hook:
 - `timeouts_total`
 - `duration_ms_histogram`
 - `circuit_open` gauge
+- `token_usage_total{hook}` (tokens added / suggested by extension within budget)
+- `budget_overrun_total{hook,type=token|time}`
+- `state_transactions_total{result=applied|skipped|conflicted}`
+- `disabled_invocations_total`
 
 Registry metrics:
 
@@ -213,17 +303,28 @@ Strict Mode (config): escalate certain soft failures to hard.
 12. Error Mapping: Extend contracts error codes list (schemas + central mapping).
 13. Public API Façade: Curate exports; freeze objects to preserve immutability.
 14. Reference Extensions: Create three minimal examples (e.g., `attr-color-normalizer`, `scene-retrieval-tags`, `pre-save-age-check`).
-15. Tests:
+      - Add official game-focused reference extensions:
+         - `relationship-score-normalizer` (updates relationship/bond metrics from dialogue events via postModeration)
+         - `scene-retrieval-tags` (injects scene/location facts during preChatTurn retrieval augmentation)
+         - `pre-save-age-check` (rules example using prePersistTurn + preSaveValidate)
+15. Add chat-phase hook pipeline implementations (preChatTurn, postModelDraft, postModeration, prePersistTurn) and context propagation (tenantId/sessionId/role).
+16. Implement state transaction merge engine (conflict policies, weighting, resolver placeholder) + tests.
+17. Enforce per-hook budgets (token + latency) with instrumentation & truncation logic.
+18. Add concurrency limiter + per-extension kill-switch handling.
+19. Extend manifest schemas & validation for new fields (chatHooks, hookBudgets, dataClassScopes, concurrencyLimit, stateTransactionSupport).
+20. Update metrics adapter with new counters/histograms.
+21. Update authoring docs to include chat-phase hooks & state transactions.
+22. Tests:
     - Manifest validation (positive/negative).
     - Version compatibility (matrix tests).
     - Peer dependency resolution ordering.
     - Hook ordering & priority tie-break.
     - Timeout & circuit breaker simulation.
     - Performance benchmark (smoke) ensuring overhead budget.
-16. Bench Harness & CI Integration: Add script to run micro-bench (Node timing) gating thresholds.
-17. Docs: Author `docs/extensions/authoring.md` and API reference summary.
-18. Release: Add changesets for `schemas` & new `extensions` package publish.
-19. Post-Launch Monitoring: Add dashboard queries for new metrics.
+23. Bench Harness & CI Integration: Add script to run micro-bench (Node timing) gating thresholds.
+24. Docs: Author `docs/extensions/authoring.md` and API reference summary.
+25. Release: Add changesets for `schemas` & new `extensions` package publish.
+26. Post-Launch Monitoring: Add dashboard queries for new metrics.
 
 ## 15. Testing Strategy
 
@@ -234,6 +335,10 @@ Test Layers:
 - Resilience (forced throw, timeout, circuit open/half-open logic).
 - Performance (benchmark harness executed in CI with reduced iterations for speed + separate local larger run profile).
 - Type Tests (compile-time generic constraints verifying HookResult shapes & immutability of inputs).
+- Chat-phase ordering tests (ensuring postModelDraft runs before postModeration, etc.).
+- State transaction conflict resolution matrix (first-wins / last-wins / weighted).
+- Budget enforcement tests (token truncation & latency soft cut).
+- Concurrency limiter test (queued execution) & kill-switch bypass test.
 
 Coverage Goals: ≥95% lines for new package; snapshot tests for manifest structural outputs kept minimal (id, version, capabilities, hooks keys) to avoid churn.
 
@@ -262,6 +367,8 @@ Rollback Plan: Disable feature flag; registry short-circuits returning empty pip
 - Extension count initially small (<20); O(n) iteration acceptable.
 - Per-hook synchronous CPU cost low; blocking I/O discouraged (extension guidelines will state this).
 - Extensions trusted (no hostile code) in this phase (no sandbox).
+- Chat loop phases follow single-threaded ordering per session; no parallel model drafts for same session.
+- Token accounting uses model tokenization service identical to production LLM tokenizer for accuracy.
 
 ## 19. Risks & Mitigations (Expanded)
 
@@ -284,6 +391,16 @@ Rollback Plan: Disable feature flag; registry short-circuits returning empty pip
 ## 21. Acceptance Criteria Traceability
 
 Each PRD acceptance criterion mapped to test cases: see Section 15 matrix (to be added in test plan index). A passing CI run with coverage & performance gate satisfied constitutes completion.
+
+Key criteria trace mapping:
+
+- Chat-phase hook ordering (preChatTurn → postModelDraft → postModeration → prePersistTurn): Sections 5 & 15 (chat-phase ordering tests)
+- State transaction conflict policies (first-wins / last-wins / weighted / resolver placeholder): Sections 5 & 15 (conflict resolution matrix tests)
+- Per-hook token & latency budgets (enforcement + truncation metrics): Sections 5 (Budgets Enforcement) & 12 (Metrics) & 15 (budget enforcement tests)
+- Concurrency limiter & queueing behavior: Sections 5 (Concurrency) & 15 (concurrency limiter test)
+- Kill-switch disable behavior + disabled invocation metrics: Sections 5 (Kill-Switch), 12 (Metrics), 15 (kill-switch test)
+- Data class scope gating & stripped scope logging: Section 11 (Security Model) & 12 (Metrics)
+- Overhead gating thresholds (<5% pass, 5–7% warn, >7% fail): Sections 12 (Performance/Metrics) & 15 (benchmark harness)
 
 ## 22. KPI Measurement Plan
 

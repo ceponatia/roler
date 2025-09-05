@@ -31,3 +31,8 @@ export * from './api/chat.js';
 export * from './api/scene.js';
 export * from './api/memory.js';
 export * from './factories/index.js';
+
+// Extension Framework (R-001)
+export * from './system/extensions/extension-manifest.schema.js';
+export * from './system/extensions/extension-registration-config.schema.js';
+export * from './system/extensions/state-transaction.schema.js';
