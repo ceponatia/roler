@@ -1,0 +1,62 @@
+name: Monorepo Coverage → Codacy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        # Pin to commit for supply-chain integrity (v3.0.0 -> a3252b78c470c02df07e9d59298aecedc3ccdd6d)
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d
+        with:
+          version: 10.13.1
+
+      - name: Install dependencies
+        run: |
+          pnpm fetch
+          pnpm install --frozen-lockfile
+
+      - name: Run workspace tests with coverage
+        # test:ci already enables coverage per package (vitest --coverage)
+        run: pnpm test:ci
+
+      - name: Merge coverage (monorepo-lcov.info)
+        run: pnpm coverage:merge
+
+      - name: Show merged coverage head (debug)
+        run: |
+          head -n 40 coverage/monorepo-lcov.info || true
+
+      - name: Upload coverage to Codacy
+        if: success()
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          GIT_COMMIT_SHA: ${{ github.sha }}
+          # Optionally set CODACY_API_BASE_URL for self-hosted Codacy
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report \
+            -r coverage/monorepo-lcov.info
+
+      - name: Upload merged LCOV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: monorepo-lcov
+          path: coverage/monorepo-lcov.info
+          if-no-files-found: error
