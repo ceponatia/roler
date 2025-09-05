@@ -24,10 +24,11 @@ const schemaEntries = [
 // Zod's .describe(description: string) mutator requires an argument; we want a read-only
 // structural snapshot. This helper extracts a small, stable subset of internal metadata.
 const describeSchema = (schema: ZodTypeAny) => {
-  // Access _def via any to avoid depending on private typings; kept deliberately shallow
-  const def = (schema as any)._def ?? {};
-  const typeName = def.typeName;
-  const description = def.description;
+  // Access internal _def using unknown + narrow (avoid 'any') for a shallow, stable subset
+  const defRaw: unknown = (schema as unknown as { _def?: unknown })._def;
+  const def = (defRaw && typeof defRaw === 'object') ? defRaw as Record<string, unknown> : {};
+  const typeName = typeof def.typeName === 'string' ? def.typeName : undefined;
+  const description = typeof def.description === 'string' ? def.description : undefined;
   // For object schemas capture sorted shape keys (excluding functions)
   let shapeKeys: readonly string[] | undefined;
   try {
@@ -41,7 +42,19 @@ const describeSchema = (schema: ZodTypeAny) => {
   // For unions capture option type names
   let options: readonly string[] | undefined;
   if (Array.isArray(def.options)) {
-    options = def.options.map((o: any) => o?._def?.typeName).filter(Boolean).sort();
+    options = def.options
+      .map((o: unknown) => {
+        if (o && typeof o === 'object' && '_def' in o) {
+          const inner = (o as { _def?: { typeName?: unknown } })._def;
+          if (inner && typeof inner === 'object' && 'typeName' in inner) {
+            const tn = (inner as { typeName?: unknown }).typeName;
+            return typeof tn === 'string' ? tn : undefined;
+          }
+        }
+        return undefined;
+      })
+      .filter((v): v is string => typeof v === 'string')
+      .sort();
   }
   return { typeName, description, shapeKeys, options };
 };
