@@ -2,8 +2,7 @@ engines:
   semgrep:
     enabled: true
     exclude_paths:
-      - ".github/workflows/**"
-      - ".github/actions/**"
+      - ".github/*/**"
       - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
