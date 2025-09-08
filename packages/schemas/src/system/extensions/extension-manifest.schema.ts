@@ -23,7 +23,11 @@
 import { z } from 'zod';
 
 // Reusable regexes / constants
-const idPattern = /^[a-z0-9]+(-[a-z0-9]+)*$/; // lower-kebab, no leading/trailing dash
+// Both patterns are linear-time (no nested quantifiers / backtracking hotspots).
+// Length caps added to avoid unbounded input size even though patterns are safe.
+const MAX_ID_LENGTH = 64;
+const MAX_HOOK_NAME_LENGTH = 64;
+const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/; // lower-kebab, no leading/trailing dash
 
 export const ExtensionPeerSchema = z.object({
   id: z.string().regex(idPattern, 'peer id must be lower-kebab'),
@@ -42,9 +46,12 @@ export const HookBudgetSchema = z.object({
 export type HookBudget = z.infer<typeof HookBudgetSchema>;
 
 export const ExtensionManifestSchema = z.object({
-  id: z.string().regex(idPattern, 'id must be lower-kebab'),
+  id: z.string()
+    .min(1)
+    .max(MAX_ID_LENGTH)
+    .regex(idPattern, 'id must be lower-kebab'),
   name: z.string().min(1),
-  version: z.string().min(1), // semver validated later (semantic + range) to avoid heavy regex here
+  version: z.string().min(1),
   description: z.string().min(1),
   license: z.string().optional(),
   author: z.string().optional(),
@@ -53,9 +60,9 @@ export const ExtensionManifestSchema = z.object({
   capabilities: z.array(z.string()).default([]).readonly(),
   hooks: z
     .object({
-      normalize: z.array(z.string().regex(hookNamePattern)).optional(),
-      retrievalEnrichment: z.array(z.string().regex(hookNamePattern)).optional(),
-      preSaveValidate: z.array(z.string().regex(hookNamePattern)).optional(),
+      normalize: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      retrievalEnrichment: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      preSaveValidate: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
     })
     .partial()
     .optional(),
@@ -64,14 +71,19 @@ export const ExtensionManifestSchema = z.object({
   configSchema: z.string().optional(),
   chatHooks: z
     .object({
-      preChatTurn: z.array(z.string().regex(hookNamePattern)).optional(),
-      postModelDraft: z.array(z.string().regex(hookNamePattern)).optional(),
-      postModeration: z.array(z.string().regex(hookNamePattern)).optional(),
-      prePersistTurn: z.array(z.string().regex(hookNamePattern)).optional(),
+      preChatTurn: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      postModelDraft: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      postModeration: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      prePersistTurn: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
     })
     .partial()
     .optional(),
-  hookBudgets: z.record(z.string(), HookBudgetSchema).optional(),
+  hookBudgets: z
+    .record(
+      z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern),
+      HookBudgetSchema
+    )
+    .optional(),
   concurrencyLimit: z.number().int().positive().default(4),
   killSwitchEnabled: z.boolean().default(true),
   dataClassScopes: z.array(z.string()).optional().readonly(),
