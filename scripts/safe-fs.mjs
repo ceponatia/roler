@@ -45,18 +45,27 @@ export function asSafePath(rootDir, p) {
  */
 export async function assertInsideRoot(rootReal, target) {
   const targetReal = await fs.realpath(target).catch(async () => {
-    // If target does not yet exist (e.g., for write), still resolve parent.
-    const parent = path.dirname(target);
-    const parentReal = await fs.realpath(parent);
-    return path.join(parentReal, path.basename(target));
+    // If target does not yet exist (e.g., for write), resolve up the parent chain until we find an existing directory
+    let current = target;
+    while (current !== path.dirname(current)) { // while not at root
+      const parent = path.dirname(current);
+      try {
+        const parentReal = await fs.realpath(parent);
+        // Reconstruct path using real parent + remaining relative path
+        const remaining = path.relative(parent, target);
+        return path.join(parentReal, remaining);
+      } catch {
+        current = parent;
+      }
+    }
+    // If we reach here, nothing exists in the path
+    throw new Error(`No existing parent directory found for: ${target}`);
   });
   if (targetReal !== rootReal && !targetReal.startsWith(rootReal + path.sep)) {
     throw new Error(`Path escapes root: ${targetReal}`);
   }
   return targetReal;
 }
-
-/** @deprecated internal legacy helper; prefer assertInsideRoot */
 
 /**
  * Create a safe fs facade bound to a root path.
