@@ -6,6 +6,14 @@ import { fileURLToPath } from 'node:url';
 
 import { createSafeFs, asSafePath } from './safe-fs.mjs';
 
+// SECURITY RATIONALE:
+// This script reads coverage artifacts from controlled package directories only.
+// Package directory names are constrained to an allowlist regex (lowercase alnum + dash) below.
+// All filesystem access goes through safe-fs which enforces realpath confinement under repo root.
+// Dynamic paths are therefore validated and not influenced by external user input.
+
+const PKG_NAME_RE = /^[a-z0-9-]+$/; // conservative allowlist for package dir names
+
 // Resolve and freeze base directories to avoid path manipulation or traversal outside repo root.
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(join(scriptDir, '..'));
@@ -21,6 +29,7 @@ async function findPackageCoverageFiles(baseDir, safe) {
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     if (entry.name.startsWith('.')) continue;
+    if (!PKG_NAME_RE.test(entry.name)) continue; // enforce allowlist
     const coveragePath = asSafePath(rootDir, `packages/${entry.name}/coverage/lcov.info`);
     try {
       const st = await safe.statSafe(coveragePath);

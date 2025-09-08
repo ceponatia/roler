@@ -2,6 +2,10 @@
 dist/
 *.tsbuildinfo
 
+# Test coverage artifacts (generated)
+coverage/
+packages/*/coverage/
+
 #Ignore vscode AI rules
 .github/copilot-instructions.md
 .github/instructions
@@ -12,3 +16,6 @@ node_modules/
 #Environment and configuration
 .env
 .DS_Store
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

@@ -5,6 +5,8 @@ engines:
       - ".github/workflows/**"
       - ".github/actions/**"
       - "docs/**"
+      - "coverage/**"
+      - "packages/*/coverage/**"
     config:
       rules:
         - id: github-actions-pin-sha

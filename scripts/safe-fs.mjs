@@ -4,6 +4,13 @@
   All dynamic path interactions for scripts should flow through this module so that
   security rules (root confinement, symlink resolution, hidden path filtering, size caps)
   are consistently enforced and lint suppressions are localized.
+
+  SECURITY RATIONALE:
+  - All external (untrusted) input MUST be mapped to a path relative to a predetermined root.
+  - realpath resolution + prefix check prevents path traversal (".." & symlink escapes).
+  - Hidden segments optionally rejected to avoid leaking dotfiles/secrets by default.
+  - File size capped to mitigate accidental large file ingestion (DoS vector).
+  - This centralization allows us to justify eslint/semgrep non-literal fs path warnings.
 */
 
 import fs from 'node:fs/promises';
@@ -26,7 +33,14 @@ export function asSafePath(rootDir, p) {
   return /** @type {SafePath} */ (abs);
 }
 
-async function assertUnderRoot(rootReal, target) {
+/**
+ * Resolve target path ensuring it remains under root.
+ * Exported for reuse in other scripts requiring explicit validation.
+ * @param {string} rootReal pre-resolved realpath of root directory
+ * @param {string} target path to validate (may or may not exist yet)
+ * @returns {Promise<string>} real path (or constructed path under an existing parent)
+ */
+export async function assertInsideRoot(rootReal, target) {
   const targetReal = await fs.realpath(target).catch(async () => {
     // If target does not yet exist (e.g., for write), still resolve parent.
     const parent = path.dirname(target);
@@ -37,6 +51,11 @@ async function assertUnderRoot(rootReal, target) {
     throw new Error(`Path escapes root: ${targetReal}`);
   }
   return targetReal;
+}
+
+/** @deprecated internal legacy helper; prefer assertInsideRoot */
+async function assertUnderRoot(rootReal, target) {
+  return assertInsideRoot(rootReal, target);
 }
 
 /**
@@ -58,7 +77,7 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
 
   async function statSafe(p) {
     const rootReal = await getRootReal();
-    const real = await assertUnderRoot(rootReal, p);
+    const real = await assertInsideRoot(rootReal, p);
     await checkHidden(real);
     const st = await fs.stat(real, { bigint: false });
     if (st.size > maxBytes) throw new Error(`File too large: ${st.size} > ${maxBytes}`);
@@ -67,7 +86,7 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
 
   async function readFileSafe(p, enc = 'utf8') {
     const rootReal = await getRootReal();
-    const real = await assertUnderRoot(rootReal, p);
+    const real = await assertInsideRoot(rootReal, p);
     await checkHidden(real);
     const st = await fs.stat(real);
     if (st.size > maxBytes) throw new Error(`File too large: ${st.size} > ${maxBytes}`);
@@ -76,7 +95,7 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
 
   async function readdirSafe(dir) {
     const rootReal = await getRootReal();
-    const real = await assertUnderRoot(rootReal, dir);
+    const real = await assertInsideRoot(rootReal, dir);
     await checkHidden(real);
     const entries = await fs.readdir(real, { withFileTypes: true });
     return entries.filter(d => !(skipHidden && d.name.startsWith('.')));
@@ -84,10 +103,10 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
 
   async function openForWriteSafe(p) {
     const rootReal = await getRootReal();
-    const real = await assertUnderRoot(rootReal, p);
+    const real = await assertInsideRoot(rootReal, p);
     // Ensure parent dir exists; caller handles mkdir earlier if needed.
     return fs.open(real, 'w');
   }
 
-  return { statSafe, readFileSafe, readdirSafe, openForWriteSafe, asSafePath };
+  return { statSafe, readFileSafe, readdirSafe, openForWriteSafe, asSafePath, assertInsideRoot };
 }
