@@ -26,7 +26,7 @@ import { z } from 'zod';
 // Length caps added to avoid unbounded input size even though patterns are safe.
 const MAX_ID_LENGTH = 64;
 const MAX_HOOK_NAME_LENGTH = 64;
-const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/; // lower-kebab, no leading/trailing dash
+const idPattern = /^[a-z0-9]{1,64}(?:-[a-z0-9]{1,64})*$/; // lower-kebab, no leading/trailing dash
 export const ExtensionPeerSchema = z.object({
     id: z.string().regex(idPattern, 'peer id must be lower-kebab'),
     range: z.string().min(1, 'semver range required'),

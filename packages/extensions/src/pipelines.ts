@@ -38,7 +38,7 @@ export async function runNormalization(
         for (const [k, v] of Object.entries(out as Record<string, unknown>)) {
           if (seenKeys.has(k)) continue; // first-wins
             seenKeys.add(k);
-            changes[k] = v;
+            if (/^[a-zA-Z0-9_]+$/.test(k)) changes[k] = v;
         }
       }
     }
@@ -63,7 +63,7 @@ export async function runRetrievalEnrichment(
         for (const [k, v] of Object.entries(out as Record<string, unknown>)) {
           if (seen.has(k)) continue;
           seen.add(k);
-          additions[k] = v;
+          if (typeof k === 'string' && /^[a-zA-Z0-9_]+$/.test(k)) additions[k] = v;
         }
       }
     }
@@ -150,7 +150,7 @@ async function genericFirstWins<TOut>(
           const mappedK = keyMap(k);
             if (seen.has(mappedK)) continue;
             seen.add(mappedK);
-            collected[mappedK] = valMap(v);
+            if (typeof mappedK === 'string' && /^[a-zA-Z0-9_]+$/.test(mappedK)) collected[mappedK] = valMap(v);
         }
       }
     }

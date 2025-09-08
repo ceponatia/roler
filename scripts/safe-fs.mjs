@@ -50,7 +50,7 @@ export async function assertInsideRoot(rootReal, target) {
     while (current !== path.dirname(current)) { // while not at root
       const parent = path.dirname(current);
       try {
-        const parentReal = await fs.realpath(parent);
+        const parentReal = await fs.realpath(path.resolve(parent));
         // Reconstruct path using real parent + remaining relative path
         const remaining = path.relative(parent, target);
         return path.join(parentReal, remaining);
@@ -114,8 +114,8 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
     const rootReal = await getRootReal();
     const real = await assertInsideRoot(rootReal, p);
     await checkHidden(real);
-    await fs.mkdir(path.dirname(real), { recursive: true });
-    return fs.open(real, 'w', 0o600);
+    await fs.mkdir(path.resolve(rootReal, path.dirname(real)), { recursive: true });
+    return fs.open(path.resolve(real), 'w', 0o600);
   }
 
   /**
@@ -124,17 +124,17 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
    * @param {string} p target path (absolute or relative to root)
    * @param {string|Uint8Array} data
    * @param {BufferEncoding} [enc]
-   */
+      await fs.writeFile(tmp, data, { mode: 0o600, ...(typeof data === 'string' ? { encoding: enc } : {}) });
   async function writeFileSafe(p, data, enc = 'utf8') {
     const rootReal = await getRootReal();
     const real = await assertInsideRoot(rootReal, p);
     await checkHidden(real);
     const dir = path.dirname(real);
-    await fs.mkdir(dir, { recursive: true });
+    await fs.mkdir(path.resolve(rootReal, dir), { recursive: true });
     const tmp = path.join(dir, `.__tmp_${path.basename(real)}_${crypto.randomUUID()}`);
     try {
-      await fs.writeFile(tmp, data, { encoding: typeof data === 'string' ? enc : undefined, mode: 0o600 });
-      await fs.rename(tmp, real);
+      await fs.writeFile(tmp, data, { encoding: 'utf8', mode: 0o600 });
+      await fs.rename(path.resolve(tmp), path.resolve(real));
     } catch (err) {
       try { await fs.rm(tmp, { force: true }); } catch { /* ignore cleanup failure */ }
       throw err;

@@ -8,12 +8,12 @@ import { loadExtensions } from './registry.js';
 async function setupPkg(root: string, pkgName: string, manifest: Record<string, unknown>, options: { entry?: string; packageName?: string; addKey?: boolean } = {}): Promise<void> {
   const pkgDir = path.join(root, 'packages', pkgName);
   await fs.mkdir(path.join(pkgDir, 'dist'), { recursive: true });
-  await fs.writeFile(path.join(pkgDir, 'package.json'), JSON.stringify({
+  await fs.writeFile(`${pkgDir}/package.json`, JSON.stringify({
     name: options.packageName ?? pkgName,
     version: '0.0.0',
     ...(options.addKey === false ? {} : { rolerExtension: { entry: options.entry ?? 'dist/extension.js' } })
   }, null, 2));
-  await fs.writeFile(path.join(pkgDir, options.entry ?? 'dist/extension.js'), `export const manifest = ${JSON.stringify(manifest)};`);
+  await fs.writeFile(path.join(pkgDir, 'dist/extension.js'), `export const manifest = ${JSON.stringify(manifest)};`);
 }
 
 function baseManifest(overrides: Record<string, unknown>): Record<string, unknown> {

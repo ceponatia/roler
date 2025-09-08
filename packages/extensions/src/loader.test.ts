@@ -5,8 +5,8 @@ import { describe, it, expect } from 'vitest';
 import { discoverExtensions } from './loader.js';
 
 async function writeJson(p: string, obj: unknown): Promise<void> {
-  await fs.mkdir(path.dirname(p), { recursive: true });
-  await fs.writeFile(p, JSON.stringify(obj, null, 2), 'utf8');
+  await fs.mkdir(path.join(process.cwd(), 'temp-ext-test', path.dirname(p)), { recursive: true });
+  await fs.writeFile(path.resolve(p), JSON.stringify(obj, null, 2), 'utf8');
 }
 
 describe('discoverExtensions', () => {

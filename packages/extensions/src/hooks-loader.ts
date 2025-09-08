@@ -37,7 +37,7 @@ export async function hydrateHooks(
     const moduleUrl = pathToFileURL(ext.entry).href;
     let mod: Record<string, unknown>;
     try {
-      mod = (await import(moduleUrl)) as Record<string, unknown>;
+      mod = (await import(moduleUrl.startsWith('file://') ? moduleUrl : '')) as Record<string, unknown>;
     } catch (e) {
       if (strict) throw new Error(`failed to import extension entry for ${ext.manifest.id}: ${(e as Error).message}`);
       continue;
