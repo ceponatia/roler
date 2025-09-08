@@ -1,0 +1,35 @@
+{
+  "name": "@roler/extensions",
+  "version": "0.0.0",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "semver": "^7.6.3",
+    "@roler/schemas": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0",
+  "typescript": "^5.4.0",
+  "@types/node": "^20.11.5",
+  "@types/semver": "^7.5.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

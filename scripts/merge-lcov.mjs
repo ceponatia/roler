@@ -73,12 +73,7 @@ async function merge() {
   }
   const merged = parts.join('\n');
   const outPath = asSafePath(rootDir, 'coverage/monorepo-lcov.info');
-  const fh = await safe.openForWriteSafe(outPath);
-  try {
-    await fh.writeFile(merged, 'utf8');
-  } finally {
-    await fh.close();
-  }
+  await safe.writeFileSafe(outPath, merged, 'utf8');
   globalThis.console.log(`Merged ${parts.length} coverage files into ${outputFile}`);
 }
 

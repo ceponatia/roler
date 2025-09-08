@@ -1,9 +1,10 @@
+import { z } from 'zod';
+
 /**
  * State Transaction Schema
  * Represents a collection of atomic operations proposed by an extension (chat phases / normalization) to be merged.
  * Aligns with spec Section 5 (State Transactions).
  */
-import { z } from 'zod';
 
 export const TxOperationSchema = z.object({
   path: z.string().min(1),

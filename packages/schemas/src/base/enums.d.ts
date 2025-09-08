@@ -1,0 +1,20 @@
+import { z } from 'zod';
+export declare const EntityKindEnum: z.ZodEnum<["character", "location", "item", "relationshipType", "promptTemplate", "characterInstance", "itemInstance", "relationship", "scene", "episode", "memory"]>;
+export type EntityKind = z.infer<typeof EntityKindEnum>;
+export declare const ContentRatingEnum: z.ZodEnum<["g", "pg", "pg13", "r", "nc17"]>;
+export type ContentRating = z.infer<typeof ContentRatingEnum>;
+export declare const RelationshipStageEnum: z.ZodEnum<["acquaintance", "friendly", "close", "romantic", "intimate", "estranged"]>;
+export type RelationshipStage = z.infer<typeof RelationshipStageEnum>;
+export declare const MemoryScopeEnum: z.ZodEnum<["L1", "L2", "L3"]>;
+export type MemoryScope = z.infer<typeof MemoryScopeEnum>;
+export declare const ErrorCodeEnum: z.ZodEnum<["parse", "refine", "policy", "safety"]>;
+export type ErrorCode = z.infer<typeof ErrorCodeEnum>;
+export declare const HairColorEnum: z.ZodEnum<["black", "brown", "blonde", "red", "auburn", "gray", "white", "blue", "green", "pink", "purple", "dyed", "bald"]>;
+export type HairColor = z.infer<typeof HairColorEnum>;
+export declare const EducationLevelEnum: z.ZodEnum<["none", "primary", "secondary", "associate", "bachelor", "master", "doctorate", "vocational", "other"]>;
+export type EducationLevel = z.infer<typeof EducationLevelEnum>;
+export declare const ToneTagEnum: z.ZodEnum<["serious", "humorous", "sarcastic", "romantic", "tense", "mysterious", "cheerful", "grim", "hopeful", "melancholic"]>;
+export type ToneTag = z.infer<typeof ToneTagEnum>;
+export declare const EmotionVADTagEnum: z.ZodEnum<["calm", "excited", "happy", "sad", "angry", "fearful", "disgusted", "surprised", "neutral"]>;
+export type EmotionVADTag = z.infer<typeof EmotionVADTagEnum>;
+//# sourceMappingURL=enums.d.ts.map

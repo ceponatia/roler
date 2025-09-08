@@ -1,0 +1,102 @@
+import { z } from 'zod';
+export declare const RelationshipTypeCanonicalSchema: z.ZodObject<{
+    kind: z.ZodLiteral<"relationshipType">;
+    name: z.ZodString;
+    allowedParticipants: z.ZodNumber;
+    exclusivity: z.ZodDefault<z.ZodEnum<["none", "monogamous", "poly"]>>;
+    defaultStages: z.ZodEffects<z.ZodDefault<z.ZodArray<z.ZodEnum<["acquaintance", "friendly", "close", "romantic", "intimate", "estranged"]>, "many">>, ("acquaintance" | "friendly" | "close" | "romantic" | "intimate" | "estranged")[], ("acquaintance" | "friendly" | "close" | "romantic" | "intimate" | "estranged")[] | undefined>;
+    romanceEnabled: z.ZodDefault<z.ZodBoolean>;
+    intimacyEscalationAllowed: z.ZodDefault<z.ZodBoolean>;
+    id: z.ZodBranded<z.ZodString, "Ulid">;
+    lineageId: z.ZodBranded<z.ZodString, "Ulid">;
+    version: z.ZodNumber;
+    status: z.ZodEnum<["draft", "published", "archived"]>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+    createdBy: z.ZodBranded<z.ZodString, "Ulid">;
+    updatedBy: z.ZodBranded<z.ZodString, "Ulid">;
+    source: z.ZodOptional<z.ZodString>;
+    contentRating: z.ZodDefault<z.ZodEnum<["g", "pg", "pg13", "r", "nc17"]>>;
+    blockedTags: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    ageCheck: z.ZodDefault<z.ZodBoolean>;
+    attributes: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        keyPath: z.ZodString;
+        value: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodEffects<z.ZodDate, string, Date>, z.ZodTuple<[z.ZodNumber, z.ZodNumber], null>, z.ZodArray<z.ZodString, "many">, z.ZodRecord<z.ZodString, z.ZodUnknown>]>;
+        confidence: z.ZodDefault<z.ZodNumber>;
+        lastUpdatedBy: z.ZodOptional<z.ZodBranded<z.ZodString, "Ulid">>;
+        updatedAt: z.ZodDefault<z.ZodString>;
+        evidenceRefs: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        value: string | number | boolean | string[] | [number, number] | Record<string, unknown>;
+        keyPath: string;
+        confidence: number;
+        updatedAt: string;
+        evidenceRefs: string[];
+        lastUpdatedBy?: (string & z.BRAND<"Ulid">) | undefined;
+    }, {
+        value: string | number | boolean | Date | string[] | [number, number] | Record<string, unknown>;
+        keyPath: string;
+        confidence?: number | undefined;
+        lastUpdatedBy?: string | undefined;
+        updatedAt?: string | undefined;
+        evidenceRefs?: string[] | undefined;
+    }>, "many">>;
+}, "strip", z.ZodTypeAny, {
+    status: "draft" | "published" | "archived";
+    updatedAt: string;
+    id: string & z.BRAND<"Ulid">;
+    lineageId: string & z.BRAND<"Ulid">;
+    version: number;
+    kind: "relationshipType";
+    createdAt: string;
+    createdBy: string & z.BRAND<"Ulid">;
+    updatedBy: string & z.BRAND<"Ulid">;
+    contentRating: "g" | "pg" | "pg13" | "r" | "nc17";
+    blockedTags: string[];
+    ageCheck: boolean;
+    attributes: {
+        value: string | number | boolean | string[] | [number, number] | Record<string, unknown>;
+        keyPath: string;
+        confidence: number;
+        updatedAt: string;
+        evidenceRefs: string[];
+        lastUpdatedBy?: (string & z.BRAND<"Ulid">) | undefined;
+    }[];
+    name: string;
+    allowedParticipants: number;
+    exclusivity: "none" | "monogamous" | "poly";
+    defaultStages: ("acquaintance" | "friendly" | "close" | "romantic" | "intimate" | "estranged")[];
+    romanceEnabled: boolean;
+    intimacyEscalationAllowed: boolean;
+    source?: string | undefined;
+}, {
+    status: "draft" | "published" | "archived";
+    updatedAt: string;
+    id: string;
+    lineageId: string;
+    version: number;
+    kind: "relationshipType";
+    createdAt: string;
+    createdBy: string;
+    updatedBy: string;
+    name: string;
+    allowedParticipants: number;
+    source?: string | undefined;
+    contentRating?: "g" | "pg" | "pg13" | "r" | "nc17" | undefined;
+    blockedTags?: string[] | undefined;
+    ageCheck?: boolean | undefined;
+    attributes?: {
+        value: string | number | boolean | Date | string[] | [number, number] | Record<string, unknown>;
+        keyPath: string;
+        confidence?: number | undefined;
+        lastUpdatedBy?: string | undefined;
+        updatedAt?: string | undefined;
+        evidenceRefs?: string[] | undefined;
+    }[] | undefined;
+    exclusivity?: "none" | "monogamous" | "poly" | undefined;
+    defaultStages?: ("acquaintance" | "friendly" | "close" | "romantic" | "intimate" | "estranged")[] | undefined;
+    romanceEnabled?: boolean | undefined;
+    intimacyEscalationAllowed?: boolean | undefined;
+}>;
+export type RelationshipTypeCanonical = z.infer<typeof RelationshipTypeCanonicalSchema>;
+//# sourceMappingURL=relationship-type.d.ts.map

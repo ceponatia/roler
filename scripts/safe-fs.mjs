@@ -13,6 +13,7 @@
   - This centralization allows us to justify eslint/semgrep non-literal fs path warnings.
 */
 
+import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
@@ -29,6 +30,8 @@ import path from 'node:path';
  * @returns {SafePath}
  */
 export function asSafePath(rootDir, p) {
+  // NOTE: asSafePath does not itself assert confinement; callers must still
+  // pass the resulting path through createSafeFs methods which enforce realpath checks.
   const abs = path.resolve(rootDir, p);
   return /** @type {SafePath} */ (abs);
 }
@@ -54,9 +57,6 @@ export async function assertInsideRoot(rootReal, target) {
 }
 
 /** @deprecated internal legacy helper; prefer assertInsideRoot */
-async function assertUnderRoot(rootReal, target) {
-  return assertInsideRoot(rootReal, target);
-}
 
 /**
  * Create a safe fs facade bound to a root path.
@@ -104,9 +104,34 @@ export function createSafeFs(rootDir, { skipHidden = true, maxBytes = 5 * 1024 *
   async function openForWriteSafe(p) {
     const rootReal = await getRootReal();
     const real = await assertInsideRoot(rootReal, p);
-    // Ensure parent dir exists; caller handles mkdir earlier if needed.
-    return fs.open(real, 'w');
+    await checkHidden(real);
+    await fs.mkdir(path.dirname(real), { recursive: true });
+    return fs.open(real, 'w', 0o600);
   }
 
-  return { statSafe, readFileSafe, readdirSafe, openForWriteSafe, asSafePath, assertInsideRoot };
+  /**
+   * Atomically write a file (best-effort) by writing to a temp sibling then renaming.
+   * Ensures confinement, hidden check, size guarding handled by caller (content size) if needed.
+   * @param {string} p target path (absolute or relative to root)
+   * @param {string|Uint8Array} data
+   * @param {BufferEncoding} [enc]
+   */
+  async function writeFileSafe(p, data, enc = 'utf8') {
+    const rootReal = await getRootReal();
+    const real = await assertInsideRoot(rootReal, p);
+    await checkHidden(real);
+    const dir = path.dirname(real);
+    await fs.mkdir(dir, { recursive: true });
+    const tmp = path.join(dir, `.__tmp_${path.basename(real)}_${crypto.randomUUID()}`);
+    try {
+      await fs.writeFile(tmp, data, { encoding: typeof data === 'string' ? enc : undefined, mode: 0o600 });
+      await fs.rename(tmp, real);
+    } catch (err) {
+      try { await fs.rm(tmp, { force: true }); } catch { /* ignore cleanup failure */ }
+      throw err;
+    }
+    return real;
+  }
+
+  return { statSafe, readFileSafe, readdirSafe, openForWriteSafe, writeFileSafe, asSafePath, assertInsideRoot };
 }
