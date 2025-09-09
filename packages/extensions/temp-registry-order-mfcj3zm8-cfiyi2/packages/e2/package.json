@@ -1,7 +1,0 @@
-{
-  "name": "e2",
-  "version": "0.0.0",
-  "rolerExtension": {
-    "entry": "dist/extension.js"
-  }
-}

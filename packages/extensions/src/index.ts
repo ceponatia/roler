@@ -68,6 +68,9 @@ export async function discoverExtensions(opts: DiscoverOptions): Promise<readonl
   const path = await import('node:path');
 
   const found: DiscoveredExtensionEntry[] = [];
+  // Note: pathToFileURL (used downstream) requires an absolute path.
+  // Callers should pass an absolute opts.rootDir. We intentionally do not
+  // auto-resolve here to avoid masking misconfigured callers.
   const packagesDir = path.join(opts.rootDir, 'packages');
   let entries: string[] = [];
   try {
@@ -84,7 +87,9 @@ export async function discoverExtensions(opts: DiscoverOptions): Promise<readonl
       const raw = await fs.readFile(pkgJsonPath, 'utf8');
       const pkg = JSON.parse(raw) as { name?: string; rolerExtension?: { entry?: string } };
       if (pkg.rolerExtension?.entry) {
-        const entryPath = path.join(packagesDir, pkgName, pkg.rolerExtension.entry);
+  // entryPath is expected to be absolute if opts.rootDir is absolute.
+  // loadExtensions converts via pathToFileURL without importing 'path'.
+  const entryPath = path.join(packagesDir, pkgName, pkg.rolerExtension.entry);
         found.push({ packageName: pkg.name ?? pkgName, entryPath });
       }
     } catch {
@@ -111,10 +116,19 @@ export interface LoadConfig {
 export async function loadExtensions(cfg: LoadConfig): Promise<readonly RegisteredExtension[]> {
   const entries = await discoverExtensions({ rootDir: cfg.rootDir, allowlist: cfg.allowlist });
   const registry: RegisteredExtension[] = [];
+  const path = await import('node:path');
+  const rootAbs = path.resolve(cfg.rootDir);
 
   for (const ent of entries) {
-    // dynamic import the entry module to read manifest export
-    const mod = await import(pathToFileURL(ent.entryPath).href);
+  // dynamic import the entry module to read manifest export
+  // pathToFileURL requires an absolute file system path; discoverExtensions returns
+  // such paths when given an absolute rootDir (recommended).
+    const entryAbs = path.resolve(ent.entryPath);
+    // Constrain import to stay under the configured root.
+    if (!(entryAbs === rootAbs || entryAbs.startsWith(rootAbs + path.sep))) {
+      throw new Error(`EXT_IMPORT_OUTSIDE_ROOT: ${entryAbs}`);
+    }
+    const mod = await import(pathToFileURL(entryAbs).href);
     const manifest: ExtensionManifest | undefined = (mod as Record<string, unknown>).manifest as ExtensionManifest | undefined;
     if (!manifest) continue; // skip if no manifest export
     const parsed = ExtensionManifestSchema.parse(manifest);
@@ -125,9 +139,12 @@ export async function loadExtensions(cfg: LoadConfig): Promise<readonly Register
     }
 
     // filter unsafe data class scopes / capabilities if allowlist provided
-    const effective = cfg.capabilityAllowlist
-      ? ({ ...parsed, capabilities: parsed.capabilities.filter(c => cfg.capabilityAllowlist!.includes(c)) } satisfies ExtensionManifest)
-      : parsed;
+    let effective: ExtensionManifest = parsed;
+    if (cfg.capabilityAllowlist && cfg.capabilityAllowlist.length > 0) {
+      const allowed = new Set(cfg.capabilityAllowlist);
+      const caps = parsed.capabilities.filter(c => allowed.has(c));
+      effective = { ...parsed, capabilities: caps };
+    }
 
     registry.push(Object.freeze({ manifest: effective, entryPath: ent.entryPath, disabled: effective.killSwitchEnabled === false }));
   }

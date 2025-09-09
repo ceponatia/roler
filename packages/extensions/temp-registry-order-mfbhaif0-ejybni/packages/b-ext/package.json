@@ -1,7 +1,0 @@
-{
-  "name": "b-ext",
-  "version": "0.0.0",
-  "rolerExtension": {
-    "entry": "dist/extension.js"
-  }
-}

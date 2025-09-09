@@ -6,6 +6,11 @@ engines:
       - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
+  # Ignore test sources and helpers
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "packages/**/__tests__/**"
+  - "packages/**/test-utils/**"
     config:
       rules:
         - id: github-actions-pin-sha

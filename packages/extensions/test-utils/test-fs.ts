@@ -16,7 +16,13 @@ export async function createTempWorkspace(prefix: string): Promise<string> {
  * Write JSON using safe-fs (root confinement + hidden filtering bypassed for test clarity).
  */
 export async function writeJson(root: string, rel: string, value: unknown): Promise<void> {
-  const abs = path.join(root, rel);
+  // Constrain writes to stay within the provided root (tests control both inputs).
+  if (path.isAbsolute(rel)) throw new Error('absolute rel path not allowed');
+  const abs = path.resolve(root, rel);
+  const rootAbs = path.resolve(root);
+  if (!(abs === rootAbs || abs.startsWith(rootAbs + path.sep))) {
+    throw new Error('path traversal detected');
+  }
   await fs.mkdir(path.dirname(abs), { recursive: true });
   await fs.writeFile(abs, JSON.stringify(value, null, 2), 'utf8');
 }
@@ -25,7 +31,13 @@ export async function writeJson(root: string, rel: string, value: unknown): Prom
  * Write a JS module file (string data) safely.
  */
 export async function writeModule(root: string, rel: string, code: string): Promise<void> {
-  const abs = path.join(root, rel);
+  // Constrain writes to stay within the provided root (tests control both inputs).
+  if (path.isAbsolute(rel)) throw new Error('absolute rel path not allowed');
+  const abs = path.resolve(root, rel);
+  const rootAbs = path.resolve(root);
+  if (!(abs === rootAbs || abs.startsWith(rootAbs + path.sep))) {
+    throw new Error('path traversal detected');
+  }
   await fs.mkdir(path.dirname(abs), { recursive: true });
   await fs.writeFile(abs, code, 'utf8');
 }
