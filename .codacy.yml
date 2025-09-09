@@ -1,6 +1,6 @@
+---
 engines:
   semgrep:
-    enabled: true
     exclude_paths:
       - ".github/*/**"
       - "docs/**"
@@ -16,8 +16,19 @@ engines:
         - id: github-actions-pin-sha
           enabled: false
 
-  eslint:
-    enabled: true
+  eslint-8:
+    exclude_paths:
+      - ".github/*/**"
+      - "docs/**"
+      - "coverage/**"
+      - "packages/*/coverage/**"
+      # Ignore test sources and helpers
+      - "**/*.test.ts"
+      - "**/*.spec.ts"
+      - "packages/**/__tests__/**"
+      - "packages/**/test-utils/**"
+
+  eslint-9:
     exclude_paths:
       - ".github/*/**"
       - "docs/**"
