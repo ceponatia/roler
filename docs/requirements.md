@@ -11,6 +11,7 @@ Roler is a framework (not a full game engine) for building narrative-driven tabl
 ## 2. High-Level Goals
 
 - (R-001) Provide an extensible framework enabling dynamic narrative and structured entity state management (framework emphasis clarified).
+  - Note: Phase 5 runtime execution and enforcement is deferred; see `docs/design/r-001-changes.md`.
 - (R-002) Support low-latency contextual retrieval for LLM prompts.
 - (R-003) Preserve canonical source-of-truth versions for game entities with lineage & diff/merge capabilities.
 - (R-004) Enforce strong typing, validation, and safety across all boundaries (no unchecked inputs).

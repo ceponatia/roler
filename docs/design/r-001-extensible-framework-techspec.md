@@ -353,13 +353,54 @@ Artifacts:
 
 ## 17. Migration / Rollout
 
-Phase 0: Core scaffolding behind feature flag `EXTENSIONS_ENABLED=false`.
-Phase 1: Enable flag in dev; integrate reference extensions.
-Phase 2: Collect metrics & adjust timeouts.
-Phase 3: Public preview (publish docs) – maintain compatibility window.
-Phase 4: GA – flag defaults to true; deprecation policy active.
+Phase 0 (Complete): Core scaffolding behind feature flag `EXTENSIONS_ENABLED=false`.
 
-Rollback Plan: Disable feature flag; registry short-circuits returning empty pipelines.
+- Implemented core schemas (`ExtensionManifest`, `ExtensionRegistrationConfig`, `StateTransaction`).
+- Implemented loader + registry (`@roler/extensions` load/discover + deterministic order, peer checks).
+- Feature flag wiring added:
+  - Env schema: `@roler/schemas/system/env/extensions-env.schema.ts` (Zod) parses `EXTENSIONS_ENABLED` (defaults false).
+  - Guarded entrypoints: `@roler/extensions` exports `shouldEnableExtensions`, `loadExtensionsGuarded`, and `loadExtensionsFromConfigGuarded` which short-circuit to an empty registry when the flag is disabled.
+  - Rollback is immediate: set `EXTENSIONS_ENABLED=false` and the registry returns empty pipelines.
+
+Phase 1 (Complete): Enable flag in dev; integrate reference extensions.
+
+- Dev enablement via `.env.example` (EXTENSIONS_ENABLED=true).
+- Reference extensions added under `packages/`:
+  - `relationship-score-normalizer` (postModeration chat hook; state transactions enabled)
+  - `scene-retrieval-tags` (preChatTurn retrieval tagging)
+  - `pre-save-age-check` (preSaveValidate + prePersistTurn rule example)
+
+Phase 2 (Complete): Collect metrics & adjust timeouts.
+
+- Metrics adapter added in `@roler/extensions`:
+  - Public API exports `getMetricsSink`/`setMetricsSink` and `MetricsSink` interface with events: `onHookStart`, `onHookEnd`, `onHookError`, `onBudgetOverrun`.
+  - Default sink is no-op; hosts can inject their telemetry implementation (Prometheus, OpenTelemetry, or app logger).
+- Budgets & timeouts:
+  - Default per-hook time budgets exported as `DefaultHookBudgets` with p95-aligned ms values.
+  - `effectiveHookBudget(hookName, manifestBudgets?)` provides the merged budget (manifest override wins). These are advisory for now and will feed the runtime executor's soft timeout logic.
+- Tests added for budgets merging and metrics sink set/get behavior.
+
+Phase 3 (Complete): Public preview (publish docs) – compatibility window defined.
+
+- Documentation published for extension authors:
+  - `docs/extensions/authoring.md` explains manifest fields, package setup, chat hooks, budgets, and the feature flag.
+  - Reference extensions documented by example: `relationship-score-normalizer`, `scene-retrieval-tags`, `pre-save-age-check`.
+- Compatibility window for Public Preview:
+  - API surface is considered preview-stable; no breaking changes without a major bump or explicit deprecation window.
+  - Additive changes may occur; breaking changes (if unavoidable) will be guarded behind flags and documented with migration notes.
+- Operator guidance:
+  - Keep `EXTENSIONS_ENABLED` gated outside dev; enable per-environment after validating budgets and telemetry.
+  - Use guarded loaders (`shouldEnableExtensions`, `loadExtensionsGuarded`) for safe rollback.
+
+Phase 4 (Complete): GA – flag defaults to true; deprecation policy active.
+
+- Feature flag default flipped to enabled:
+  - `EXTENSIONS_ENABLED` now defaults to true when unset (schema-level default). Set to `false/no/0/off` to disable.
+- Stability and deprecations:
+  - Public API is GA-stable. Breaking changes require a major version bump of `extensionsApiVersion` and a documented migration path.
+  - Deprecations will be annotated and maintained for at least one minor release before removal.
+
+Rollback Plan: Disable feature flag; guarded loaders short-circuit, returning empty pipelines. No runtime executor changes required.
 
 ## 18. Assumptions
 

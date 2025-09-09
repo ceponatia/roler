@@ -27,4 +27,26 @@ describe('StateTransactionSchema', () => {
       })
     ).toThrow();
   });
+
+  it('rejects set without value and allows append without value', () => {
+    expect(() =>
+      StateTransactionSchema.parse({
+        txId: 't3',
+        originExtension: 'sample-ext',
+        conflictPolicy: 'last-wins',
+        operations: [{ path: 'x', op: 'set' }],
+      })
+    ).toThrow();
+
+  const ok = StateTransactionSchema.parse({
+      txId: 't4',
+      originExtension: 'sample-ext',
+      conflictPolicy: 'first-wins',
+      operations: [{ path: 'x', op: 'append' }],
+    });
+  expect(ok.operations.length).toBe(1);
+  const op0 = ok.operations[0];
+  if (!op0) throw new Error('expected at least one operation');
+  expect(op0.op).toBe('append');
+  });
 });

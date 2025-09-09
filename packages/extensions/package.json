@@ -1,8 +1,8 @@
 {
-  "name": "@roler/schemas",
+  "name": "@roler/extensions",
   "version": "0.1.0",
+  "description": "R-001 extensible framework public API and runtime (loader + registry)",
   "type": "module",
-  "description": "Schema definitions for Roler",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -15,13 +15,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src --ext .ts",
-    "test": "vitest --run --coverage",
-    "test:watch": "vitest --watch",
-    "test:changed": "vitest --changed --coverage",
-    "test:ci": "vitest --run --reporter=dot --coverage"
+    "test": "vitest --run"
   },
   "dependencies": {
-    "zod": "^3.25.76"
+    "@roler/schemas": "workspace:*",
+    "semver": "^7.6.3"
   }
 }

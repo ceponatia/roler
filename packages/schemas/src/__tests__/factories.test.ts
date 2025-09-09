@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { makeCharacterCanonical, makeCharacterInstance, makeSceneInstance } from '../factories/index.js';
+
+import { makeCharacterCanonical, makeCharacterInstance, makeSceneInstance, validateUlid } from '../factories/index.js';
 import { CharacterCanonicalSchema, CharacterInstanceSchema, SceneInstanceSchema } from '../index.js';
 
 describe('factories produce valid objects', () => {
@@ -17,5 +18,11 @@ describe('factories produce valid objects', () => {
     const s = makeSceneInstance();
     const parsed = SceneInstanceSchema.parse(s);
     expect(parsed.kind).toBe('scene');
+  });
+
+  it('validateUlid returns false for invalid candidates', () => {
+    expect(validateUlid('')).toBe(false);
+    expect(validateUlid('not-a-ulid')).toBe(false);
+    expect(validateUlid('0123456789ABCDEFGHJKMNPQRAA')).toBe(false); // wrong charset/length
   });
 });

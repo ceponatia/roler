@@ -1,19 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "lib": ["es2022"],
-    "outDir": "dist",
-    "rootDir": "src",
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "verbatimModuleSyntax": true,
-    "noUncheckedIndexedAccess": true,
-    "esModuleInterop": true,
+    "rootDir": "src",
+    "outDir": "dist",
     "types": ["vitest/globals"]
   },
   "include": ["src"],
