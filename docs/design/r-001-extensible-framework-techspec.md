@@ -353,11 +353,11 @@ Artifacts:
 
 ## 17. Migration / Rollout
 
-Phase 0: Core scaffolding behind feature flag `EXTENSIONS_ENABLED=false`.
-Phase 1: Enable flag in dev; integrate reference extensions.
-Phase 2: Collect metrics & adjust timeouts.
-Phase 3: Public preview (publish docs) – maintain compatibility window.
-Phase 4: GA – flag defaults to true; deprecation policy active.
+Phase 0 (Partial): Core scaffolding behind feature flag `EXTENSIONS_ENABLED=false`. — Core schemas, loader, and registry implemented; feature flag not wired yet.
+Phase 1 (Pending): Enable flag in dev; integrate reference extensions.
+Phase 2 (Pending): Collect metrics & adjust timeouts.
+Phase 3 (Pending): Public preview (publish docs) – maintain compatibility window.
+Phase 4 (Pending): GA – flag defaults to true; deprecation policy active.
 
 Rollback Plan: Disable feature flag; registry short-circuits returning empty pipelines.
 
