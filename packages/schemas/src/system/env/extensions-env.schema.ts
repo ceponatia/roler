@@ -5,7 +5,7 @@
  */
 import { z } from 'zod';
 
-// Accept common boolean encodings; default is false.
+// Accept common boolean encodings; default is true (GA).
 const toBool = (raw: string): boolean => {
   const v = (raw ?? '').trim().toLowerCase();
   return v === '1' || v === 'true' || v === 'yes' || v === 'on';
@@ -16,7 +16,7 @@ export const ExtensionsEnvSchema = z
     EXTENSIONS_ENABLED: z
       .string()
       .optional()
-      .transform((v) => toBool(v ?? 'false')),
+  .transform((v) => toBool(v ?? 'true')),
   })
   .strict();
 

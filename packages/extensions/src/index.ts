@@ -1,4 +1,5 @@
 import { ExtensionManifestSchema, parseExtensionsEnv, type ExtensionManifest, type ExtensionRegistrationConfig } from '@roler/schemas';
+import { parseExtensionsRuntimeEnv } from '@roler/schemas';
 import { pathToFileURL } from 'node:url';
 import semver from 'semver';
 
@@ -256,6 +257,18 @@ export async function loadExtensionsFromConfigGuarded(rootDir: string, config: P
   return loadExtensionsFromConfig(rootDir, config);
 }
 
+// Runtime execution guard: requires extensions enabled AND explicit runtime enabled flag
+export function shouldEnableExtensionsRuntime(env?: Readonly<Record<string, string | undefined>>): boolean {
+  try {
+    const base = parseExtensionsEnv(env ?? process.env);
+    if (base.EXTENSIONS_ENABLED !== true) return false;
+    const rt = parseExtensionsRuntimeEnv(env ?? process.env);
+    return rt.EXTENSIONS_RUNTIME_ENABLED === true;
+  } catch {
+    return false;
+  }
+}
+
 // Minimal sample manifest (used in docs & tests)
 export const sampleExtension = createExtension({
   id: 'sample-ext',
@@ -272,6 +285,12 @@ export const sampleExtension = createExtension({
 }, {});
 
 export { composeStateTransactions } from './transactions.js';
+export { getMetricsSink, setMetricsSink } from './metrics.js';
+export { DefaultHookBudgets, effectiveHookBudget } from './budgets.js';
+export { runPipelines } from './executor.js';
+export type { PipelineInputs, PipelineOutputs } from './executor.js';
+export type { MetricsSink, HookKind } from './metrics.js';
+export type { HookBudget } from './budgets.js';
 export type {
   BaseHookContext,
   HookResult,

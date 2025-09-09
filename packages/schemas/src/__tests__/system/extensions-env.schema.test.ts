@@ -3,9 +3,9 @@ import { describe, it, expect } from 'vitest';
 import { parseExtensionsEnv } from '../../system/env/extensions-env.schema.js';
 
 describe('ExtensionsEnvSchema', () => {
-  it('defaults to disabled when unset', () => {
+  it('defaults to enabled when unset', () => {
     const res = parseExtensionsEnv({});
-    expect(res.EXTENSIONS_ENABLED).toBe(false);
+    expect(res.EXTENSIONS_ENABLED).toBe(true);
   });
 
   it('parses common truthy values', () => {
@@ -15,7 +15,7 @@ describe('ExtensionsEnvSchema', () => {
     expect(parseExtensionsEnv({ EXTENSIONS_ENABLED: 'on' }).EXTENSIONS_ENABLED).toBe(true);
   });
 
-  it('treats other values as false', () => {
+  it('treats common falsy values as false', () => {
     expect(parseExtensionsEnv({ EXTENSIONS_ENABLED: '0' }).EXTENSIONS_ENABLED).toBe(false);
     expect(parseExtensionsEnv({ EXTENSIONS_ENABLED: 'no' }).EXTENSIONS_ENABLED).toBe(false);
     expect(parseExtensionsEnv({ EXTENSIONS_ENABLED: 'off' }).EXTENSIONS_ENABLED).toBe(false);

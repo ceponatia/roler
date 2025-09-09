@@ -37,3 +37,4 @@ export * from './system/extensions/extension-manifest.schema.js';
 export * from './system/extensions/extension-registration-config.schema.js';
 export * from './system/extensions/state-transaction.schema.js';
 export * from './system/env/extensions-env.schema.js';
+export * from './system/env/extensions-runtime-env.schema.js';

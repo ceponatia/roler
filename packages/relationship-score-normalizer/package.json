@@ -1,0 +1,7 @@
+{
+  "name": "@roler-ext/relationship-score-normalizer",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "rolerExtension": { "entry": "dist/extension.js" }
+}
