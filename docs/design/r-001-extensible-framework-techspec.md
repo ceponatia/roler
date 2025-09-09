@@ -353,13 +353,20 @@ Artifacts:
 
 ## 17. Migration / Rollout
 
-Phase 0 (Partial): Core scaffolding behind feature flag `EXTENSIONS_ENABLED=false`. — Core schemas, loader, and registry implemented; feature flag not wired yet.
+Phase 0 (Complete): Core scaffolding behind feature flag `EXTENSIONS_ENABLED=false`.
+
+- Implemented core schemas (`ExtensionManifest`, `ExtensionRegistrationConfig`, `StateTransaction`).
+- Implemented loader + registry (`@roler/extensions` load/discover + deterministic order, peer checks).
+- Feature flag wiring added:
+   - Env schema: `@roler/schemas/system/env/extensions-env.schema.ts` (Zod) parses `EXTENSIONS_ENABLED` (defaults false).
+   - Guarded entrypoints: `@roler/extensions` exports `shouldEnableExtensions`, `loadExtensionsGuarded`, and `loadExtensionsFromConfigGuarded` which short-circuit to an empty registry when the flag is disabled.
+      - Rollback is immediate: set `EXTENSIONS_ENABLED=false` and the registry returns empty pipelines.
 Phase 1 (Pending): Enable flag in dev; integrate reference extensions.
 Phase 2 (Pending): Collect metrics & adjust timeouts.
 Phase 3 (Pending): Public preview (publish docs) – maintain compatibility window.
 Phase 4 (Pending): GA – flag defaults to true; deprecation policy active.
 
-Rollback Plan: Disable feature flag; registry short-circuits returning empty pipelines.
+Rollback Plan: Disable feature flag; guarded loaders short-circuit, returning empty pipelines. No runtime executor changes required.
 
 ## 18. Assumptions
 

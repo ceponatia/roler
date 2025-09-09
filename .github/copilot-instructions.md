@@ -13,6 +13,7 @@ Auth: SPA → API routes (Zod-validated) → JWT/Redis session (GM vs Player rol
 - Prefer type aliases + discriminated unions. Exhaustive switches with `never`.
 - No implicit `undefined`; optionality explicit and handled.
 - Pure, small functions; avoid data bags without schemas.
+- There should be one blank line in between import groups in .ts, .tsx files and no blank lines within groups. Groups are: 1) built-in modules, 2) external modules, 3) internal modules (absolute imports), 4) relative imports.
 
 ## TypeScript / Config Assumptions
 Strict mode on; module target ES2022. ESM only. Imports from package roots, never deep `src/` paths (enforced by ESLint). Include extensions in relative imports when outside bundler context.

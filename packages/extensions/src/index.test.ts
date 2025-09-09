@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 
-import { createExtension, discoverExtensions, loadExtensions, loadExtensionsFromConfig, extensionsApiVersion } from './index.js';
+import { createExtension, discoverExtensions, loadExtensions, loadExtensionsFromConfig, extensionsApiVersion, shouldEnableExtensions, loadExtensionsGuarded, loadExtensionsFromConfigGuarded } from './index.js';
 import { createTempWorkspace, writeJson, writeModule } from '../test-utils/test-fs.js';
 
 describe('@roler/extensions basics', () => {
@@ -20,6 +20,26 @@ describe('@roler/extensions basics', () => {
       stateTransactionSupport: false,
     }, {});
     expect(ext.manifest.id).toBe('ext-a');
+  });
+
+  it('guards loading behind EXTENSIONS_ENABLED flag', async () => {
+    const root = await createTempWorkspace('temp-guarded');
+    await writeJson(root, 'packages/e1/package.json', { name: 'e1', version: '0.0.0', rolerExtension: { entry: 'dist/extension.js' } });
+    await writeModule(root, 'packages/e1/dist/extension.js', 'export const manifest = { id:"e1", name:"E1", version:"0.1.0", description:"x", coreApiRange:"^1.0.0", peerExtensions:[], capabilities:[], priority:0, concurrencyLimit:4, killSwitchEnabled:true, stateTransactionSupport:false };');
+
+    expect(shouldEnableExtensions({ EXTENSIONS_ENABLED: 'false' })).toBe(false);
+    expect(shouldEnableExtensions({ EXTENSIONS_ENABLED: 'true' })).toBe(true);
+
+    const empty = await loadExtensionsGuarded({ rootDir: root, coreApiVersion: extensionsApiVersion }, { EXTENSIONS_ENABLED: '0' });
+    expect(empty.length).toBe(0);
+
+    const reg = await loadExtensionsGuarded({ rootDir: root, coreApiVersion: extensionsApiVersion }, { EXTENSIONS_ENABLED: '1' });
+    expect(reg.length).toBe(1);
+
+    const emptyCfg = await loadExtensionsFromConfigGuarded(root, { coreApiVersion: extensionsApiVersion, extensions: [{ id: 'e1' }] }, { EXTENSIONS_ENABLED: 'off' });
+    expect(emptyCfg.length).toBe(0);
+    const regCfg = await loadExtensionsFromConfigGuarded(root, { coreApiVersion: extensionsApiVersion, extensions: [{ id: 'e1' }] }, { EXTENSIONS_ENABLED: 'on' });
+    expect(regCfg.length).toBe(1);
   });
 
   it('discovers extensions from package.json rolerExtension entry', async () => {

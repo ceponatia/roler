@@ -1,4 +1,4 @@
-import { ExtensionManifestSchema, type ExtensionManifest, type ExtensionRegistrationConfig } from '@roler/schemas';
+import { ExtensionManifestSchema, parseExtensionsEnv, type ExtensionManifest, type ExtensionRegistrationConfig } from '@roler/schemas';
 import { pathToFileURL } from 'node:url';
 import semver from 'semver';
 
@@ -233,6 +233,27 @@ export async function loadExtensionsFromConfig(rootDir: string, config: Partial<
   }
 
   return out;
+}
+
+// Feature-flag helpers (Phase 0): allow host to short-circuit registry when disabled.
+export function shouldEnableExtensions(env?: Readonly<Record<string, string | undefined>>): boolean {
+  try {
+    const parsed = parseExtensionsEnv(env ?? process.env);
+    return parsed.EXTENSIONS_ENABLED === true;
+  } catch {
+    // If env is invalid, be safe: disable.
+    return false;
+  }
+}
+
+export async function loadExtensionsGuarded(cfg: LoadConfig, env?: Readonly<Record<string, string | undefined>>): Promise<readonly RegisteredExtension[]> {
+  if (!shouldEnableExtensions(env)) return [] as const;
+  return loadExtensions(cfg);
+}
+
+export async function loadExtensionsFromConfigGuarded(rootDir: string, config: Partial<ExtensionRegistrationConfig> & { readonly coreApiVersion?: string }, env?: Readonly<Record<string, string | undefined>>): Promise<readonly RegisteredExtension[]> {
+  if (!shouldEnableExtensions(env)) return [] as const;
+  return loadExtensionsFromConfig(rootDir, config);
 }
 
 // Minimal sample manifest (used in docs & tests)
