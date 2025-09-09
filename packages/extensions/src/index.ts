@@ -214,3 +214,21 @@ export const sampleExtension = createExtension({
   killSwitchEnabled: true,
   stateTransactionSupport: false,
 }, {});
+
+export { composeStateTransactions } from './transactions.js';
+export type {
+  BaseHookContext,
+  HookResult,
+  NormalizationContext,
+  NormalizationDelta,
+  NormalizationHook,
+  RetrievalContext,
+  RetrievalAugmentation,
+  RetrievalEnrichmentHook,
+  EntityStateSnapshot,
+  PreSaveValidationHook,
+  PreChatTurnHook,
+  PostModelDraftHook,
+  PostModerationHook,
+  PrePersistTurnHook,
+} from './types.js';
