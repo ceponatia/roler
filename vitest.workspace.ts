@@ -4,5 +4,6 @@ import { defineWorkspace } from 'vitest/config';
 export default defineWorkspace([
   'packages/schemas',
   'packages/db',
-  'packages/extensions'
+  'packages/extensions',
+  'packages/rag'
 ]);
