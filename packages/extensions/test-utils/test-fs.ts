@@ -6,7 +6,15 @@ import path from 'node:path';
  * The directory name is prefixed to ease cleanup. Returns absolute path.
  */
 export async function createTempWorkspace(prefix: string): Promise<string> {
-  const base = path.join(process.cwd(), `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`);
+  // Sanitize the prefix to avoid path separators or traversal tokens in test inputs.
+  const sanitizedPrefix = prefix.replace(/[^a-zA-Z0-9-_]/g, '');
+  const baseName = `${sanitizedPrefix || 'tmp'}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+  // Resolve against CWD and enforce confinement under it.
+  const cwd = path.resolve(process.cwd());
+  const base = path.resolve(cwd, baseName);
+  if (!(base === cwd || base.startsWith(cwd + path.sep))) {
+    throw new Error('path traversal detected when creating temp workspace');
+  }
   await fs.rm(base, { recursive: true, force: true });
   await fs.mkdir(base, { recursive: true });
   return base;
