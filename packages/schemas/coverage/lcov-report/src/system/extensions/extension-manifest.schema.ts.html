@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>83/83</span>
+                <span class='fraction'>95/95</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>83/83</span>
+                <span class='fraction'>95/95</span>
             </div>
         
             
@@ -146,7 +146,31 @@
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -254,7 +278,11 @@
 import { z } from 'zod';
 &nbsp;
 // Reusable regexes / constants
-const idPattern = /^[a-z0-9]+(-[a-z0-9]+)*$/; // lower-kebab, no leading/trailing dash
+// Both patterns are linear-time (no nested quantifiers / backtracking hotspots).
+// Length caps added to avoid unbounded input size even though patterns are safe.
+const MAX_ID_LENGTH = 64;
+const MAX_HOOK_NAME_LENGTH = 64;
+const idPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/; // lower-kebab, no leading/trailing dash
 &nbsp;
 export const ExtensionPeerSchema = z.object({
   id: z.string().regex(idPattern, 'peer id must be lower-kebab'),
@@ -273,9 +301,12 @@ export const HookBudgetSchema = z.object({
 export type HookBudget = z.infer&lt;typeof HookBudgetSchema&gt;;
 &nbsp;
 export const ExtensionManifestSchema = z.object({
-  id: z.string().regex(idPattern, 'id must be lower-kebab'),
+  id: z.string()
+    .min(1)
+    .max(MAX_ID_LENGTH)
+    .regex(idPattern, 'id must be lower-kebab'),
   name: z.string().min(1),
-  version: z.string().min(1), // semver validated later (semantic + range) to avoid heavy regex here
+  version: z.string().min(1),
   description: z.string().min(1),
   license: z.string().optional(),
   author: z.string().optional(),
@@ -284,9 +315,9 @@ export const ExtensionManifestSchema = z.object({
   capabilities: z.array(z.string()).default([]).readonly(),
   hooks: z
     .object({
-      normalize: z.array(z.string().regex(hookNamePattern)).optional(),
-      retrievalEnrichment: z.array(z.string().regex(hookNamePattern)).optional(),
-      preSaveValidate: z.array(z.string().regex(hookNamePattern)).optional(),
+      normalize: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      retrievalEnrichment: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      preSaveValidate: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
     })
     .partial()
     .optional(),
@@ -295,14 +326,19 @@ export const ExtensionManifestSchema = z.object({
   configSchema: z.string().optional(),
   chatHooks: z
     .object({
-      preChatTurn: z.array(z.string().regex(hookNamePattern)).optional(),
-      postModelDraft: z.array(z.string().regex(hookNamePattern)).optional(),
-      postModeration: z.array(z.string().regex(hookNamePattern)).optional(),
-      prePersistTurn: z.array(z.string().regex(hookNamePattern)).optional(),
+      preChatTurn: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      postModelDraft: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      postModeration: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
+      prePersistTurn: z.array(z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern)).optional(),
     })
     .partial()
     .optional(),
-  hookBudgets: z.record(z.string(), HookBudgetSchema).optional(),
+  hookBudgets: z
+    .record(
+      z.string().max(MAX_HOOK_NAME_LENGTH).regex(hookNamePattern),
+      HookBudgetSchema
+    )
+    .optional(),
   concurrencyLimit: z.number().int().positive().default(4),
   killSwitchEnabled: z.boolean().default(true),
   dataClassScopes: z.array(z.string()).optional().readonly(),
@@ -319,7 +355,7 @@ export type ExtensionManifest = z.infer&lt;typeof ExtensionManifestSchema&gt;;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-05T14:06:26.439Z
+                at 2025-09-09T12:31:01.538Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
