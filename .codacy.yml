@@ -39,3 +39,5 @@ engines:
       - "**/*.spec.ts"
       - "packages/**/__tests__/**"
       - "packages/**/test-utils/**"
+exclude_paths:
+  - "packages/extensions/test-utils/test-fs.ts"
