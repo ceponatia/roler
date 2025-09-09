@@ -1,6 +1,9 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+// Track created temp workspaces for cleanup after tests
+const TEMP_DIRS: Set<string> = new Set();
+
 /**
  * Create an isolated temporary workspace directory under process.cwd().
  * The directory name is prefixed to ease cleanup. Returns absolute path.
@@ -17,6 +20,7 @@ export async function createTempWorkspace(prefix: string): Promise<string> {
   }
   await fs.rm(base, { recursive: true, force: true });
   await fs.mkdir(base, { recursive: true });
+  TEMP_DIRS.add(base);
   return base;
 }
 
@@ -48,4 +52,24 @@ export async function writeModule(root: string, rel: string, code: string): Prom
   }
   await fs.mkdir(path.dirname(abs), { recursive: true });
   await fs.writeFile(abs, code, 'utf8');
+}
+
+/**
+ * Remove all temp workspaces created via createTempWorkspace.
+ * Best-effort: ignores errors and constrains deletions under cwd.
+ */
+export async function cleanupTempWorkspaces(): Promise<void> {
+  const cwd = path.resolve(process.cwd());
+  const dirs = Array.from(TEMP_DIRS);
+  TEMP_DIRS.clear();
+  for (const dir of dirs) {
+    try {
+      const abs = path.resolve(cwd, path.relative(cwd, dir));
+      if (abs === cwd || abs.startsWith(cwd + path.sep)) {
+        await fs.rm(abs, { recursive: true, force: true });
+      }
+    } catch {
+      // ignore
+    }
+  }
 }
