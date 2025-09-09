@@ -1,4 +1,4 @@
-import { ExtensionManifestSchema, type ExtensionManifest } from '@roler/schemas';
+import { ExtensionManifestSchema, type ExtensionManifest, type ExtensionRegistrationConfig } from '@roler/schemas';
 import { pathToFileURL } from 'node:url';
 import semver from 'semver';
 
@@ -198,6 +198,41 @@ export async function loadExtensions(cfg: LoadConfig): Promise<readonly Register
   });
 
   return ordered;
+}
+
+// Config-driven loader variant (does not implement runtime executor)
+export async function loadExtensionsFromConfig(rootDir: string, config: Partial<ExtensionRegistrationConfig> & { readonly coreApiVersion?: string }): Promise<readonly RegisteredExtension[]> {
+  const extensions = config.extensions ?? [];
+  const allowById = extensions.map(e => e.id);
+  const reg = await loadExtensions({ rootDir, coreApiVersion: config.coreApiVersion, allowlist: allowById, capabilityAllowlist: config.capabilityAllowlist });
+
+  // Apply per-extension overrides (killSwitchEnabled and concurrencyLimit only affect runtime; we only reflect disabled here)
+  const byId = new Map(reg.map(r => [r.manifest.id, r] as const));
+  const out: RegisteredExtension[] = [];
+  for (const ref of extensions) {
+    const r = byId.get(ref.id);
+    if (!r) continue;
+    const overrides = ref.overrides ?? {};
+    const disabled = overrides.killSwitchEnabled === false ? true : r.disabled;
+    out.push({ manifest: r.manifest, entryPath: r.entryPath, disabled });
+  }
+
+  // orderOverrides: place listed ids first in that order, then append remaining in deterministic order
+  if (config.orderOverrides && config.orderOverrides.length > 0) {
+    const order = new Map(config.orderOverrides.map((id, idx) => [id, idx] as const));
+    out.sort((a, b) => {
+      const ai = order.get(a.manifest.id);
+      const bi = order.get(b.manifest.id);
+      if (ai !== undefined && bi !== undefined) return ai - bi;
+      if (ai !== undefined) return -1;
+      if (bi !== undefined) return 1;
+      // fallback to priority DESC then id ASC like base loader
+      const p = (b.manifest.priority ?? 0) - (a.manifest.priority ?? 0);
+      return p !== 0 ? p : a.manifest.id.localeCompare(b.manifest.id);
+    });
+  }
+
+  return out;
 }
 
 // Minimal sample manifest (used in docs & tests)

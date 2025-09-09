@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 
-import { createExtension, discoverExtensions, loadExtensions, extensionsApiVersion } from './index.js';
+import { createExtension, discoverExtensions, loadExtensions, loadExtensionsFromConfig, extensionsApiVersion } from './index.js';
 import { createTempWorkspace, writeJson, writeModule } from '../test-utils/test-fs.js';
 
 describe('@roler/extensions basics', () => {
@@ -48,5 +48,31 @@ describe('@roler/extensions basics', () => {
 
     const reg = await loadExtensions({ rootDir: root, coreApiVersion: extensionsApiVersion });
     expect(reg.map(r => r.manifest.id)).toEqual(['e1','e2']);
+  });
+
+  it('loads via config allowlist and applies overrides and orderOverrides', async () => {
+    const root = await createTempWorkspace('temp-registry-order');
+    // e1 lower priority
+    await writeJson(root, 'packages/e1/package.json', { name: 'e1', version: '0.0.0', rolerExtension: { entry: 'dist/extension.js' } });
+    await writeModule(root, 'packages/e1/dist/extension.js', 'export const manifest = { id:"e1", name:"E1", version:"0.1.0", description:"x", coreApiRange:"^1.0.0", peerExtensions:[], capabilities:["cap-a"], priority:0, concurrencyLimit:4, killSwitchEnabled:true, stateTransactionSupport:false };');
+    // e2 higher priority
+    await writeJson(root, 'packages/e2/package.json', { name: 'e2', version: '0.0.0', rolerExtension: { entry: 'dist/extension.js' } });
+    await writeModule(root, 'packages/e2/dist/extension.js', 'export const manifest = { id:"e2", name:"E2", version:"0.2.0", description:"x", coreApiRange:"^1.0.0", peerExtensions:[], capabilities:["cap-b"], priority:10, concurrencyLimit:4, killSwitchEnabled:true, stateTransactionSupport:false };');
+
+  const config = {
+      extensions: [
+        { id: 'e1', overrides: { killSwitchEnabled: false } },
+        { id: 'e2' }
+      ],
+      orderOverrides: ['e2', 'e1'],
+      capabilityAllowlist: ['cap-a','cap-b']
+  };
+
+    const reg = await loadExtensionsFromConfig(root, config);
+    // orderOverrides should put e2 first
+    expect(reg.map(r => r.manifest.id)).toEqual(['e2','e1']);
+    // overrides.killSwitchEnabled === false -> disabled true in registry
+    const e1 = reg.find(r => r.manifest.id === 'e1');
+    expect(e1?.disabled).toBe(true);
   });
 });
