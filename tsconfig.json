@@ -1,13 +1,8 @@
 {
   "files": [],
+  "extends": "./tsconfig.base.json",
   "references": [
-  { "path": "./packages/schemas" },
-  { "path": "./packages/extensions" }
-  ],
-  "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": true,
-    "baseUrl": ".",
-  "paths": {}
-  }
+    { "path": "./packages/schemas" },
+    { "path": "./packages/extensions" }
+  ]
 }

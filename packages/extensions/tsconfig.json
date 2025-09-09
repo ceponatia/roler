@@ -1,18 +1,12 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "module": "NodeNext",
-    "target": "ES2022",
-    "moduleResolution": "NodeNext",
-    "resolveJsonModule": true,
-    "noEmitOnError": true,
-  "strict": true,
-  "types": ["node", "vitest/globals"]
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": ["node", "vitest/globals"]
   },
   "include": ["src"],
   "exclude": [
@@ -20,7 +14,9 @@
     "src/**/*.spec.ts",
     "**/__tests__/**",
     "test-utils/**",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "dist",
+    "node_modules"
   ],
   "references": [
     { "path": "../schemas" }

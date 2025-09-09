@@ -1,12 +1,21 @@
 {
   "name": "@roler/schemas",
-  "type": "module",
   "version": "0.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "description": "Schema definitions for Roler",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ext .ts",
-    "typecheck": "tsc --noEmit",
     "test": "vitest --run --coverage",
     "test:watch": "vitest --watch",
     "test:changed": "vitest --changed --coverage",
@@ -14,9 +23,5 @@
   },
   "dependencies": {
     "zod": "^3.25.76"
-  },
-  "devDependencies": {
-    "typescript": "^5.6.3",
-    "vitest": "^1.6.0"
   }
 }
