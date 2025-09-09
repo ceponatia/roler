@@ -117,18 +117,40 @@ export async function loadExtensions(cfg: LoadConfig): Promise<readonly Register
   const entries = await discoverExtensions({ rootDir: cfg.rootDir, allowlist: cfg.allowlist });
   const registry: RegisteredExtension[] = [];
   const path = await import('node:path');
+  const fs = await import('node:fs/promises');
   const rootAbs = path.resolve(cfg.rootDir);
+  const allowedExts = new Set<string>(['.js', '.mjs']);
 
   for (const ent of entries) {
   // dynamic import the entry module to read manifest export
   // pathToFileURL requires an absolute file system path; discoverExtensions returns
   // such paths when given an absolute rootDir (recommended).
     const entryAbs = path.resolve(ent.entryPath);
-    // Constrain import to stay under the configured root.
+    // Constrain path to stay under the configured root (string check first).
     if (!(entryAbs === rootAbs || entryAbs.startsWith(rootAbs + path.sep))) {
       throw new Error(`EXT_IMPORT_OUTSIDE_ROOT: ${entryAbs}`);
     }
-    const mod = await import(pathToFileURL(entryAbs).href);
+    // Only import JS modules from expected extensions
+    const ext = path.extname(entryAbs).toLowerCase();
+    if (!allowedExts.has(ext)) {
+      throw new Error(`EXT_ENTRY_INVALID_EXT: ${entryAbs}`);
+    }
+    // Ensure file exists and resolve symlinks safely under root
+    const lst = await fs.lstat(entryAbs).catch(() => null);
+    if (!lst) {
+      throw new Error(`EXT_ENTRY_NOT_FOUND: ${entryAbs}`);
+    }
+    let importFsPath = entryAbs;
+    if (lst.isSymbolicLink()) {
+      const real = await fs.realpath(entryAbs);
+      if (!(real === rootAbs || real.startsWith(rootAbs + path.sep))) {
+        throw new Error(`EXT_IMPORT_OUTSIDE_ROOT_REAL: ${real}`);
+      }
+      importFsPath = real;
+    } else if (!lst.isFile()) {
+      throw new Error(`EXT_ENTRY_NOT_FILE: ${entryAbs}`);
+    }
+    const mod = await import(pathToFileURL(importFsPath).href);
     const manifest: ExtensionManifest | undefined = (mod as Record<string, unknown>).manifest as ExtensionManifest | undefined;
     if (!manifest) continue; // skip if no manifest export
     const parsed = ExtensionManifestSchema.parse(manifest);
@@ -142,7 +164,7 @@ export async function loadExtensions(cfg: LoadConfig): Promise<readonly Register
     let effective: ExtensionManifest = parsed;
     if (cfg.capabilityAllowlist && cfg.capabilityAllowlist.length > 0) {
       const allowed = new Set(cfg.capabilityAllowlist);
-      const caps = parsed.capabilities.filter(c => allowed.has(c));
+      const caps = parsed.capabilities.filter((c: string) => allowed.has(c));
       effective = { ...parsed, capabilities: caps };
     }
 
