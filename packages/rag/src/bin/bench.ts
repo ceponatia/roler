@@ -7,6 +7,7 @@
 
 import { UlidSchema } from '@roler/schemas';
 import process from 'node:process';
+import { fileURLToPath } from 'node:url';
 
 import { getRetrievalMetricsSnapshot, resetMetrics } from '../lib/metrics.js';
 import { createRetrievalOrchestrator } from '../lib/orchestrator.js';
@@ -58,6 +59,19 @@ function parseArgs(argv: readonly string[]): Args {
 const asUlid = (s: string) => s as unknown as Ulid;
 const ISO = (s: string) => s as unknown as IsoDateTime;
 
+// Crockford base32 alphabet without I, L, O, U
+const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ' as const;
+
+function genUlid(seed: number): string {
+  // Deterministic pseudo-ULID: 26 chars from allowed alphabet
+  let s = '';
+  for (let i = 0; i < 26; i++) {
+    const idx = (seed + i * 13) % CROCKFORD.length; // spread indices
+    s += CROCKFORD[idx] ?? '0';
+  }
+  return s;
+}
+
 function makeCandidate(id: string, ent: string, sim: number, updated: string): Candidate {
   return { chunkId: asUlid(id), entityId: asUlid(ent), similarity: sim, updatedAt: ISO(updated) };
 }
@@ -66,8 +80,9 @@ function makeRows(count: number): readonly Candidate[] {
   const rows: Candidate[] = [];
   const baseDate = Date.parse('2024-06-01T00:00:00.000Z');
   for (let i = 0; i < count; i++) {
-    const ent = `01HYA7Y3KZJ5MNS4AE8Q9R2B${(10 + (i % 16)).toString(36).toUpperCase()}`; // 16 distinct entities
-    const id = `01HYA7Y3KZJ5MNS4AE8Q9R2BA${(i % 36).toString(36).toUpperCase()}`;
+  // 16 distinct entities; stable but valid ULIDs
+  const ent = genUlid(1000 + (i % 16));
+  const id = genUlid(5000 + i);
     const sim = 0.6 + (i % 10) / 100; // 0.6..0.69
     const dt = new Date(baseDate + (i % 7) * 86400000).toISOString();
     rows.push(makeCandidate(id, ent, sim, dt));
@@ -86,7 +101,7 @@ function makeRetriever(rows: readonly Candidate[], vectorMs: number): Retriever 
   };
 }
 
-async function main(): Promise<number> {
+export async function main(): Promise<number> {
   const args = parseArgs(process.argv.slice(2));
   const rows = makeRows(Math.max(args.baseK + args.maxKBoost, 64));
   const retriever = makeRetriever(rows, args.vectorMs);
@@ -159,9 +174,19 @@ async function main(): Promise<number> {
   return 0;
 }
 
-main()
-  .then((code) => process.exit(code))
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+// Only execute when run directly via node, not when imported (e.g., in tests)
+function isDirectRun(): boolean {
+  const argv1 = process.argv.length >= 2 ? process.argv[1] : undefined;
+  if (!argv1) return false;
+  const thisFile = fileURLToPath(import.meta.url);
+  return argv1 === thisFile;
+}
+
+if (isDirectRun()) {
+  main()
+    .then((code) => process.exit(code))
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}
