@@ -11,7 +11,6 @@ engines:
       - "**/*.spec.ts"
       - "packages/**/__tests__/**"
       - "packages/**/test-utils/**"
-      - "gh-pages/**"
     config:
       rules:
         - id: github-actions-pin-sha
@@ -27,6 +26,6 @@ engines:
       - "**/*.spec.ts"
       - "packages/**/__tests__/**"
       - "packages/**/test-utils/**"
-      - "gh-pages/**"
 exclude_paths:
   - "packages/extensions/test-utils/test-fs.ts"
+  - "gh-pages/**"
