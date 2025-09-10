@@ -44,6 +44,7 @@ describe('RetrievalResponseSchema', () => {
       stats: { kRequested: 0, kUsed: 0, candidateCount: 0, filteredCount: 0 }
     });
     expect(response.partial).toBe(false);
+    expect(response.errors.length).toBe(0);
   });
 
   it('accepts partial with reason', () => {
@@ -58,5 +59,6 @@ describe('RetrievalResponseSchema', () => {
     expect(response.partialReason).toBe('SOFT_TIMEOUT');
     // Ensure branded ULID validates in optional field
     expect(UlidSchema.safeParse(response.requestId).success).toBe(true);
+    expect(Array.isArray(response.errors)).toBe(true);
   });
 });

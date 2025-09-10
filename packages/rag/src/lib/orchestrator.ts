@@ -2,6 +2,7 @@ import { PartialReturnReasonEnum, RetrievalRequestSchema, RetrievalResponseSchem
 
 import { adaptiveRetrieve } from './adaptive.js';
 import { resolveRetrievalConfig } from './config.js';
+import { incCounter, observe } from './metrics.js';
 import { makeQueryKey, type QueryResultCacheApi } from './query-result-cache.js';
 
 import type { Retriever } from './retriever.js';
@@ -39,7 +40,10 @@ export function createRetrievalOrchestrator(
     const qk = makeQueryKey(signature);
     const cached = deps.queryCache?.get(qk);
     const afterCacheGet = now();
+    observe('latency_cache_ms', afterCacheGet - cacheStart);
     if (cached) {
+      incCounter('retrieval_total');
+      incCounter('retrieval_cache_hit');
       const items = cached.itemIds.map((chunkId, idx) => ({
         chunkId: chunkId as unknown as string,
         entityId: (inferEntityIdFromCache(cached, idx)) as unknown as string,
@@ -47,6 +51,7 @@ export function createRetrievalOrchestrator(
         reasonBits: [] as const
       }));
       const totalMs = now() - t0;
+      observe('latency_total_ms', totalMs);
       const response = RetrievalResponseSchema.parse({
         items: items.slice(0, limit),
         partial: false,
@@ -80,12 +85,16 @@ export function createRetrievalOrchestrator(
       filterPredicate: undefined,
       now
     });
+  incCounter('retrieval_cache_miss');
+  if (result.adaptiveUsed) incCounter('retrieval_adaptive_used');
+  observe('latency_vector_ms', result.timings.vectorMs);
 
     // 4) Partial policy
     const elapsed = now() - t0;
     const minResults = cfg.partialReturnPolicy.minResults;
     const softExceeded = elapsed > cfg.softPartialDeadlineMs;
     const partial = softExceeded && result.stats.kUsed < minResults;
+  if (partial) incCounter('retrieval_partial');
 
     // 5) Cache store
     const toCache = {
@@ -115,6 +124,9 @@ export function createRetrievalOrchestrator(
       },
       stats: result.stats
     });
+  incCounter('retrieval_total');
+  observe('latency_total_ms', elapsed);
+  observe('latency_post_ms', result.timings.postProcessMs);
 
     return response as RetrievalResponse;
   };

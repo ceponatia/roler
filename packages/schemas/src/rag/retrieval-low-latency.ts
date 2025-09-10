@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { IsoDateTimeSchema, UlidSchema } from '../base/primitives.js';
+import { ErrorSchema } from '../system/error.js';
 
 // R-002: Low-latency retrieval config and I/O contracts (additive, non-breaking)
 
@@ -80,6 +81,7 @@ export const RetrievalResponseSchema = z.object({
   stats: RetrievalStatsSchema,
   // Optional echo of request metadata for auditability
   requestId: UlidSchema.optional(),
-  issuedAt: IsoDateTimeSchema.optional()
+  issuedAt: IsoDateTimeSchema.optional(),
+  errors: z.array(ErrorSchema).default([])
 });
 export type RetrievalResponse = z.infer<typeof RetrievalResponseSchema>;
