@@ -18,9 +18,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src --ext .ts"
   },
-  "peerDependencies": {
-    "@roler/rag": "workspace:*"
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "typescript": "^5.6.3"
   }

@@ -1,10 +1,13 @@
-import { ULID, cand, makeRetriever, resetMetrics } from '@roler/testutils';
+import { ULID, cand, makeRetriever } from '@roler/testutils';
 import { describe, expect, it, beforeEach } from 'vitest';
 
-
+import { resetMetrics } from '../metrics.js';
 import { getRetrievalMetricsSnapshot } from '../metrics.js';
 import { createRetrievalOrchestrator } from '../orchestrator.js';
 import { createQueryResultCache, makeQueryKey } from '../query-result-cache.js';
+
+import type { Retriever } from '../retriever.js';
+import type { Ulid } from '../scoring.js';
 
 import type { RetrievalRequest } from '@roler/schemas';
 
@@ -23,13 +26,13 @@ describe('metrics instrumentation', () => {
     const cache = createQueryResultCache(10);
     const signature = JSON.stringify({ q: req.queryText, game: req.gameId, actor: null, incRes: false, limit: 3 });
     cache.set(makeQueryKey(signature), {
-      itemIds: [ULID(V1)],
+      itemIds: [ULID(V1) as unknown as Ulid],
       scores: [0.99],
       stampMs: Date.now(),
-      entities: [ULID(V2)]
+      entities: [ULID(V2) as unknown as Ulid]
     });
 
-  const retriever = makeRetriever([], 0);
+  const retriever = makeRetriever([], 0) as unknown as Retriever;
     const embedder = async () => [0.1];
     const orch = createRetrievalOrchestrator({ retriever, embedder, queryCache: cache, now: () => 0 }, { baseK: 3 });
 
@@ -44,7 +47,7 @@ describe('metrics instrumentation', () => {
   });
 
   it('increments miss/adaptive/partial and observes vector/post/total on full path', async () => {
-  const retriever = makeRetriever([cand(V1, V2, 0.7)], 7);
+  const retriever = makeRetriever([cand(V1, V2, 0.7)], 7) as unknown as Retriever;
     const embedder = async () => [0.2];
     let t = 0;
     const now = () => (t += 200); // force soft timeout quickly

@@ -1,7 +1,7 @@
-import { withArgs, captureLogs, resetMetrics } from '@roler/testutils';
+import { withArgs, captureLogs } from '@roler/testutils';
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { getRetrievalMetricsSnapshot } from '../../lib/metrics.js';
+import { getRetrievalMetricsSnapshot, resetMetrics } from '../../lib/metrics.js';
 import { main as benchMain } from '../bench.js';
 
 // Minimal contract for the JSON printed by bench.ts

@@ -5,7 +5,9 @@
     "types": ["vitest/globals", "node"],
     "paths": {
       "@roler/schemas": ["../../schemas/src/index.ts"],
-      "@roler/schemas/*": ["../../schemas/src/*"]
+  "@roler/schemas/*": ["../../schemas/src/*"],
+  "@roler/testutils": ["../../testutils/src/index.ts"],
+  "@roler/testutils/*": ["../../testutils/src/*"]
     }
   },
   "include": [

@@ -18,6 +18,8 @@
   "@roler/schemas/*": ["packages/schemas/src/*"],
   "@roler/rag": ["packages/rag/src/index.ts"],
   "@roler/rag/*": ["packages/rag/src/*"],
+    "@roler/testutils": ["packages/testutils/src/index.ts"],
+    "@roler/testutils/*": ["packages/testutils/src/*"],
   
     },
 

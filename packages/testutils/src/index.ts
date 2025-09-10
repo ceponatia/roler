@@ -1,19 +1,42 @@
-import { resetMetrics as resetMetricsImpl } from '@roler/rag';
 import { beforeEach, vi } from 'vitest';
 
-import type { Retriever, Candidate, IsoDateTime, Ulid } from '@roler/rag';
+// Brand-agnostic helpers (no package deps)
+export type CandidateLike = Readonly<{
+  chunkId: string;
+  entityId: string;
+  similarity: number;
+  updatedAt: string;
+  diversityBoost?: number;
+}>;
+
+export type RetrieveResultLike<TCandidate extends CandidateLike> = Readonly<{
+  candidates: readonly TCandidate[];
+  vectorMs: number;
+}>;
+
+export interface RetrieverLike<TCandidate extends CandidateLike> {
+  retrieve(opts: Readonly<Record<string, unknown>>): Promise<RetrieveResultLike<TCandidate>>;
+}
 
 // Type-safe ULID/ISO casters for test data
-export const ULID = (s: string) => s as unknown as Ulid;
-export const ISO = (s: string) => s as unknown as IsoDateTime;
+export const ULID = (s: string) => s as unknown as string;
+export const ISO = (s: string) => s as unknown as string;
 
 // Candidate factory
-export function cand(id: string, ent: string, sim: number, updated: string = '2024-06-01T00:00:00.000Z'): Candidate {
-  return { chunkId: ULID(id), entityId: ULID(ent), similarity: sim, updatedAt: ISO(updated) };
+export function cand<T extends CandidateLike = CandidateLike>(
+  id: string,
+  ent: string,
+  sim: number,
+  updated: string = '2024-06-01T00:00:00.000Z'
+): T {
+  return { chunkId: ULID(id), entityId: ULID(ent), similarity: sim, updatedAt: ISO(updated) } as unknown as T;
 }
 
 // Simple retriever that returns provided rows with fixed vectorMs
-export function makeRetriever(rows: readonly Candidate[], vectorMs = 5): Retriever {
+export function makeRetriever<TCandidate extends CandidateLike>(
+  rows: readonly TCandidate[],
+  vectorMs = 5
+): RetrieverLike<TCandidate> {
   return { async retrieve() { return { candidates: rows, vectorMs }; } };
 }
 
@@ -38,10 +61,8 @@ export function captureLogs(): { logs: string[]; restore: () => void } {
 }
 
 // Reset metrics and register automatic beforeEach cleanup for suites that opt-in
-export function setupMetricsReset(): void {
+export function setupMetricsReset(reset?: () => void): void {
   beforeEach(() => {
-    resetMetricsImpl();
+    if (reset) reset();
   });
 }
-
-export const resetMetrics = resetMetricsImpl;

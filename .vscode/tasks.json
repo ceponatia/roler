@@ -44,6 +44,18 @@
 				"$tsc"
 			],
 			"group": "build"
+		},
+		{
+			"label": "pnpm test (workspace)",
+			"type": "shell",
+			"command": "pnpm",
+			"args": [
+				"-w",
+				"-s",
+				"test"
+			],
+			"isBackground": false,
+			"group": "build"
 		}
 	]
 }
