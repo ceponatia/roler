@@ -6,7 +6,7 @@ engines:
       - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
-  - "packages/**/dist/**"
+      - "packages/**/dist/**"
       # Ignore test sources and helpers
       - "**/*.test.ts"
       - "**/*.spec.ts"
@@ -22,7 +22,7 @@ engines:
       - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
-    - "packages/**/dist/**"
+      - "packages/**/dist/**"
       # Ignore test sources and helpers
       - "**/*.test.ts"
       - "**/*.spec.ts"
