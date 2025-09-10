@@ -6,7 +6,13 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       reportsDirectory: 'coverage',
-      exclude: ['dist/**', 'coverage/**']
+      exclude: [
+        'dist/**',
+        'coverage/**',
+        'src/__testutils__/**',
+        '**/*.test.*',
+        '**/tests/**'
+      ]
     }
   }
 });

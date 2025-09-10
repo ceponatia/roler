@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vitest/globals", "node"],
+    "paths": {
+      "@roler/schemas": ["../../schemas/src/index.ts"],
+      "@roler/schemas/*": ["../../schemas/src/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*.ts",
+    "**/*.test.ts",
+  "src/__testutils__/**/*.ts"
+  ]
+}

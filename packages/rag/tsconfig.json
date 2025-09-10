@@ -9,7 +9,12 @@
     "types": ["vitest/globals"]
   },
   "include": ["src/**/*"],
+  "exclude": [
+    "src/**/__tests__/**",
+    "**/*.test.ts",
+    "src/__testutils__/**"
+  ],
   "references": [
-    { "path": "../schemas" }
+  { "path": "../schemas" }
   ]
 }

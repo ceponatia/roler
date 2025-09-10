@@ -1,19 +1,11 @@
+import { cand, ULID } from '@roler/testutils';
 import { describe, expect, it } from 'vitest';
 
 import { postProcess } from '../postprocess.js';
 
-import type { Candidate, IsoDateTime, Ulid } from '../scoring.js';
-
-const ULID = (s: string) => s as unknown as Ulid;
-const ISO = (s: string) => s as unknown as IsoDateTime;
-
-function cand(id: string, ent: string, sim: number, iso: string): Candidate {
-  return { chunkId: ULID(id), entityId: ULID(ent), similarity: sim, updatedAt: ISO(iso) };
-}
-
 describe('postProcess', () => {
   it('scores, sorts deterministically, and trims to limit', () => {
-    const candidates: Candidate[] = [
+  const candidates = [
       cand('01A', 'E1', 0.8, '2024-06-01T12:00:00.000Z'),
       cand('01B', 'E1', 0.85, '2024-06-01T11:00:00.000Z'),
       cand('01C', 'E2', 0.7, '2024-06-01T13:00:00.000Z')
@@ -32,7 +24,7 @@ describe('postProcess', () => {
   });
 
   it('applies filter and reports filteredCount', () => {
-    const candidates: Candidate[] = [
+  const candidates = [
       cand('01A', 'E1', 0.8, '2024-06-01T12:00:00.000Z'),
       cand('01B', 'E1', 0.85, '2024-06-01T11:00:00.000Z'),
       cand('01C', 'E2', 0.7, '2024-06-01T13:00:00.000Z')

@@ -15,11 +15,12 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+  "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
     "lint": "eslint src --ext .ts",
-  "test": "pnpm -w -F @roler/schemas build && vitest --run --coverage",
-  "test:watch": "pnpm -w -F @roler/schemas build && vitest --watch",
-  "test:changed": "pnpm -w -F @roler/schemas build && vitest --changed --coverage",
-  "test:ci": "pnpm -w -F @roler/schemas build && vitest --run --reporter=dot --coverage",
+  "test": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --run --coverage",
+  "test:watch": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --watch",
+  "test:changed": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --changed --coverage",
+  "test:ci": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --run --reporter=dot --coverage",
     "bench": "pnpm -w -F @roler/schemas build && pnpm -F @roler/rag build && node dist/bin/bench.js"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "typescript": "^5.6.3",
-    "vitest": "^1.6.1"
+  "vitest": "^1.6.1",
+  "@roler/testutils": "workspace:*"
   }
 }
