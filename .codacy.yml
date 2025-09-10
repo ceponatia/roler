@@ -11,6 +11,7 @@ engines:
       - "**/*.spec.ts"
       - "packages/**/__tests__/**"
       - "packages/**/test-utils/**"
+      - "gh-pages/**"
     config:
       rules:
         - id: github-actions-pin-sha

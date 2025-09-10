@@ -24,5 +24,6 @@ When writing markdown files:
 - No hard tabs except for in code snippets.
 - Ensure proper list indentation (2 spaces per sublevel).
 - Code snippets should be enclosed in backticks with the language noted.
+- Mixed lists (numbers and bullets) should use 4 spaces for indentation of subitems.
 
 Reference .markdownlint.json for rules at at the root of the repo.
