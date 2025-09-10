@@ -51,7 +51,8 @@
       "html",
       "css",
       "md",
-      "mermaid"
+      "mermaid",
+      "prisma"
     ]
   },
   "MD041": { "level": 1, "front_matter_title": "title" },
