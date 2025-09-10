@@ -11,7 +11,7 @@ This draft outlines the emerging extension framework as represented by current s
 ## Goals
 
 - Pluggable feature contributions (normalization, retrieval enrichment, chat phases) without core modifications.
-- Deterministic ordering + performance guardrails (<5% overhead target; warn 5–7%; fail >7%).
+- Deterministic ordering + performance guardrails (&lt;5% overhead target; warn 5–7%; fail &gt;7%).
 - Safe attribute mutations via state transactions with conflict resolution semantics.
 
 ## Hook Phases (Planned)
@@ -50,4 +50,3 @@ This draft outlines the emerging extension framework as represented by current s
 ## References
 
 - Schemas: `packages/schemas/src/system/extensions/`
-- Design Spec: `docs/design/r-001-extensible-framework-techspec.md`

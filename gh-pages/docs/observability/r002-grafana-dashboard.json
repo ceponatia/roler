@@ -5,8 +5,8 @@
 		{ "type": "panel", "id": "timeseries", "name": "Time series", "version": "" },
 		{ "type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "" }
 	],
-	"title": "R-002 Low-Latency Retrieval",
-	"tags": ["roler", "retrieval", "r-002"],
+	"title": "Low-Latency Retrieval",
+	"tags": ["roler", "retrieval"],
 	"timezone": "browser",
 	"schemaVersion": 37,
 	"version": 1,

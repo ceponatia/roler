@@ -1,4 +1,4 @@
-# Partial Fallback Semantics (R-002)
+# Partial Fallback Semantics
 
 When deadlines are tight, the retrieval pipeline may return a partial but useful subset of items. This document describes how to detect and handle partial responses safely.
 
@@ -26,5 +26,5 @@ The `RetrievalResponse` contains:
 ## Server Guidance
 
 - Log `partial` events with requestId and timings for correlation.
-- Track `retrieval_partial_returns_total{reason}` and ensure the rate stays low (<1%).
+- Track `retrieval_partial_returns_total{reason}` and ensure the rate stays low (&lt;1%).
 - Revisit `softPartialDeadlineMs` and `baseK` if partials are frequent.

@@ -8,7 +8,7 @@
 - Layer 2 - Instances (per-game): When a game starts, selected canon is cloned into game-scoped instances that can be edited. Instances keep a pointer to the canon version they came from.
 - Indexing for RAG: Hybrid retrieval:
   - Structured (JSONB/GiN) on fields like tags, faction, biome, etc.
-  - Vector (pgvector) on field - or chunk-level text (bio, history, notes).
+  - Vector (pgvector) on field- or chunk-level text (bio, history, notes).
   - Keep field_path on each chunk so you can pull only relevant fields (e.g., traits.personality, not the whole file).
 
 ### File Format
@@ -16,7 +16,7 @@
 Use JSON (or YAML) with a small, explicit schema. Make the file path = content hash to enforce immutability.
 Storage: Git repo. A CI job ingests/validates these into Postgres + object storage.
 
-### Database Schema (Posgres + pgvector)
+### Database Schema (Postgres + pgvector)
 
 # Game Entities
 
@@ -102,7 +102,7 @@ model TextChunk {
   ownerId     String   // CanonVersion.id or GameEntity.id
   fieldPath   String   // e.g., 'fields.personality', 'fields.history[2].desc'
   text        String
-  embedding   Bytes    // pgvector; Prisma stores via Bytes; use raw SQL for <=> ops
+  embedding   Bytes    // pgvector; Prisma stores via Bytes; use raw SQL for \u003c=\u003e ops
   meta        Json?
 
   // Useful composite index for structured filters
@@ -116,7 +116,7 @@ model TextChunk {
 2. Compute hash (sh256). If hash already exists for that canon id, skip.
 3. Insert CanonObject (upsert by id), then create CanonVersion.
 4. Chunk & embed each RAG-relevant field
-5. Store each chunk as a TextChunk with ownerType='canon', ownerId=CanonVersion.id, and fieldpath.
+5. Store each chunk as a TextChunk with ownerType='canon', ownerId=CanonVersion.id, and fieldPath.
 
 ## Cloning
 
@@ -125,13 +125,13 @@ When the user selects entities and a game is created:
 1. Read the CanonVersion.
 2. Build a materialized state (copy of the file's fields + selected metadata).
 3. Create GameEntity with canonId, canonVersionId, state, overrides.
-4. Create instance-level chunks for RAG with ownerType='instance', ownerId=GameEntity.id. Re-embed intance chunks when state changes.
+4. Create instance-level chunks for RAG with ownerType='instance', ownerId=GameEntity.id. Re-embed instance chunks when state changes.
 
-## Retrieval (hybri, field aware)
+## Retrieval (hybrid, field-aware)
 
 1. Filter: Use SQL/Prisma to filter by type, tags, or searchable.
 2. Vector search.
-3. Return {snippet, fieldPath, ownerType, ownerId} so the prompt can slot the snippet into the right contextual section ("Personality, "History", etc.).
+3. Return {`snippet`, `fieldPath`, `ownerType`, `ownerId`} so the prompt can slot the snippet into the right contextual section ("Personality", "History", etc.).
 
 ## Immutability Guarantees
 

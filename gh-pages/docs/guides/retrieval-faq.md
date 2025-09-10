@@ -1,4 +1,4 @@
-# Retrieval FAQ (R-002)
+# Retrieval FAQ
 
 - Why partial results? Deadlines; deterministic smaller set beats stalling.
 - Does partial reduce quality? Top items remain relevant; you get fewer.

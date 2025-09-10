@@ -1,11 +1,11 @@
-# R-002 Observability Templates
+# Retrieval Observability Templates
 
-This folder contains ready-to-import templates for monitoring the Low-Latency Retrieval system (R-002).
+This folder contains ready-to-import templates for monitoring the low-latency retrieval system.
 
 Contents:
 
-- `r002-grafana-dashboard.json`: Grafana dashboard with key latency and quality panels.
-- `r002-prometheus-alerts.yml`: Prometheus alerting rules matching the tech spec SLOs.
+- `retrieval-grafana-dashboard.json`: Grafana dashboard with key latency and quality panels.
+- `retrieval-prometheus-alerts.yml`: Prometheus alerting rules matching the SLOs.
 
 ## Metrics Reference (names)
 
@@ -20,10 +20,10 @@ The dashboard assumes Prometheus metrics exported with these names:
 		- `retrieval_results_count_bucket` (and _sum/_count)
 
 - Counters
-	- `retrieval_timeouts_total{type}` where type in {soft, hard}
-	- `retrieval_partial_returns_total{reason}` where reason in {SOFT_TIMEOUT,HARD_TIMEOUT,ADAPTIVE_LIMIT}
-	- `retrieval_cache_hit_total{layer}` with layer in {query,embedding,entity}
-	- `retrieval_cache_miss_total{layer}` with same layers
+	- `retrieval_timeouts_total\{type\}` where type in \{soft, hard\}
+	- `retrieval_partial_returns_total\{reason\}` where reason in \{SOFT_TIMEOUT,HARD_TIMEOUT,ADAPTIVE_LIMIT\}
+	- `retrieval_cache_hit_total\{layer\}` with layer in \{query,embedding,entity\}
+	- `retrieval_cache_miss_total\{layer\}` with same layers
 		- `retrieval_adaptive_queries_total`
 
 If your exporter uses different metric names, adjust the JSON/YAML accordingly.
@@ -49,7 +49,7 @@ If your exporter uses different metric names, adjust the JSON/YAML accordingly.
 - Timeout rate ≤ 1% (5m window).
 - Query cache hit ratio ≥ 50% (15m window).
 
-These match Section 12 of the R-002 tech spec.
+These align with the retrieval SLOs described in this wiki.
 
 ## Notes
 

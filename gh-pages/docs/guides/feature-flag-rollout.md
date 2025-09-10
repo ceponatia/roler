@@ -1,6 +1,6 @@
-# Feature Flag Rollout (R-002)
+# Feature Flag Rollout (Retrieval)
 
-R-002 ships behind an environment flag so you can enable it gradually and fall back at any time.
+The low-latency retrieval orchestrator ships behind an environment flag so you can enable it gradually and fall back at any time.
 
 ## Enabling/Disabling (fish shell)
 
@@ -34,7 +34,7 @@ export async function handleRetrieval(req) {
 	try {
 		return await gated(req);
 	} catch (e) {
-		if (String(e.message).includes('R-002 disabled')) {
+		if (String(e.message).includes('Retrieval disabled')) {
 			// fallback to legacy path
 			return await legacyRetrieve(req);
 		}

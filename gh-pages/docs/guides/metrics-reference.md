@@ -1,4 +1,4 @@
-# Metrics Reference (R-002)
+# Metrics Reference (Retrieval)
 
 This reference documents the primary metrics emitted by the retrieval subsystem and how to use them.
 
