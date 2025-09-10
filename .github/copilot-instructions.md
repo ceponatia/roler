@@ -56,6 +56,7 @@ Retriever abstraction (pgvector now; Qdrant later). Strategy: instance-first via
 Use `scripts/safe-fs.mjs` for any dynamic repo traversal (root confinement, hidden path filtering, size caps). Coverage merging: `scripts/merge-lcov.mjs` outputs `coverage/monorepo-lcov.info`.
 
 ## Testing & Coverage
+
 Per-package Vitest config emits `coverage/lcov.info`. Root command `pnpm test:ci` runs sequentially then `pnpm coverage:merge`. Workflow `.github/workflows/coverage-codacy.yml` uploads merged LCOV (Codacy token secret). Add new package: create `vitest.config.ts`, test scripts, ensure coverage.
 
 ## Monorepo Conventions

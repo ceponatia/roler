@@ -1,10 +1,27 @@
 #Ignore build output
 dist/
+packages/*/dist/
+packages/*/build/
+**/.svelte-kit/**
 *.tsbuildinfo
 
 # Test coverage artifacts (generated)
 coverage/
 packages/*/coverage/
+
+# Built assets
+**/*.generated.css
+**/*.gen.css
+**/*.gen.css.map
+**/*.generated.js
+**/*.gen.js
+**/*.gen.js.map
+**/*.bundle.js
+**/*.bundle.css
+**/*.min.css
+**/*.min.js
+**/*.css.map
+**/*.js.map
 
 #Ignore vscode AI rules
 .github/copilot-instructions.md
@@ -12,6 +29,10 @@ packages/*/coverage/
 
 #Dependencies
 node_modules/
+gh-pages/build/
+gh-pages/.docusaurus/
+gh-pages/.cache-loader/
+gh-pages/.cache/
 
 #Environment and configuration
 .env

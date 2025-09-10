@@ -53,11 +53,6 @@ export async function assertInsideRoot(rootReal, target) {
   return targetReal;
 }
 
-/** @deprecated internal legacy helper; prefer assertInsideRoot */
-async function assertUnderRoot(rootReal, target) {
-  return assertInsideRoot(rootReal, target);
-}
-
 /**
  * Create a safe fs facade bound to a root path.
  * @param {string} rootDir
