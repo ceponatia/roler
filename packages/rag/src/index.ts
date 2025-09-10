@@ -6,3 +6,5 @@ export * from './lib/adaptive.js';
 export * from './lib/orchestrator.js';
 export * from './lib/metrics.js';
 export * from './lib/errors.js';
+export * from './lib/env.js';
+export * from './lib/feature-gated.js';

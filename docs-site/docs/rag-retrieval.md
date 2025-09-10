@@ -29,3 +29,4 @@ Schemas define embedding-related structures (`VectorizableText`, embedding metad
 - Cache hit rate
 - Recall approximations (sampled)
 - Embedding throughput
+

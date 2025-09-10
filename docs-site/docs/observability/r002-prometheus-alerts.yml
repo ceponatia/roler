@@ -1,0 +1,33 @@
+groups:
+	- name: r002-retrieval-slo
+		interval: 1m
+		rules:
+			- alert: RetrievalP95LatencyHigh
+				expr: histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_ms_bucket[5m]))) > 250
+				for: 5m
+				labels:
+					severity: page
+					feature: r002
+				annotations:
+					summary: "Retrieval p95 latency above 250 ms"
+					description: "R-002 p95 latency has been above 250 ms for 5 minutes. Investigate vector DB and cache hit ratio."
+
+			- alert: RetrievalTimeoutRateHigh
+				expr: sum(rate(retrieval_timeouts_total[5m])) / sum(rate(retrieval_results_count_sum[5m])) > 0.01
+				for: 5m
+				labels:
+					severity: page
+					feature: r002
+				annotations:
+					summary: "Retrieval timeout rate >1%"
+					description: "R-002 timeout rate exceeded 1% for the last 5 minutes. Consider increasing soft deadline or checking DB load."
+
+			- alert: RetrievalQueryCacheHitLow
+				expr: (sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) / (sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) + sum(rate(retrieval_cache_miss_total{layer="query"}[15m])))) < 0.5
+				for: 15m
+				labels:
+					severity: ticket
+					feature: r002
+				annotations:
+					summary: "Retrieval query cache hit ratio <50%"
+					description: "R-002 query result cache hit ratio is under 50% for 15 minutes. Review cache size and invalidation."

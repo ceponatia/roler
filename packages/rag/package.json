@@ -19,7 +19,8 @@
   "test": "pnpm -w -F @roler/schemas build && vitest --run --coverage",
   "test:watch": "pnpm -w -F @roler/schemas build && vitest --watch",
   "test:changed": "pnpm -w -F @roler/schemas build && vitest --changed --coverage",
-  "test:ci": "pnpm -w -F @roler/schemas build && vitest --run --reporter=dot --coverage"
+  "test:ci": "pnpm -w -F @roler/schemas build && vitest --run --reporter=dot --coverage",
+    "bench": "pnpm -w -F @roler/schemas build && pnpm -F @roler/rag build && node dist/bin/bench.js"
   },
   "dependencies": {
     "zod": "^3.25.76",

@@ -29,3 +29,4 @@
 - Enforce minimum coverage thresholds per package.
 - Add failure condition if merged lcov below size/line count.
 - Generate coverage badge from Codacy or local lcov parsing.
+

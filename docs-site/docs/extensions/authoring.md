@@ -13,10 +13,10 @@ This guide helps you create a minimal extension that works with the current prev
 
 ```json
 {
-  "name": "my-extension",
-  "version": "0.1.0",
-  "type": "module",
-  "rolerExtension": { "entry": "dist/extension.js" }
+	"name": "my-extension",
+	"version": "0.1.0",
+	"type": "module",
+	"rolerExtension": { "entry": "dist/extension.js" }
 }
 ```
 
@@ -26,25 +26,25 @@ Export a manifest that passes the shared schema (validated by the host):
 
 ```js
 export const manifest = {
-  id: "my-extension",
-  name: "My Extension",
-  version: "0.1.0",
-  description: "Example",
-  coreApiRange: "^1.0.0",
-  capabilities: ["demo"],
-  // Optional chat hooks advertised via names; host may call conventionally
-  chatHooks: { preChatTurn: ["preChatTurn"] },
-  // Optional budgets per hook (advisory)
-  hookBudgets: { preChatTurn: { maxLatencyMs: 40 } },
-  // Operational defaults
-  killSwitchEnabled: true,
-  concurrencyLimit: 4,
+	id: "my-extension",
+	name: "My Extension",
+	version: "0.1.0",
+	description: "Example",
+	coreApiRange: "^1.0.0",
+	capabilities: ["demo"],
+	// Optional chat hooks advertised via names; host may call conventionally
+	chatHooks: { preChatTurn: ["preChatTurn"] },
+	// Optional budgets per hook (advisory)
+	hookBudgets: { preChatTurn: { maxLatencyMs: 40 } },
+	// Operational defaults
+	killSwitchEnabled: true,
+	concurrencyLimit: 4,
 };
 
 // Optional hook function(s)
 export async function preChatTurn(ctx) {
-  // Keep it fast; avoid blocking I/O
-  return { ok: true, value: {} };
+	// Keep it fast; avoid blocking I/O
+	return { ok: true, value: {} };
 }
 ```
 

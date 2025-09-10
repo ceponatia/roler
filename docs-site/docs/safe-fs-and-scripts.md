@@ -1,3 +1,4 @@
+````markdown
 # Safe Filesystem Wrapper & Scripts (Draft)
 
 ## Purpose
@@ -39,3 +40,5 @@ const st = await safe.statSafe(file);
 - Add allowlist / denylist pattern filters
 - Add glob expansion utility within safe wrapper
 - Extend to write temp files under a controlled `tmp/` subdirectory
+
+````
