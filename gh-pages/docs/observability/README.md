@@ -31,12 +31,12 @@ If your exporter uses different metric names, adjust the JSON/YAML accordingly.
 ## Importing the Dashboard
 
 1. In Grafana, go to Dashboards → Import.
-2. Upload `r002-grafana-dashboard.json` and select your Prometheus datasource.
+2. Upload `retrieval-grafana-dashboard.json` and select your Prometheus datasource.
 3. Save the dashboard. Default time range is 6h; adjust as needed.
 
 ## Applying Alerts
 
-1. Place `r002-prometheus-alerts.yml` in your Prometheus rule files directory.
+1. Place `retrieval-prometheus-alerts.yml` in your Prometheus rule files directory.
 2. Add it to the Prometheus config under `rule_files:` and reload Prometheus.
 3. Recommended routing:
 	- `RetrievalP95LatencyHigh`: severity `page`.
