@@ -9,7 +9,6 @@ export default defineConfig({
       exclude: [
         'dist/**',
         'coverage/**',
-        'src/__testutils__/**',
         '**/*.test.*',
         '**/tests/**'
       ]

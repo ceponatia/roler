@@ -11,7 +11,6 @@
   "include": [
     "src/**/*",
     "tests/**/*.ts",
-    "**/*.test.ts",
-  "src/__testutils__/**/*.ts"
+    "**/*.test.ts"
   ]
 }
