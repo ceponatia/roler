@@ -6,6 +6,7 @@ SvelteKit (TypeScript) • Postgres + pgvector • Redis • Ollama (local LLM +
 Auth: SPA → API routes (Zod-validated) → JWT/Redis session (GM vs Player roles).
 
 ## Fundamental Rules
+
 - The gh-pages package is an isolated project, do not add it to the root package.json, tsconfig.json, pnpm workspace, or CI workflows.
 - Obey in-file comments; ask if uncertain.
 - No `any`, no non-null `!`, no unchecked casting.
