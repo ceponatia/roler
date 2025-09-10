@@ -13,18 +13,18 @@ The dashboard assumes Prometheus metrics exported with these names:
 
 
 - Histograms
-	- `retrieval_latency_ms_bucket` (and _sum/_count)
-	- `retrieval_vector_ms_bucket` (and _sum/_count)
-	- `retrieval_postprocess_ms_bucket` (and _sum/_count)
-	- `retrieval_cache_ms_bucket` (and _sum/_count)
-		- `retrieval_results_count_bucket` (and _sum/_count)
+  - `retrieval_latency_ms_bucket` (and _sum/_count)
+  - `retrieval_vector_ms_bucket` (and _sum/_count)
+  - `retrieval_postprocess_ms_bucket` (and _sum/_count)
+  - `retrieval_cache_ms_bucket` (and _sum/_count)
+    - `retrieval_results_count_bucket` (and _sum/_count)
 
 - Counters
-	- `retrieval_timeouts_total\{type\}` where type in \{soft, hard\}
-	- `retrieval_partial_returns_total\{reason\}` where reason in \{SOFT_TIMEOUT,HARD_TIMEOUT,ADAPTIVE_LIMIT\}
-	- `retrieval_cache_hit_total\{layer\}` with layer in \{query,embedding,entity\}
-	- `retrieval_cache_miss_total\{layer\}` with same layers
-		- `retrieval_adaptive_queries_total`
+  - `retrieval_timeouts_total\{type\}` where type in \{soft, hard\}
+  - `retrieval_partial_returns_total\{reason\}` where reason in \{SOFT_TIMEOUT,HARD_TIMEOUT,ADAPTIVE_LIMIT\}
+  - `retrieval_cache_hit_total\{layer\}` with layer in \{query,embedding,entity\}
+  - `retrieval_cache_miss_total\{layer\}` with same layers
+    - `retrieval_adaptive_queries_total`
 
 If your exporter uses different metric names, adjust the JSON/YAML accordingly.
 
@@ -39,9 +39,10 @@ If your exporter uses different metric names, adjust the JSON/YAML accordingly.
 1. Place `retrieval-prometheus-alerts.yml` in your Prometheus rule files directory.
 2. Add it to the Prometheus config under `rule_files:` and reload Prometheus.
 3. Recommended routing:
-	- `RetrievalP95LatencyHigh`: severity `page`.
-	- `RetrievalTimeoutRateHigh`: severity `page`.
-	- `RetrievalQueryCacheHitLow`: severity `ticket`.
+
+- `RetrievalP95LatencyHigh`: severity `page`.
+- `RetrievalTimeoutRateHigh`: severity `page`.
+- `RetrievalQueryCacheHitLow`: severity `ticket`.
 
 ## SLOs and Thresholds
 

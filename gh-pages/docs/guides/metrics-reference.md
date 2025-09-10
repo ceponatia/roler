@@ -5,35 +5,35 @@ This reference documents the primary metrics emitted by the retrieval subsystem 
 ## Histograms
 
 - `retrieval_latency_ms_bucket` (and `_sum`, `_count`)
-	- Unit: milliseconds
-	- Meaning: end-to-end retrieval latency
-	- Example: `histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
+  - Unit: milliseconds
+  - Meaning: end-to-end retrieval latency
+  - Example: `histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
 - `retrieval_vector_ms_bucket` (and `_sum`, `_count`)
-	- Unit: milliseconds
-	- Meaning: vector search time
+  - Unit: milliseconds
+  - Meaning: vector search time
 - `retrieval_postprocess_ms_bucket` (and `_sum`, `_count`)
-	- Unit: milliseconds
-	- Meaning: post-processing and sorting time
+  - Unit: milliseconds
+  - Meaning: post-processing and sorting time
 - `retrieval_cache_ms_bucket` (and `_sum`, `_count`)
-	- Unit: milliseconds
-	- Meaning: cache stage time (lookups + serialization)
+  - Unit: milliseconds
+  - Meaning: cache stage time (lookups + serialization)
 - `retrieval_results_count_bucket` (and `_sum`, `_count`)
-	- Unit: items
-	- Meaning: distribution of result counts before trimming
+  - Unit: items
+  - Meaning: distribution of result counts before trimming
 
 ## Counters
 
 - `retrieval_timeouts_total{type}`
-	- Labels: `type` ∈ {`soft`, `hard`}
-	- Meaning: number of timeouts by type
+  - Labels: `type` ∈ {`soft`, `hard`}
+  - Meaning: number of timeouts by type
 - `retrieval_partial_returns_total{reason}`
-	- Labels: `reason` ∈ {`SOFT_TIMEOUT`,`HARD_TIMEOUT`,`ADAPTIVE_LIMIT`}
-	- Meaning: number of partial responses by reason
+  - Labels: `reason` ∈ {`SOFT_TIMEOUT`,`HARD_TIMEOUT`,`ADAPTIVE_LIMIT`}
+  - Meaning: number of partial responses by reason
 - `retrieval_cache_hit_total{layer}` and `retrieval_cache_miss_total{layer}`
-	- Labels: `layer` ∈ {`query`,`embedding`,`entity`}
-	- Meaning: cache hits/misses by layer
+  - Labels: `layer` ∈ {`query`,`embedding`,`entity`}
+  - Meaning: cache hits/misses by layer
 - `retrieval_adaptive_queries_total`
-	- Meaning: number of additional AdaptiveK queries executed
+  - Meaning: number of additional AdaptiveK queries executed
 
 ## SLO Alignment
 
@@ -44,13 +44,13 @@ This reference documents the primary metrics emitted by the retrieval subsystem 
 ## Example Panels / Queries
 
 - p50/p95/p99 latency lines
-	- `histogram_quantile(0.5, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
-	- `histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
-	- `histogram_quantile(0.99, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
+  - `histogram_quantile(0.5, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
+  - `histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
+  - `histogram_quantile(0.99, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))`
 - Timeout rate stacked by type
-	- `sum by (type) (rate(retrieval_timeouts_total[5m]))`
+  - `sum by (type) (rate(retrieval_timeouts_total[5m]))`
 - Cache hit ratio (query layer)
-	- `sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) / (sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) + sum(rate(retrieval_cache_miss_total{layer="query"}[15m])))`
+  - `sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) / (sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) + sum(rate(retrieval_cache_miss_total{layer="query"}[15m])))`
 
 ## Labeling Guidance
 

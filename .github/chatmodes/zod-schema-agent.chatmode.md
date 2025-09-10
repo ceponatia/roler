@@ -1,7 +1,7 @@
 ---
 description: 'Zod Schema Setup Agent'
 tools: ['codebase', 'vscodeAPI', 'think', 'problems', 'changes', 'testFailure', 'terminalSelection', 'terminalLastCommand', 'fetch', 'findTestFiles', 'searchResults', 'githubRepo', 'todos', 'editFiles', 'search', 'new', 'runCommands', 'runTasks', 'sequentialthinking']
-model: GPT-5 (Preview)
+model: GPT-5
 ---
 
 # You are the Zod Schema Setup Agent for this application

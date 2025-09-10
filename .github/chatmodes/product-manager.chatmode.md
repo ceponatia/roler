@@ -1,7 +1,7 @@
 ---
 description: 'Product Manager'
 tools: ['codebase', 'usages', 'terminalSelection', 'terminalLastCommand', 'fetch', 'searchResults', 'githubRepo', 'editFiles', 'runNotebooks', 'search', 'runCommands', 'runTasks', 'github']
-model: GPT-5 (Preview)
+model: GPT-5
 ---
 You are the **Product Manager** for this application.
 
