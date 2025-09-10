@@ -42,16 +42,14 @@ export function createRetrievalOrchestrator(
     const afterCacheGet = now();
     observe('latency_cache_ms', afterCacheGet - cacheStart);
     if (cached) {
-      incCounter('retrieval_total');
       incCounter('retrieval_cache_hit');
       const items = cached.itemIds.map((chunkId, idx) => ({
-        chunkId: chunkId as unknown as string,
-        entityId: (inferEntityIdFromCache(cached, idx)) as unknown as string,
+        chunkId: String(chunkId),
+        entityId: String(inferEntityIdFromCache(cached, idx)),
         score: cached.scores[idx] ?? 0,
         reasonBits: [] as const
       }));
       const totalMs = now() - t0;
-      observe('latency_total_ms', totalMs);
       const response = RetrievalResponseSchema.parse({
         items: items.slice(0, limit),
         partial: false,
@@ -63,6 +61,8 @@ export function createRetrievalOrchestrator(
         },
         stats: { kRequested: limit, kUsed: Math.min(limit, items.length), candidateCount: items.length, filteredCount: 0 }
       });
+      incCounter('retrieval_total');
+      observe('latency_total_ms', totalMs);
       return response;
     }
 
@@ -109,8 +109,8 @@ export function createRetrievalOrchestrator(
 
     const response = RetrievalResponseSchema.parse({
       items: result.items.slice(0, limit).map((i) => ({
-        chunkId: i.chunkId as unknown as string,
-        entityId: i.entityId as unknown as string,
+        chunkId: String(i.chunkId),
+        entityId: String(i.entityId),
         score: i.score,
         reasonBits: i.reasonBits
       })),
@@ -124,9 +124,10 @@ export function createRetrievalOrchestrator(
       },
       stats: result.stats
     });
-  incCounter('retrieval_total');
-  observe('latency_total_ms', elapsed);
-  observe('latency_post_ms', result.timings.postProcessMs);
+    // Group terminal metrics near the return for clarity
+    incCounter('retrieval_total');
+    observe('latency_post_ms', result.timings.postProcessMs);
+    observe('latency_total_ms', elapsed);
 
     return response as RetrievalResponse;
   };

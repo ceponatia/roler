@@ -21,7 +21,7 @@ groups:
           description: "Retrieval timeout rate exceeded 1% for the last 5 minutes. Consider increasing soft deadline or checking DB load."
 
       - alert: RetrievalQueryCacheHitLow
-        expr: (sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) / (sum(rate(retrieval_cache_hit_total{layer="query"}[15m])) + sum(rate(retrieval_cache_miss_total{layer="query"}[15m])))) < 0.5
+        expr: (sum(rate(retrieval_cache_hit_total{layer=\"query\"}[15m])) / (sum(rate(retrieval_cache_hit_total{layer=\"query\"}[15m])) + sum(rate(retrieval_cache_miss_total{layer=\"query\"}[15m])))) < 0.5
         for: 15m
         labels:
           severity: ticket

@@ -6,12 +6,18 @@
     { "type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "" }
   ],
   "title": "Low-Latency Retrieval",
-  "tags": ["roler", "retrieval"],
+  "tags": [
+    "roler",
+    "retrieval"
+  ],
   "timezone": "browser",
   "schemaVersion": 37,
   "version": 1,
   "refresh": "30s",
-  "time": { "from": "now-6h", "to": "now" },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
   "panels": [
     {
       "type": "timeseries",

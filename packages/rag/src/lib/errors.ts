@@ -10,7 +10,7 @@ export function mapErrorToSchemaError(err: unknown): SchemaError {
   return {
     code: ErrorCodeEnum.enum[kind],
     message: msg,
-  fieldPath: extractFieldPath(err)
+  fieldPath: extractFieldPath(err),
   } as const;
 }
 
