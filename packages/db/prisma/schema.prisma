@@ -1,0 +1,68 @@
+// Prisma schema for @roler/db
+// Datasource and generator are configured for Postgres.
+// Models implement R-003 Canonical Versioning storage.
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Branded ULIDs are stored as text with constraint checks applied at application layer.
+model CanonVersion {
+  id               String   @id @db.Text
+  entityId         String   @db.Text
+  lineageRootId    String   @db.Text
+  // Most versions have exactly one parent. Merge commits may record multiple parents in join table below.
+  // To support >1 parent, we keep parent relations in CanonVersionParent table.
+  seq              Int
+  authorUserId     String   @db.Text
+  createdAt        DateTime @db.Timestamptz(6)
+  // Attributes stored as JSONB snapshot
+  attributes       Json
+  // Precomputed hashes for integrity
+  baseHash         String   @db.Text
+  integrityChecksum String  @db.Text
+  changeSummary    String?  @db.Text
+  meta             Json?
+
+  // Text chunks relation
+  textChunks       CanonTextChunk[]
+  // Parent relations (many-to-many-like via explicit join)
+  parents          CanonVersionParent[]
+  children         CanonVersionParent[] @relation("ChildVersion")
+
+  @@index([entityId, seq], map: "idx_canonversion_entity_seq")
+  @@index([entityId, createdAt], map: "idx_canonversion_entity_created")
+}
+
+model CanonTextChunk {
+  id        BigInt   @id @default(autoincrement())
+  versionId String   @db.Text
+  index     Int
+  hash      String   @db.Text
+  text      String   @db.Text
+
+  version   CanonVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId, index], map: "idx_chunk_version_index")
+}
+
+// Join table to support N parents for a version (merge commits).
+model CanonVersionParent {
+  id             BigInt       @id @default(autoincrement())
+  parentVersionId String      @db.Text
+  childVersionId  String      @db.Text
+  // ordering can be useful if we ever need deterministic parent ordering
+  orderIndex      Int
+
+  parentVersion  CanonVersion @relation(fields: [parentVersionId], references: [id])
+  childVersion   CanonVersion @relation("ChildVersion", fields: [childVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([parentVersionId, childVersionId], map: "uq_parent_child")
+  @@index([childVersionId], map: "idx_parent_child_child")
+}
