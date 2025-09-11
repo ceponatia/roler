@@ -8,7 +8,6 @@ import { createQueryResultCache, makeQueryKey } from '../query-result-cache.js';
 
 import type { Retriever } from '../retriever.js';
 import type { Ulid } from '../scoring.js';
-
 import type { RetrievalRequest } from '@roler/schemas';
 
 const V1 = '01HYA7Y3KZJ5MNS4AE8Q9R2B7C';
@@ -32,7 +31,7 @@ describe('metrics instrumentation', () => {
       entities: [ULID(V2) as unknown as Ulid]
     });
 
-  const retriever = makeRetriever([], 0) as unknown as Retriever;
+    const retriever = makeRetriever([], 0) as unknown as Retriever;
     const embedder = async () => [0.1];
     const orch = createRetrievalOrchestrator({ retriever, embedder, queryCache: cache, now: () => 0 }, { baseK: 3 });
 

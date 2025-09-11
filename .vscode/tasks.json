@@ -5,56 +5,18 @@
 			"label": "pnpm test (workspace)",
 			"type": "shell",
 			"command": "pnpm",
-			"args": [
-				"-w",
-				"-s",
-				"test"
-			],
+			"args": ["-w", "-s", "test"],
 			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
+			"problemMatcher": ["$tsc"],
 			"group": "build"
 		},
 		{
 			"label": "pnpm test via bash",
 			"type": "shell",
 			"command": "bash",
-			"args": [
-				"-lc",
-				"pnpm -w -s test"
-			],
+			"args": ["-lc", "pnpm -w -s test"],
 			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "build"
-		},
-		{
-			"label": "pnpm test (workspace)",
-			"type": "shell",
-			"command": "pnpm",
-			"args": [
-				"-w",
-				"-s",
-				"test"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "build"
-		},
-		{
-			"label": "pnpm test (workspace)",
-			"type": "shell",
-			"command": "pnpm",
-			"args": [
-				"-w",
-				"-s",
-				"test"
-			],
-			"isBackground": false,
+			"problemMatcher": ["$tsc"],
 			"group": "build"
 		}
 	]

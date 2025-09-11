@@ -71,7 +71,6 @@ function genUlid(seed: number): string {
   }
   return s;
 }
-
 function makeCandidate(id: string, ent: string, sim: number, updated: string): Candidate {
   return { chunkId: asUlid(id), entityId: asUlid(ent), similarity: sim, updatedAt: ISO(updated) };
 }

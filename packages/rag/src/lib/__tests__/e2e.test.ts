@@ -4,9 +4,9 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { resetMetrics, getRetrievalMetricsSnapshot } from '../metrics.js';
 import { createRetrievalOrchestrator } from '../orchestrator.js';
 import { createQueryResultCache } from '../query-result-cache.js';
+ 
 import type { Retriever } from '../retriever.js';
 import type { Candidate } from '../scoring.js';
-
 import type { RetrievalRequest } from '@roler/schemas';
 
 const G = '01HYA7Y3KZJ5MNS4AE8Q9R2B7C';
@@ -26,9 +26,9 @@ describe('E2E retrieval', () => {
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA2', E2, 0.88, '2024-06-03T00:00:00.000Z'),
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA3', E3, 0.7, '2024-06-04T00:00:00.000Z'),
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA4', E2, 0.86, '2024-06-05T00:00:00.000Z')
-    ] as unknown as readonly Candidate[];
+  ] as unknown as readonly Candidate[];
 
-    const retriever = makeRetriever(rows, 6) as unknown as Retriever;
+  const retriever = makeRetriever(rows, 6) as unknown as Retriever;
     const embedder = async () => [0.01];
     const cache = createQueryResultCache(32);
     const now = () => performance.now();
