@@ -12,7 +12,7 @@ export default defineConfig({
       exclude: [
         'dist/**',
         'coverage/**',
-  'prisma/**',
+        'prisma/**',
         '**/*.test.ts',
         '**/*.spec.ts',
         'src/**/__tests__/**',
