@@ -17,12 +17,12 @@ export default defineConfig({
       exclude: [
         'dist/**',
         'coverage/**',
-        // Exclude config and meta files from coverage to avoid false 0% entries
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        'src/**/__tests__/**',
         '**/vitest.config.*',
         '**/vite.config.*',
-        '**/tsconfig*.json',
-        '**/*.test.*',
-        '**/tests/**'
+        '**/tsconfig*.json'
       ]
     }
   }

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { ChangePolicySchema } from '../entity/instance/base-instance.js';
-import { ErrorSchema } from '../system/error.js';
+import { ErrorSchema } from '../errors.schema.js';
 
 export const ProposedFieldChangeSchema = z.object({
   keyPath: z.string(),

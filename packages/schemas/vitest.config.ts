@@ -9,7 +9,15 @@ export default defineConfig({
       provider: 'v8',
       reportsDirectory: 'coverage',
       reporter: ['text', 'lcov'],
-      exclude: ['dist/**', 'coverage/**']
+      // Exclude test files and config from coverage to focus on source schemas only
+      exclude: [
+        'dist/**',
+        'coverage/**',
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        'src/**/__tests__/**',
+        'vitest.config.ts'
+      ]
     }
   }
 });

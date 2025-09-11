@@ -9,7 +9,15 @@ export default defineConfig({
       provider: 'v8',
       reportsDirectory: 'coverage',
       reporter: ['text', 'lcov'],
-      exclude: ['dist/**', 'coverage/**']
+      exclude: [
+        'dist/**',
+        'coverage/**',
+        'prisma/**',
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        'src/**/__tests__/**',
+        'vitest.config.ts'
+      ]
     }
   }
 });

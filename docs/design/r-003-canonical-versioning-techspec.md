@@ -1,6 +1,6 @@
 ---
 title: R-003 Canonical Versioning Technical Specification
-status: Draft
+status: Approved
 last-updated: 2025-09-04
 related-prd: ../prd/r-003-canonical-versioning-prd.md
 revision: 0.1.0
