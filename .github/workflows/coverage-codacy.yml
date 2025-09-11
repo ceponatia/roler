@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # pnpm may ignore dependency install scripts on CI. Approve prisma-related builds explicitly (no-op if not needed).
+      - name: Approve pnpm build scripts (prisma)
+        run: pnpm approve-builds prisma @prisma/client @prisma/engines || true
+
+      # Ensure Prisma Client is generated before running tests and merges
+      - name: Generate Prisma Client
+        run: pnpm -w -F @roler/db prisma:generate
+
       - name: Run workspace tests with coverage
         # test:ci already enables coverage per package (vitest --coverage)
         run: pnpm test:ci
@@ -37,7 +45,8 @@ jobs:
           head -n 40 coverage/monorepo-lcov.info || true
 
       - name: Upload coverage to Codacy
-        if: success()
+        # Only upload when token is present and either not a PR or PR is from same repo (not a fork)
+        if: success() && env.CODACY_PROJECT_TOKEN != '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
           GIT_COMMIT_SHA: ${{ github.sha }}
