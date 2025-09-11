@@ -1,0 +1,102 @@
+{
+	"__inputs": [],
+	"__requires": [
+		{ "type": "grafana", "id": "grafana", "name": "Grafana", "version": ">=9.0" },
+		{ "type": "panel", "id": "timeseries", "name": "Time series", "version": "" },
+		{ "type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "" }
+	],
+	"title": "Low-Latency Retrieval",
+	"tags": ["roler", "retrieval"],
+	"timezone": "browser",
+	"schemaVersion": 37,
+	"version": 1,
+	"refresh": "30s",
+	"time": { "from": "now-6h", "to": "now" },
+	"panels": [
+		{
+			"type": "timeseries",
+			"title": "Retrieval Latency (p50/p95/p99)",
+			"gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"fieldConfig": { "defaults": { "unit": "ms" }, "overrides": [] },
+			"options": { "legend": { "showLegend": true } },
+			"targets": [
+				{ "expr": "histogram_quantile(0.5, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))", "legendFormat": "p50" },
+				{ "expr": "histogram_quantile(0.95, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))", "legendFormat": "p95" },
+				{ "expr": "histogram_quantile(0.99, sum by (le) (rate(retrieval_latency_ms_bucket[5m])))", "legendFormat": "p99" }
+			]
+		},
+		{
+			"type": "timeseries",
+			"title": "Timeout Rate",
+			"gridPos": { "h": 6, "w": 12, "x": 0, "y": 8 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"fieldConfig": { "defaults": { "unit": "ops" } },
+			"targets": [
+				{ "expr": "sum by (type) (rate(retrieval_timeouts_total[5m]))", "legendFormat": "{{type}}" }
+			]
+		},
+		{
+			"type": "timeseries",
+			"title": "Partial Returns by Reason",
+			"gridPos": { "h": 6, "w": 12, "x": 12, "y": 8 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"targets": [
+				{ "expr": "sum by (reason) (rate(retrieval_partial_returns_total[5m]))", "legendFormat": "{{reason}}" }
+			]
+		},
+		{
+			"type": "timeseries",
+			"title": "Cache Hit Ratio (Query Results)",
+			"gridPos": { "h": 6, "w": 12, "x": 0, "y": 14 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"targets": [
+				{ "expr": "sum(rate(retrieval_cache_hit_total{layer=\"query\"}[5m])) / (sum(rate(retrieval_cache_hit_total{layer=\"query\"}[5m])) + sum(rate(retrieval_cache_miss_total{layer=\"query\"}[5m])))", "legendFormat": "hit ratio" }
+			],
+			"fieldConfig": { "defaults": { "unit": "percentunit" } }
+		},
+		{
+			"type": "timeseries",
+			"title": "Adaptive Queries Frequency",
+			"gridPos": { "h": 6, "w": 12, "x": 12, "y": 14 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"targets": [
+				{ "expr": "sum(rate(retrieval_adaptive_queries_total[5m]))", "legendFormat": "adaptive/sec" }
+			]
+		},
+		{
+			"type": "timeseries",
+			"title": "Results Count Distribution",
+			"gridPos": { "h": 6, "w": 12, "x": 0, "y": 20 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"targets": [
+				{ "expr": "histogram_quantile(0.5, sum by (le) (rate(retrieval_results_count_bucket[5m])))", "legendFormat": "p50" },
+				{ "expr": "histogram_quantile(0.95, sum by (le) (rate(retrieval_results_count_bucket[5m])))", "legendFormat": "p95" },
+				{ "expr": "histogram_quantile(0.99, sum by (le) (rate(retrieval_results_count_bucket[5m])))", "legendFormat": "p99" }
+			]
+		},
+		{
+			"type": "timeseries",
+			"title": "Stage Timings (Vector/Post/Cache)",
+			"gridPos": { "h": 6, "w": 12, "x": 12, "y": 20 },
+			"datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+			"fieldConfig": { "defaults": { "unit": "ms" } },
+			"targets": [
+				{ "expr": "sum(rate(retrieval_vector_ms_sum[5m])) / sum(rate(retrieval_vector_ms_count[5m]))", "legendFormat": "vector avg" },
+				{ "expr": "sum(rate(retrieval_postprocess_ms_sum[5m])) / sum(rate(retrieval_postprocess_ms_count[5m]))", "legendFormat": "post avg" },
+				{ "expr": "sum(rate(retrieval_cache_ms_sum[5m])) / sum(rate(retrieval_cache_ms_count[5m]))", "legendFormat": "cache avg" }
+			]
+		}
+	],
+	"templating": {
+		"list": [
+			{
+				"type": "datasource",
+				"name": "DS_PROMETHEUS",
+				"label": "Prometheus",
+				"query": "prometheus",
+				"refresh": 1
+			}
+		]
+	}
+}

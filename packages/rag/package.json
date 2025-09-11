@@ -1,0 +1,38 @@
+{
+  "name": "@roler/rag",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Low-latency retrieval orchestration utilities for Roler (R-002)",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
+    "lint": "eslint src --ext .ts",
+    "test": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --run --coverage",
+    "test:watch": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --watch",
+    "test:changed": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --changed --coverage",
+    "test:ci": "pnpm -w -F @roler/schemas -F @roler/testutils build && vitest --run --reporter=dot --coverage",
+    "bench": "pnpm -w -F @roler/schemas build && pnpm -F @roler/rag build && node dist/bin/bench.js"
+  },
+  "dependencies": {
+    "@roler/schemas": "workspace:*",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@roler/testutils": "workspace:*",
+    "typescript": "^5.6.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^2.1.9"
+  }
+}

@@ -3,6 +3,8 @@
   "extends": "./tsconfig.base.json",
   "references": [
     { "path": "./packages/schemas" },
-    { "path": "./packages/extensions" }
-  ]
+  { "path": "./packages/extensions" },
+  { "path": "./packages/rag" }
+  ],
+  "exclude": ["node_modules", "dist", "build", "scripts", "examples", "templates", "website", "gh-pages"]
 }

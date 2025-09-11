@@ -1,0 +1,9 @@
+{
+  // This file is not used in compilation. It is here just for a nice editor experience.
+  // Use the published Docusaurus tsconfig package; resolves after workspace install.
+  "extends": "@docusaurus/tsconfig",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "exclude": [".docusaurus", "build"]
+}

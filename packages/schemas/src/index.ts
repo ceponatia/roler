@@ -24,6 +24,7 @@ export * from './system/state-change-event.js';
 export * from './system/change-proposal.js';
 export * from './rag/embedding.js';
 export * from './rag/retrieval.js';
+export * from './rag/retrieval-low-latency.js';
 export * from './llm/propose-change.js';
 export * from './llm/retrieve-context.js';
 export * from './llm/create-scene.js';

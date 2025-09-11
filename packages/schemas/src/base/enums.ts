@@ -24,7 +24,19 @@ export type RelationshipStage = z.infer<typeof RelationshipStageEnum>;
 export const MemoryScopeEnum = z.enum(['L1', 'L2', 'L3']);
 export type MemoryScope = z.infer<typeof MemoryScopeEnum>;
 
-export const ErrorCodeEnum = z.enum(['parse', 'refine', 'policy', 'safety']);
+export const ErrorCodeEnum = z.enum([
+  'parse',
+  'refine',
+  'policy',
+  'safety',
+  // Retrieval-specific (R-002)
+  'RETR_TIMEOUT_SOFT',
+  'RETR_TIMEOUT_HARD',
+  'RETR_INVALID_REQUEST',
+  'RETR_VECTOR_EXEC_ERROR',
+  'RETR_CACHE_FAILURE',
+  'RETR_INSUFFICIENT_RESULTS'
+]);
 export type ErrorCode = z.infer<typeof ErrorCodeEnum>;
 
 // Additional controlled vocabularies

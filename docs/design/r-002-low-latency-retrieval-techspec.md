@@ -1,6 +1,6 @@
 ---
 title: R-002 Low-Latency Retrieval Technical Specification
-status: Draft
+status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-002-low-latency-retrieval-prd.md
 revision: 0.1.0

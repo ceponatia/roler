@@ -1,7 +1,7 @@
 ---
 description: 'Documentation Author'
 tools: ['codebase', 'usages', 'terminalSelection', 'terminalLastCommand', 'fetch', 'searchResults', 'editFiles', 'search', 'runCommands', 'runTasks']
-model: GPT-5 (Preview)
+model: GPT-5
 ---
 
 # Document Writer
@@ -21,6 +21,9 @@ When writing markdown files:
 - No inline HTML.
 - Headings must be preceded and followed by a blank line.
 - Use `-`for lists.
-- No hard tabs.
+- No hard tabs except for in code snippets.
 - Ensure proper list indentation (2 spaces per sublevel).
 - Code snippets should be enclosed in backticks with the language noted.
+- Mixed lists (numbers and bullets) should use 4 spaces for indentation of subitems.
+
+Reference .markdownlint.json for rules at at the root of the repo.
