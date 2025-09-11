@@ -33,3 +33,4 @@ exclude_paths:
   - "gh-pages/**"
   - "packages/**/dist/**"
   - "packages/db/prisma/migrations/**"
+  - ".github/*/**"
