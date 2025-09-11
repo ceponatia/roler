@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { IsoDateTimeSchema, UlidSchema } from '../base/primitives.js';
-import { ErrorSchema } from '../system/error.js';
+import { ErrorSchema } from '../errors.schema.js';
 
 // R-002: Low-latency retrieval config and I/O contracts (additive, non-breaking)
 

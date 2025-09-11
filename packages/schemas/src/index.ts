@@ -16,12 +16,16 @@ export * from './entity/instance/relationship.js';
 export * from './entity/instance/scene.js';
 export * from './entity/instance/episode.js';
 export * from './entity/instance/memory.js';
-export * from './system/error.js';
+export * from './errors.schema.js';
 export * from './system/user.js';
 export * from './system/permission.js';
 export * from './system/session.js';
 export * from './system/state-change-event.js';
 export * from './system/change-proposal.js';
+// Versioning (R-003)
+export * from './system/versioning/index.js';
+
+// Retrieval (R-002)
 export * from './rag/embedding.js';
 export * from './rag/retrieval.js';
 export * from './rag/retrieval-low-latency.js';
@@ -39,3 +43,8 @@ export * from './system/extensions/extension-registration-config.schema.js';
 export * from './system/extensions/state-transaction.schema.js';
 export * from './system/env/extensions-env.schema.js';
 export * from './system/env/extensions-runtime-env.schema.js';
+
+// Core entities (contracts-first): GameInstance, TextChunk, CanonRelease
+export * from './game-instance.schema.js';
+export * from './text-chunk.schema.js';
+export * from './canon-release.schema.js';
