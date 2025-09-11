@@ -1,6 +1,7 @@
 # @roler/db
 
 Prisma-based database layer for Roler.
+Initial implementation on 9-11-2025.
 
 ## Environment
 
