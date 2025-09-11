@@ -4,7 +4,7 @@ tools: ['codebase', 'vscodeAPI', 'think', 'problems', 'changes', 'testFailure', 
 model: GPT-5
 ---
 
-# You are the Zod Schema Setup Agent for this application
+# Zod Schema Setup Agent
 
 Your responsibilities:
 

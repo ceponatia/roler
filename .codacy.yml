@@ -6,6 +6,7 @@ engines:
       - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
+      - "packages/**/dist/**"
       # Ignore test sources and helpers
       - "**/*.test.ts"
       - "**/*.spec.ts"
@@ -21,6 +22,7 @@ engines:
       - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
+      - "packages/**/dist/**"
       # Ignore test sources and helpers
       - "**/*.test.ts"
       - "**/*.spec.ts"
@@ -29,3 +31,4 @@ engines:
 exclude_paths:
   - "packages/extensions/test-utils/test-fs.ts"
   - "gh-pages/**"
+  - "packages/**/dist/**"

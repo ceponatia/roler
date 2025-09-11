@@ -1,28 +1,20 @@
+import { ULID, cand, makeRetriever } from '@roler/testutils';
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { getRetrievalMetricsSnapshot, resetMetrics } from '../metrics.js';
+import { resetMetrics } from '../metrics.js';
+import { getRetrievalMetricsSnapshot } from '../metrics.js';
 import { createRetrievalOrchestrator } from '../orchestrator.js';
 import { createQueryResultCache, makeQueryKey } from '../query-result-cache.js';
 
 import type { Retriever } from '../retriever.js';
-import type { Candidate, IsoDateTime, Ulid } from '../scoring.js';
+import type { Ulid } from '../scoring.js';
 import type { RetrievalRequest } from '@roler/schemas';
-
-const ULID = (s: string) => s as unknown as Ulid;
-const ISO = (s: string) => s as unknown as IsoDateTime;
 
 const V1 = '01HYA7Y3KZJ5MNS4AE8Q9R2B7C';
 const V2 = '01HYA7Y3KZJ5MNS4AE8Q9R2B7D';
 
 const req: RetrievalRequest = { queryText: 'hi', gameId: V1 as any };
 
-function cand(id: string, ent: string, sim: number): Candidate {
-  return { chunkId: ULID(id), entityId: ULID(ent), similarity: sim, updatedAt: ISO('2024-06-01T00:00:00.000Z') };
-}
-
-function mockRetriever(rows: Candidate[], vectorMs = 5): Retriever {
-  return { async retrieve() { return { candidates: rows, vectorMs }; } };
-}
 
 describe('metrics instrumentation', () => {
   beforeEach(() => {
@@ -33,13 +25,13 @@ describe('metrics instrumentation', () => {
     const cache = createQueryResultCache(10);
     const signature = JSON.stringify({ q: req.queryText, game: req.gameId, actor: null, incRes: false, limit: 3 });
     cache.set(makeQueryKey(signature), {
-      itemIds: [ULID(V1)],
+      itemIds: [ULID(V1) as unknown as Ulid],
       scores: [0.99],
       stampMs: Date.now(),
-      entities: [ULID(V2)]
+      entities: [ULID(V2) as unknown as Ulid]
     });
 
-    const retriever: Retriever = { async retrieve() { return { candidates: [], vectorMs: 0 }; } };
+    const retriever = makeRetriever([], 0) as unknown as Retriever;
     const embedder = async () => [0.1];
     const orch = createRetrievalOrchestrator({ retriever, embedder, queryCache: cache, now: () => 0 }, { baseK: 3 });
 
@@ -54,7 +46,7 @@ describe('metrics instrumentation', () => {
   });
 
   it('increments miss/adaptive/partial and observes vector/post/total on full path', async () => {
-    const retriever = mockRetriever([cand(V1, V2, 0.7)], 7);
+  const retriever = makeRetriever([cand(V1, V2, 0.7)], 7) as unknown as Retriever;
     const embedder = async () => [0.2];
     let t = 0;
     const now = () => (t += 200); // force soft timeout quickly

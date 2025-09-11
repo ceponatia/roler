@@ -1,15 +1,13 @@
+import { cand, makeRetriever } from '@roler/testutils';
 import { describe, expect, it, beforeEach } from 'vitest';
 
-import { getRetrievalMetricsSnapshot, resetMetrics } from '../metrics.js';
+import { resetMetrics, getRetrievalMetricsSnapshot } from '../metrics.js';
 import { createRetrievalOrchestrator } from '../orchestrator.js';
 import { createQueryResultCache } from '../query-result-cache.js';
-
+ 
 import type { Retriever } from '../retriever.js';
-import type { Candidate, IsoDateTime, Ulid } from '../scoring.js';
+import type { Candidate } from '../scoring.js';
 import type { RetrievalRequest } from '@roler/schemas';
-
-const ULID = (s: string) => s as unknown as Ulid;
-const ISO = (s: string) => s as unknown as IsoDateTime;
 
 const G = '01HYA7Y3KZJ5MNS4AE8Q9R2B7C';
 const E1 = '01HYA7Y3KZJ5MNS4AE8Q9R2B7D';
@@ -18,27 +16,19 @@ const E3 = '01HYA7Y3KZJ5MNS4AE8Q9R2B7F';
 
 const req: RetrievalRequest = { queryText: 'find items', gameId: G as any, limit: 5 };
 
-function cand(id: string, ent: string, sim: number, updated: string): Candidate {
-  return { chunkId: ULID(id), entityId: ULID(ent), similarity: sim, updatedAt: ISO(updated) };
-}
-
-function makeRetriever(rows: Candidate[], vectorMs = 5): Retriever {
-  return { async retrieve() { return { candidates: rows, vectorMs }; } };
-}
-
 describe('E2E retrieval', () => {
   beforeEach(() => { resetMetrics(); });
 
   it('orders deterministically, enforces diversity, and records metrics', async () => {
-    const rows: Candidate[] = [
+    const rows = [
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA0', E1, 0.9, '2024-06-02T00:00:00.000Z'),
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA1', E1, 0.91, '2024-06-01T00:00:00.000Z'),
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA2', E2, 0.88, '2024-06-03T00:00:00.000Z'),
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA3', E3, 0.7, '2024-06-04T00:00:00.000Z'),
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BA4', E2, 0.86, '2024-06-05T00:00:00.000Z')
-    ];
+  ] as unknown as readonly Candidate[];
 
-    const retriever = makeRetriever(rows, 6);
+  const retriever = makeRetriever(rows, 6) as unknown as Retriever;
     const embedder = async () => [0.01];
     const cache = createQueryResultCache(32);
     const now = () => performance.now();
@@ -70,10 +60,10 @@ describe('E2E retrieval', () => {
   });
 
   it('respects soft partial policy in time-constrained scenario', async () => {
-    const rows: Candidate[] = [
+    const rows = [
       cand('01HYA7Y3KZJ5MNS4AE8Q9R2BB0', E1, 0.5, '2024-06-01T00:00:00.000Z')
-    ];
-    const retriever = makeRetriever(rows, 10);
+    ] as unknown as readonly Candidate[];
+    const retriever = makeRetriever(rows, 10) as unknown as Retriever;
     const embedder = async () => [0.5];
     let t = 0;
     const now = () => (t += 200);
