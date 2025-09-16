@@ -21,40 +21,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4 # pin to SHA for codacy approval
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
         with:
           version: 10
-
       - name: Setup Node.js (LTS)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
         with:
           node-version: '20'
-          cache: 'pnpm'
-
+          cache: pnpm
       - name: Install deps
         run: pnpm install --frozen-lockfile
-
       - name: Build monorepo (schemas first)
         run: pnpm -w -r --filter @roler/schemas build
-
       - name: Generate OpenAPI
         run: pnpm -w --filter @roler/docs-site docs:openapi
-
       - name: Generate TypeDoc Markdown
         run: pnpm -w --filter @roler/docs-site docs:ts
-
       - name: Generate OpenAPI Pages (MDX)
         working-directory: packages/docs-site/website
         run: node ../node_modules/@docusaurus/core/bin/docusaurus.mjs gen-api-docs roler
-
       - name: Build Docusaurus
         run: pnpm -w --filter @roler/docs-site build
-
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
         with:
           path: packages/docs-site/website/build
 
@@ -62,10 +53,7 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
