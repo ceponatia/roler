@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { AttributeSchema } from '../base/attribute.js';
 import { UlidSchema } from '../base/primitives.js';
 import { CharacterInstanceSchema } from '../entity/instance/character-instance.js';

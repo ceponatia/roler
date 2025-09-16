@@ -1,17 +1,18 @@
 // Flat config for ESLint v9+
 import js from '@eslint/js';
-import ts from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
 import unusedImports from 'eslint-plugin-unused-imports';
+import ts from 'typescript-eslint';
 
 export default [
   {
     ignores: [
-      '**/dist/**',
+  '**/dist/**',
       '**/.svelte-kit/**',
       '**/build/**',
-      '**/node_modules/**',
+  '**/node_modules/**',
       '**/coverage/**',
+  '**/.docusaurus/**',
       '.turbo/**',
       '.vercel/**',
       '.pnpm-store/**'
@@ -41,6 +42,17 @@ export default [
       'import/no-self-import': 'error',
       'import/no-cycle': ['warn', { maxDepth: 1 }],
       'no-restricted-imports': ['error', { patterns: ['@roler/*/src/*', '@roler/*/dist/*'] }]
+    }
+  },
+  {
+    files: ['**/*.cjs'],
+    languageOptions: {
+      globals: {
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly'
+      }
     }
   },
   {
