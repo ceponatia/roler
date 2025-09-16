@@ -1,0 +1,24 @@
+{
+  "name": "@roler/docs-site",
+  "private": true,
+  "version": "0.0.2",
+  "type": "module",
+  "scripts": {
+    "start": "docusaurus start website",
+    "build": "pnpm gen:openapi && pnpm gen:typedoc && docusaurus build website",
+    "serve": "docusaurus serve website",
+    "gen:openapi": "ts-node scripts/gen-openapi.ts",
+    "gen:typedoc": "typedoc",
+    "clean": "rimraf content/api openapi/openapi.json website/build website/.docusaurus"
+  },
+  "devDependencies": {
+    "@docusaurus/core": "latest",
+    "@docusaurus/preset-classic": "latest",
+    "redocusaurus": "latest",
+    "typedoc": "latest",
+    "typedoc-plugin-markdown": "latest",
+    "@asteasolutions/zod-to-openapi": "latest",
+    "ts-node": "latest",
+    "rimraf": "latest"
+  }
+}

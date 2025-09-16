@@ -40,3 +40,16 @@ gh-pages/.cache/
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# TypeDoc output
+docs/api
+openapi.json
+docs/openapi.html
+
+# Docusaurus build output
+.build
+build/
+.docusaurus/
+
+# Cache
+.cache/
