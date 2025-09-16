@@ -1,0 +1,19 @@
+[**Documentation**](../../../README.md)
+
+***
+
+# Type Alias: Embedder()
+
+> **Embedder** = (`text`) => `Promise`\<readonly `number`[]\>
+
+Defined in: [rag/src/lib/orchestrator.ts:12](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/rag/src/lib/orchestrator.ts#L12)
+
+## Parameters
+
+### text
+
+`string`
+
+## Returns
+
+`Promise`\<readonly `number`[]\>

@@ -5,20 +5,35 @@
   "type": "module",
   "scripts": {
     "start": "docusaurus start website",
-    "build": "pnpm gen:openapi && pnpm gen:typedoc && docusaurus build website",
+    "prebuild": "pnpm -w -r --filter @roler/schemas build",
+    "build": "pnpm docs:all",
     "serve": "docusaurus serve website",
-    "gen:openapi": "ts-node scripts/gen-openapi.ts",
+    "gen:openapi": "pnpm -w -F @roler/schemas build && tsx scripts/gen-openapi.ts",
     "gen:typedoc": "typedoc",
-    "clean": "rimraf content/api openapi/openapi.json website/build website/.docusaurus"
+    "docs:openapi": "pnpm gen:openapi",
+    "docs:ts": "pnpm gen:typedoc",
+    "docs:openapi:pages": "docusaurus gen-api-docs roler packages/docs-site/website",
+    "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build website",
+    "clean": "rimraf docs/api docs/openapi openapi.json website/build website/.docusaurus"
   },
   "devDependencies": {
-    "@docusaurus/core": "latest",
-    "@docusaurus/preset-classic": "latest",
-    "redocusaurus": "latest",
-    "typedoc": "latest",
-    "typedoc-plugin-markdown": "latest",
-    "@asteasolutions/zod-to-openapi": "latest",
-    "ts-node": "latest",
-    "rimraf": "latest"
+    "@asteasolutions/zod-to-openapi": "^7.3.4",
+    "@docusaurus/core": "^3.8.1",
+    "@docusaurus/preset-classic": "^3.8.1",
+    "@mdx-js/react": "^3.0.1",
+    "@types/node": "^24.5.0",
+    "docusaurus-plugin-openapi-docs": "^4.5.1",
+    "docusaurus-theme-openapi-docs": "^4.5.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typedoc": "^0.28.13",
+    "typedoc-plugin-markdown": "^4.8.1",
+    "typescript": "^5.9.2",
+    "zod": "^3.25.76"
+  },
+  "dependencies": {
+    "@roler/schemas": "workspace:*"
   }
 }

@@ -1,0 +1,71 @@
+---
+id: get-a-text-chunk-by-id
+title: "Get a text chunk by id"
+description: "Get a text chunk by id"
+sidebar_label: "Get a text chunk by id"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVE1P20AQ/SvWqAeQHGyoVKm+5VBR2tJGVdpDLVfaeCfxwn6xO6ZElv97NbYJBIKK1JPt3eeZN+/NTAdeBGGQMEQoyg5i3aARUHRAW49QQKSg7Ab6FALetCqghIJCiylYYRigJKSgLBTgBTXQV4yM3tmIkeOc5Tk/JMY6KE/KMXSJd5TUTWuvIYXaWUJLjBLea1ULRmVXkaEHKLnVFdYEKfjgPAZSYyIp6BUoJZ8XlzJ1wsDMfpf57P189vHT58uvi9ny5+xX1Z2969+wAu6PxbAcfu1A2O239aDZ02BoWwNFCbWwzkLVpy9DlI0kbI1Q9dV9gov/YLhWqOWCfTgQwij7Be2GL0/7FAjv6BUwNCuUkq/+qa1xEvXB3pHKoI1qNHS6VZZwg2HMqAwLkqeAd7Vuo7rFy/tD7rYdD5Tzg6TXLhhBUHAX4IyUQej3erac2LHMBg93ipBScesJvdiry7Zai5XGicvTwMMEPPTGg42P/Zj0rl7KshY64tPIQ0tXfT+k3J+gc6REJLSbo2S1TQYiBqlxEgrYII1900ABmfAqY/RsQMesU7KHFCKG2/vZb4OGAhoiX2SZdrXQjYtUvM3zfBhrZddukE0RawHfncaQzBcXyZEPjhzLeQwpcMCRZH5yepKz/95FMmJwf1obL/LfK3PnEQMzr4WyHG5g2k21lSC8mvSdqoMUCiVZbK6AIV23EhF/BN33fHzTYthCUVYp3IqgRnPLDqSK/C4nP56x2a0qOPo++XSccO5DLKdDYbcsitAtf0EK17gd9+Yw8w0KiWHIPl7M6xo9Pfrl2VJkM3Y2n39YQt//BZSn8+I=
+sidebar_class_name: "get api-method"
+info_path: ../docs/openapi/roler-api-prototype
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get a text chunk by id"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/api/text-chunks/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a text chunk by id
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"schema":{"type":"string"},"required":true,"name":"id","in":"path"}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Text chunk","content":{"application/json":{"schema":{"type":"object","properties":{"data":{"type":"object","properties":{"id":{"type":"string","pattern":"^[0-9A-HJKMNP-TV-Z]{26}$"},"ownerType":{"anyOf":[{"type":"string","enum":["canon"]},{"type":"string","enum":["instance"]}]},"ownerId":{"type":"string","pattern":"^[0-9A-HJKMNP-TV-Z]{26}$"},"fieldPath":{"type":"string","minLength":1},"text":{"type":"string","minLength":1},"embedding":{"type":"object","properties":{"model":{"type":"string"},"dimension":{"type":"integer","minimum":0,"exclusiveMinimum":true},"embeddedAt":{"type":"string","format":"date-time"}},"required":["model"]},"meta":{"type":"object","additionalProperties":{"nullable":true}}},"required":["id","ownerType","ownerId","fieldPath","text"],"additionalProperties":false}},"required":["data"]}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
