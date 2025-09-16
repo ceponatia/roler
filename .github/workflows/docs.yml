@@ -3,6 +3,8 @@ name: Docs Build & Deploy
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -45,7 +47,8 @@ jobs:
         run: pnpm -w --filter @roler/docs-site docs:ts
 
       - name: Generate OpenAPI Pages (MDX)
-        run: pnpm -w --filter @roler/docs-site docs:openapi:pages
+        working-directory: packages/docs-site/website
+        run: node ../node_modules/@docusaurus/core/bin/docusaurus.mjs gen-api-docs roler
 
       - name: Build Docusaurus
         run: pnpm -w --filter @roler/docs-site build
@@ -56,6 +59,7 @@ jobs:
           path: packages/docs-site/website/build
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:
