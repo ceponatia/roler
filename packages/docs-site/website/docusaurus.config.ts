@@ -12,43 +12,33 @@ export default {
 		locales: ['en']
 	},
 	staticDirectories: ['static'],
-		presets: [
-			[
-				require.resolve('@docusaurus/preset-classic'),
-			{
-				docs: {
-					path: '../docs',
-					routeBasePath: '/docs',
-					sidebarPath: require.resolve('./sidebars'),
-					docItemComponent: '@theme/ApiItem'
+		presets: [['classic', {
+			docs: {
+				path: '../docs',
+				routeBasePath: '/docs',
+				sidebarPath: './sidebars.ts',
+				docItemComponent: '@theme/ApiItem'
+			}
+		}]],
+		themes: ['docusaurus-theme-openapi-docs'],
+		plugins: [['docusaurus-plugin-openapi-docs', {
+			id: 'openapi',
+			docsPluginId: 'classic',
+			config: {
+				roler: {
+					specPath: '../openapi.json',
+					outputDir: '../docs/openapi',
+					sidebarOptions: { groupPathsBy: 'tag', categoryLinkSource: 'tag' }
 				}
 			}
-		]
-		],
-		themes: [require.resolve('docusaurus-theme-openapi-docs')],
-		plugins: [
-			[
-				require.resolve('docusaurus-plugin-openapi-docs'),
-				{
-					id: 'openapi',
-					docsPluginId: 'classic',
-					config: {
-						roler: {
-							specPath: '../openapi.json',
-							outputDir: '../docs/openapi',
-							sidebarOptions: { groupPathsBy: 'tag', categoryLinkSource: 'tag' }
-						}
-					}
-				}
+		}]],
+	themeConfig: {
+		navbar: {
+			title: 'Roler Docs',
+			items: [
+				{ type: 'docSidebar', sidebarId: 'apiSidebar', position: 'left', label: 'API (TS)' },
+				{ type: 'docSidebar', sidebarId: 'openapiSidebar', position: 'left', label: 'OpenAPI' }
 			]
-		],
-		themeConfig: {
-			navbar: {
-				title: 'Roler Docs',
-				items: [
-					{ type: 'docSidebar', sidebarId: 'apiSidebar', position: 'left', label: 'API (TS)' },
-					{ type: 'docSidebar', sidebarId: 'openapiSidebar', position: 'left', label: 'OpenAPI' }
-				]
-			}
 		}
+	}
 };
