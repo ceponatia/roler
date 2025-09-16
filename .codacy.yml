@@ -4,6 +4,8 @@ engines:
     exclude_paths:
       - ".github/*/**"
       - "docs/**"
+    - "packages/docs-site/docs/**"
+    - "packages/docs-site/content/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -20,6 +22,8 @@ engines:
     exclude_paths:
       - ".github/*/**"
       - "docs/**"
+    - "packages/docs-site/docs/**"
+    - "packages/docs-site/content/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -33,3 +37,5 @@ exclude_paths:
   - "packages/**/dist/**"
   - "packages/db/prisma/migrations/**"
   - ".github/*/**"
+  - "packages/docs-site/docs/**"
+  - "packages/docs-site/content/**"
