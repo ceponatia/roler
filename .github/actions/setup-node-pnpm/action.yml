@@ -5,23 +5,16 @@ inputs:
     description: 'Node.js version (e.g., 20)'
     required: true
   pnpm:
-  description: 'pnpm version (e.g., 10.16.1). Optional; if omitted, uses package.json#packageManager.'
-  required: false
+    description: 'pnpm version (e.g., 10.13.1)'
+    required: true
 
 runs:
   using: 'composite'
   steps:
-    - name: Install pnpm (from input version)
-      if: ${{ inputs.pnpm != '' }}
+    - name: Install pnpm (standalone binary on PATH)
       uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
       with:
         version: ${{ inputs.pnpm }}
-        standalone: true
-
-    - name: Install pnpm (from packageManager)
-      if: ${{ inputs.pnpm == '' }}
-      uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
-      with:
         standalone: true
 
     - name: Install Node.js (enable pnpm cache)
