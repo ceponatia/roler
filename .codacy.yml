@@ -30,7 +30,6 @@ engines:
       - "packages/**/test-utils/**"
 exclude_paths:
   - "packages/extensions/test-utils/test-fs.ts"
-  - "gh-pages/**"
   - "packages/**/dist/**"
   - "packages/db/prisma/migrations/**"
   - ".github/*/**"

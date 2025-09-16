@@ -1,6 +1,6 @@
 # Roler Wiki Expansion Plan (Atomic, Code-Backed)
 
-This plan lists concrete, atomic pages to add to the Docusaurus wiki (`gh-pages/`) based on what’s implemented today. It intentionally avoids any references to PRDs/requirements/spec IDs in file names, titles, and content. Prefer linking to code over specs.
+This plan lists concrete, atomic pages to add to the Docusaurus wiki based on what’s implemented today. It intentionally avoids any references to PRDs/requirements/spec IDs in file names, titles, and content. Prefer linking to code over specs.
 
 Constraints:
 
@@ -104,7 +104,7 @@ Add/expand pages mapped to code:
 
 ## Proposed Pages to Add (file list)
 
-Under `gh-pages/docs/`:
+Under `packages/docs-site/website/docs/`:
 
 - concepts/security-and-access.md
 - extensions/manifest.md

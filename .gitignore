@@ -29,10 +29,6 @@ packages/*/coverage/
 
 #Dependencies
 node_modules/
-gh-pages/build/
-gh-pages/.docusaurus/
-gh-pages/.cache-loader/
-gh-pages/.cache/
 
 #Environment and configuration
 .env

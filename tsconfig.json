@@ -7,5 +7,5 @@
   { "path": "./packages/rag" },
   { "path": "./packages/db" }
   ],
-  "exclude": ["node_modules", "dist", "build", "scripts", "examples", "templates", "website", "gh-pages"]
+  "exclude": ["node_modules", "dist", "build", "scripts", "examples", "templates", "website"]
 }
