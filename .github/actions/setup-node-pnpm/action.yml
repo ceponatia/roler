@@ -5,8 +5,8 @@ inputs:
     description: 'Node.js version (e.g., 20)'
     required: true
   pnpm:
-    description: 'pnpm version (e.g., 10.13.1)'
-    required: true
+  description: 'pnpm version (e.g., 10.16.1). Optional; if omitted, uses package.json#packageManager.'
+  required: false
 
 runs:
   using: 'composite'
@@ -14,6 +14,7 @@ runs:
     - name: Install pnpm (standalone binary on PATH)
       uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
       with:
+        # When version is omitted, the action respects packageManager from package.json
         version: ${{ inputs.pnpm }}
         standalone: true
 

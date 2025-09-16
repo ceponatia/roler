@@ -22,15 +22,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Setup pnpm
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
-          version: 10
-      - name: Setup Node.js (LTS)
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b
-        with:
-          node-version: '20'
-          cache: pnpm
+          node: '20'
       - name: Install deps
         run: pnpm install --frozen-lockfile
       - name: Build monorepo (schemas first)
