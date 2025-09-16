@@ -37,8 +37,7 @@ jobs:
       - name: Generate TypeDoc Markdown
         run: pnpm -w --filter @roler/docs-site docs:ts
       - name: Generate OpenAPI Pages (MDX)
-        working-directory: packages/docs-site/website
-        run: node ../node_modules/@docusaurus/core/bin/docusaurus.mjs gen-api-docs roler
+        run: pnpm -w --filter @roler/docs-site docs:openapi:pages
       - name: Build Docusaurus
         run: pnpm -w --filter @roler/docs-site build
       - name: Upload artifact
