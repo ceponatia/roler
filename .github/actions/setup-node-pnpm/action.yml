@@ -11,11 +11,17 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install pnpm (standalone binary on PATH)
+    - name: Install pnpm (from input version)
+      if: ${{ inputs.pnpm != '' }}
       uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
       with:
-        # When version is omitted, the action respects packageManager from package.json
         version: ${{ inputs.pnpm }}
+        standalone: true
+
+    - name: Install pnpm (from packageManager)
+      if: ${{ inputs.pnpm == '' }}
+      uses: pnpm/action-setup@36de12bed180fa130ed56a35e7344f2fa7a820ab # v4
+      with:
         standalone: true
 
     - name: Install Node.js (enable pnpm cache)
