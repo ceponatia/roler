@@ -30,20 +30,27 @@ jobs:
           node: '20'
       - name: Install deps
         run: pnpm install --frozen-lockfile
+        
       - name: Build monorepo (schemas first)
         run: pnpm -w -r --filter @roler/schemas build
+
       - name: Generate OpenAPI
-        run: pnpm -w --filter @roler/docs-site docs:openapi
+        run: pnpm -C packages/docs-site/website docusaurus gen-api-docs openapi .
+
       - name: Generate TypeDoc Markdown
         run: pnpm -w --filter @roler/docs-site docs:ts
+
       - name: Generate OpenAPI Pages (MDX)
-        run: pnpm -w --filter @roler/docs-site docs:openapi:pages
+        run: pnpm -C packages/docs-site/website docusaurus gen-api-docs openapi .
+
       - name: Build Docusaurus
-        run: pnpm -w --filter @roler/docs-site build
+        run: pnpm -C packages/docs-site/website build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
         with:
           path: packages/docs-site/website/build
+
 
   deploy:
     if: github.event_name != 'pull_request'
