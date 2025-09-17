@@ -30,9 +30,14 @@ jobs:
           node: '20'
       - name: Install deps
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build monorepo (schemas first)
         run: pnpm -w -r --filter @roler/schemas build
+
+      - name: Debug site dir
+        run: |
+          pwd
+          ls -R packages/docs-site/website | head -50
 
       - name: Generate OpenAPI
         run: pnpm -C packages/docs-site/website docusaurus gen-api-docs openapi .
