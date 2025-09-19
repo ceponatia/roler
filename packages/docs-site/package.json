@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "start": "docusaurus start",
-    "prebuild": "pnpm -C ../schemas build",
     "build": "docusaurus build",
     "serve": "docusaurus serve",
 
