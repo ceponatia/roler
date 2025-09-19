@@ -1,8 +1,8 @@
 {
   "name": "@roler/docs-site",
   "private": true,
-  "version": "0.0.2",
-  "type": "module",
+  "version": "0.1.0",
+  "type": "commonjs",
   "scripts": {
     "start": "docusaurus start",
     "build": "docusaurus build",
