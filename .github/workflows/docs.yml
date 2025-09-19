@@ -39,17 +39,17 @@ jobs:
           pwd
           ls -R packages/docs-site/website | head -50
 
-      - name: Generate OpenAPI
-        run: pnpm -C packages/docs-site/website docusaurus gen-api-docs openapi .
+      - name: Generate OpenAPI JSON
+        run: pnpm -w -F @roler/docs-site docs:openapi
 
       - name: Generate TypeDoc Markdown
-        run: pnpm -w --filter @roler/docs-site docs:ts
+        run: pnpm -w -F @roler/docs-site docs:ts
 
       - name: Generate OpenAPI Pages (MDX)
-        run: pnpm -C packages/docs-site/website docusaurus gen-api-docs openapi .
+        run: pnpm -w -F @roler/docs-site docs:openapi:pages
 
       - name: Build Docusaurus
-        run: pnpm -C packages/docs-site/website build
+        run: pnpm -w -F @roler/docs-site build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b

@@ -4,16 +4,16 @@
   "version": "0.0.2",
   "type": "module",
   "scripts": {
-    "start": "docusaurus start website",
+  "start": "docusaurus start website --config website/docusaurus.config.ts",
     "prebuild": "pnpm -w -r --filter @roler/schemas build",
-    "build": "pnpm docs:all",
-    "serve": "docusaurus serve website",
+  "build": "docusaurus build website --config website/docusaurus.config.ts",
+  "serve": "docusaurus serve website --config website/docusaurus.config.ts",
     "gen:openapi": "pnpm -w -F @roler/schemas build && tsx scripts/gen-openapi.ts",
     "gen:typedoc": "typedoc",
     "docs:openapi": "pnpm gen:openapi",
     "docs:ts": "pnpm gen:typedoc",
-  "docs:openapi:pages": "docusaurus gen-api-docs openapi website",
-    "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build website",
+  "docs:openapi:pages": "docusaurus gen-api-docs openapi website --config website/docusaurus.config.ts",
+  "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build website --config website/docusaurus.config.ts",
     "clean": "rimraf docs/api docs/openapi openapi.json website/build website/.docusaurus"
   },
   "devDependencies": {
