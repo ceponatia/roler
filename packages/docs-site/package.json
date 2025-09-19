@@ -4,17 +4,20 @@
   "version": "0.0.2",
   "type": "module",
   "scripts": {
-  "start": "docusaurus start website --config website/docusaurus.config.ts",
-  "prebuild": "pnpm -C ../schemas build",
-  "build": "docusaurus build website --config website/docusaurus.config.ts",
-  "serve": "docusaurus serve website --config website/docusaurus.config.ts",
+    "start": "docusaurus start",
+    "prebuild": "pnpm -C ../schemas build",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+
     "gen:openapi": "pnpm -C ../schemas build && tsx scripts/gen-openapi.ts",
     "gen:typedoc": "typedoc",
+
     "docs:openapi": "pnpm gen:openapi",
     "docs:ts": "pnpm gen:typedoc",
-  "docs:openapi:pages": "pnpm -C website docusaurus gen-api-docs openapi .",
-  "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build website --config website/docusaurus.config.ts",
-    "clean": "rimraf docs/api docs/openapi openapi.json website/build website/.docusaurus"
+    "docs:openapi:pages": "docusaurus gen-api-docs openapi .",
+
+    "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build",
+    "clean": "rimraf docs/api docs/openapi openapi.json build .docusaurus"
   },
   "devDependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.4",
