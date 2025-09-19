@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        # You can keep your pinned SHA; v4 shown for readability
         uses: actions/checkout@v4
 
       - name: Setup Pages
@@ -35,35 +34,29 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      # ⛔️ IMPORTANT: Build ONLY the schemas package (no -r recursion)
+      # Build only the schemas package directly, not via workspace recursion
       - name: Build schemas only (no root, no db)
-        run: pnpm -w -F @roler/schemas build
+        run: pnpm -C packages/schemas build
 
-      # (Optional) Debug: confirm the Docusaurus site dir and config exist
+      # Optional visibility
       - name: Debug site dir
         run: |
           pwd
           ls -la packages/docs-site/website | sed -n '1,120p'
 
-      # Generate OpenAPI JSON from schemas
       - name: Generate OpenAPI JSON
         run: pnpm -w -F @roler/docs-site docs:openapi
 
-      # Generate TypeDoc Markdown
       - name: Generate TypeDoc Markdown
         run: pnpm -w -F @roler/docs-site docs:ts
 
-      # Convert OpenAPI -> MDX pages using Docusaurus plugin (site dir = website)
       - name: Generate OpenAPI Pages (MDX)
         run: pnpm -w -F @roler/docs-site docs:openapi:pages
 
-      # Build the Docusaurus site (uses website/docusaurus.config.ts)
       - name: Build Docusaurus
         run: pnpm -w -F @roler/docs-site build
 
-      # Upload Pages artifact from the website build output
       - name: Upload artifact
-        # Keep your pinned SHA if you wish; v3 tag shown for clarity
         uses: actions/upload-pages-artifact@v3
         with:
           path: packages/docs-site/website/build
@@ -76,4 +69,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
