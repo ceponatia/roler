@@ -13,9 +13,9 @@ const siteDir = path.resolve(pkgRoot, 'website');
 const docusaurusMjs = path.resolve(pkgRoot, 'node_modules/@docusaurus/core/bin/docusaurus.mjs');
 
 const node = process.env.npm_node_execpath || process.execPath;
-const result = spawnSync(node, [docusaurusMjs, 'gen-api-docs', 'roler'], {
-  cwd: siteDir,
-  stdio: 'inherit'
+const result = spawnSync(node, [docusaurusMjs, 'gen-api-docs', 'openapi'], {
+   cwd: siteDir,
+   stdio: 'inherit'
 });
 
 const code = typeof result.status === 'number' ? result.status : 1;

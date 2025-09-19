@@ -12,7 +12,7 @@
     "gen:typedoc": "typedoc",
     "docs:openapi": "pnpm gen:openapi",
     "docs:ts": "pnpm gen:typedoc",
-  "docs:openapi:pages": "docusaurus gen-api-docs openapi website --config website/docusaurus.config.ts",
+  "docs:openapi:pages": "pnpm -C website docusaurus gen-api-docs openapi .",
   "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build website --config website/docusaurus.config.ts",
     "clean": "rimraf docs/api docs/openapi openapi.json website/build website/.docusaurus"
   },
