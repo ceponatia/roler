@@ -45,16 +45,16 @@ jobs:
           test -f packages/docs-site/docusaurus.config.ts && echo "Found docusaurus.config.ts"
 
       - name: Generate OpenAPI JSON
-        run: pnpm -w -F @roler/docs-site docs:openapi
+        run: pnpm -C packages/docs-site docs:openapi
 
       - name: Generate TypeDoc Markdown
-        run: pnpm -w -F @roler/docs-site docs:ts
+        run: pnpm -C packages/docs-site docs:ts
 
       - name: Generate OpenAPI Pages (MDX)
-        run: pnpm -w -F @roler/docs-site docs:openapi:pages
+        run: pnpm -C packages/docs-site docs:openapi:pages
 
       - name: Build Docusaurus
-        run: pnpm -w -F @roler/docs-site build
+        run: pnpm -C packages/docs-site build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
