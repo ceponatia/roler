@@ -21,41 +21,52 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        # You can keep your pinned SHA; v4 shown for readability
+        uses: actions/checkout@v4
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Setup Node & pnpm
         uses: ./.github/actions/setup-node-pnpm
         with:
           node: '20'
+
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      - name: Build monorepo (schemas first)
+      # ⛔️ IMPORTANT: Build ONLY the schemas package (no -r recursion)
+      - name: Build schemas only (no root, no db)
         run: pnpm -w -F @roler/schemas build
 
+      # (Optional) Debug: confirm the Docusaurus site dir and config exist
       - name: Debug site dir
         run: |
           pwd
-          ls -R packages/docs-site/website | head -50
+          ls -la packages/docs-site/website | sed -n '1,120p'
 
+      # Generate OpenAPI JSON from schemas
       - name: Generate OpenAPI JSON
         run: pnpm -w -F @roler/docs-site docs:openapi
 
+      # Generate TypeDoc Markdown
       - name: Generate TypeDoc Markdown
         run: pnpm -w -F @roler/docs-site docs:ts
 
+      # Convert OpenAPI -> MDX pages using Docusaurus plugin (site dir = website)
       - name: Generate OpenAPI Pages (MDX)
         run: pnpm -w -F @roler/docs-site docs:openapi:pages
 
+      # Build the Docusaurus site (uses website/docusaurus.config.ts)
       - name: Build Docusaurus
         run: pnpm -w -F @roler/docs-site build
 
+      # Upload Pages artifact from the website build output
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
+        # Keep your pinned SHA if you wish; v3 tag shown for clarity
+        uses: actions/upload-pages-artifact@v3
         with:
           path: packages/docs-site/website/build
-
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -65,3 +76,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
