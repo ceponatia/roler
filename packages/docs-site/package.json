@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
   "start": "docusaurus start website --config website/docusaurus.config.ts",
-    "prebuild": "pnpm -w -r --filter @roler/schemas build",
+  "prebuild": "pnpm -w -F @roler/schemas build",
   "build": "docusaurus build website --config website/docusaurus.config.ts",
   "serve": "docusaurus serve website --config website/docusaurus.config.ts",
     "gen:openapi": "pnpm -w -F @roler/schemas build && tsx scripts/gen-openapi.ts",
