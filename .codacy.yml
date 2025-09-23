@@ -35,3 +35,7 @@ exclude_paths:
   - "packages/docs-site/content/**"
   - "docs/**"
   - "coverage/**"
+  - "scripts/**"
+  - "**/*.config.js"
+  - "**/*.config.cjs"
+  - "**/*.config.mjs"
