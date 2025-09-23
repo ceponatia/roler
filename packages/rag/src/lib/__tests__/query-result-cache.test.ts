@@ -11,7 +11,9 @@ describe('query result cache', () => {
     const c = createQueryResultCache(2);
     const k = makeQueryKey('sig1');
     c.set(k, { itemIds: [ULID_A] as any, scores: [0.9], stampMs: Date.now(), entities: [ULID_A] as any });
-    const r = c.get(k)!;
+    const r = c.get(k);
+    expect(r).toBeDefined();
+    if (!r) throw new Error('expected cache hit');
     expect(r.itemIds.length).toBe(1);
   });
 

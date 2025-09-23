@@ -35,7 +35,12 @@ describe('scoreAndSort', () => {
   const scored = scoreAndSort(candidates, { halfLifeMinutes: 60, now });
   expect(scored.length).toBe(2);
   // Same sim; newer updatedAt should come first
-  expect(scored[0]!.chunkId).toBe(ULID_A);
-  expect(scored[1]!.chunkId).toBe(ULID_B);
+  const first = scored[0];
+  const second = scored[1];
+  expect(first).toBeDefined();
+  expect(second).toBeDefined();
+  if (!first || !second) throw new Error('expected two results');
+  expect(first.chunkId).toBe(ULID_A);
+  expect(second.chunkId).toBe(ULID_B);
   });
 });
