@@ -1,28 +1,28 @@
 ---
-title: R-004 Boundary Safety & Validation Technical Specification
+title: R-004 Boundary Safety Technical Specification
 status: Draft
-last-updated: 2025-09-04
+last-updated: 2025-09-23
 related-prd: ../prd/r-004-boundary-safety-prd.md
-revision: 0.1.0
+revision: 0.2.0
 ---
 
 ## 1. Purpose & Scope
 
-Centralize and enforce strict validation & standardized error handling for all ingress boundaries (HTTP routes, background job payloads, internal message queues) ensuring zero unsafe `any` usage and removal of non-null assertions while keeping p95 validation overhead <5 ms.
+Implement 100% inbound validation across HTTP routes, background jobs, and internal queues; map validation failures to a standardized error shape with stable codes; enforce zero `any`/non-null assertions; and keep validation overhead p95 < 5 ms via schema cache and micro-benchmarks.
 
 In-Scope:
 
-- Zod schemas for every inbound shape (params, query, body, headers, queue payloads).
-- Common `validate()` helper wrapping parse + error normalization.
-- Lint / CI enforcement verifying each route file imports a schema.
-- Standard error mapper => unified error shape.
-- Type inference re-export from `@roler/schemas` avoiding duplication.
-- Pre-compilation / caching of schemas for perf.
+- Zod schemas for every inbound shape (params, query, body, headers, job/queue payloads) in `@roler/schemas`.
+- `validateRequest()` and `mapZodError()` helpers for structural parse and error mapping.
+- CI scanner verifying every route file imports a schema.
+- Enumerated validation error codes (VAL_*), defined in contracts.
+- Type inference reuse from Zod schemas; no duplication.
+- Pre-compilation/caching for performance.
 
 Out-of-Scope (this spec):
 
-- Automated client SDK generation.
-- Runtime code-mod insertion.
+- Logging/observability details (see R-029 Logging & Context PRD).
+- Automated client SDK generation; runtime code-mod insertion.
 
 ## 2. Requirements Mapping
 
@@ -37,11 +37,11 @@ Out-of-Scope (this spec):
 Components:
 
 1. Schema Layer: Zod schemas in `@roler/schemas` (contracts-first).
-2. Validation Utility: `safeParseOrError(schema, data, context)` returns Result.
-3. Error Normalizer: Maps ZodError → standardized error list with codes + redacted fields.
-4. Route Decorator (functional): Higher-order wrapper applying validation pre-handler.
-5. CI Scanner: Script enumerates `routes/api/**/+server.ts` ensures import of contracts.
-6. Metrics Adapter: Counts validation passes/failures & latency.
+2. Validation Utility: `validateRequest(event, schema)` performs parse and returns a typed object or mapped error.
+3. Error Mapper: `mapZodError(zodError)` → standardized error payload with enumerated VAL_* codes.
+4. Optional wrapper: Higher-order function to apply validation before handler logic.
+5. CI Scanner: Script enumerates `routes/api/**/+server.ts` and ensures imports of schemas.
+6. Micro-bench harness for validation latency.
 
 ## 4. Data & Schema Design (Zod-First)
 
@@ -61,13 +61,13 @@ Breaking changes to external request schemas require semver major bump; additive
 
 ## 8. Public API Surface (Initial)
 
-- `validateRequest(event, schema)` (returns { data, error }).
-- `mapZodError(zodError)`.
-- Re-exported inferred types (e.g., `CreateGameRequest`).
+- `validateRequest(event, schema): { data?: T; error?: StandardError }`.
+- `mapZodError(zodError): StandardError`.
+- Re-export inferred types (e.g., `CreateGameRequest`).
 
 ## 9. Error Handling & Codes
 
-Extend codes with:
+Enumerated codes live in the contracts package and include at minimum:
 
 - VAL_SCHEMA_VIOLATION
 - VAL_MISSING_FIELD
@@ -76,7 +76,7 @@ Extend codes with:
 
 ## 10. Security & Capability Model
 
-Redact sensitive fields in error details (list from configuration). Never echo raw secrets.
+Error payload shapes and any redactions must follow policy defined in R-029 Logging & Context PRD. Do not duplicate redaction rules here.
 
 ## 11. Performance Considerations
 
@@ -84,14 +84,14 @@ Schema cache keyed by schema reference; reuse compiled parse function; micro-ben
 
 ## 12. Observability & Metrics
 
-Counters: validation_success_total, validation_failure_total{code}. Histogram: validation_latency_ms.
+Counters and histograms for validation can be added, but logging/observability policy is out of scope here; see R-029.
 
 ## 13. Failure Modes & Degradation
 
 | Scenario | Behavior | Rationale |
 |----------|----------|-----------|
 | Missing schema import | CI fail | Ensures coverage |
-| Validation timeout (rare) | Log + generic error | Resilience |
+| Validation timeout (rare) | Return generic standardized error | Resilience |
 
 ## 14. Implementation Plan (Step-by-Step)
 
@@ -100,7 +100,7 @@ Counters: validation_success_total, validation_failure_total{code}. Histogram: v
 3. Implement validation helper & mapper.
 4. Add CI scanner script.
 5. Add ESLint rule config (no non-null, no any).
-6. Instrument metrics.
+6. Optional metrics (latency); logging policy deferred to R-029.
 7. Add tests (positive, negative, redaction).
 8. Benchmark parse latency.
 9. Docs page (validation.md).
@@ -139,6 +139,14 @@ All routes reside under SvelteKit api path; background jobs already typed.
 ## 21. Acceptance Criteria Traceability
 
 Scanner test ↔ 100% coverage; negative tests ↔ standardized error; lint config ↔ zero any.
+
+## 26. Traceability Matrix
+
+- R-004 ↔ PRD Goals/Acceptance ↔ CI scanner, `validateRequest`, `mapZodError` ↔ tests (schema/negative/mapper)
+- R-017, R-026–R-027 ↔ Schema layer & inference ↔ unit tests
+- R-028 & R-030 ↔ Standardized error shape and codes ↔ mapper tests
+- R-029 ↔ Logging & Context PRD only (link); no duplication
+- DS-002/DS-003 ↔ ESLint/tsconfig strict rules ↔ lint CI gate
 
 ## 22. KPI Measurement Plan
 

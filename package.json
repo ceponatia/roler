@@ -18,7 +18,8 @@
     "test:changed": "pnpm -r test:changed",
     "test:ci": "pnpm -r --workspace-concurrency=1 test:ci && pnpm coverage:merge",
     "coverage:merge": "node scripts/merge-lcov.mjs",
-    "mutate:rag": "pnpm --filter rag mutate"
+    "mutate:rag": "pnpm --filter rag mutate",
+    "ci:boundary-schemas": "node scripts/ci-boundary-schemas.mjs"
   },
   "keywords": [],
   "author": "",

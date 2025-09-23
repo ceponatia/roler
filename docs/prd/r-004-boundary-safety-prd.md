@@ -1,83 +1,61 @@
-# PRD: R-004 Boundary Safety & Validation
+# PRD: R-004 Boundary Safety (Validation + Standardized Errors)
 
 Requirement ID: R-004
 Source: requirements.md Section 2
 Status: Draft
 Owner: PRODUCT
-Last Updated: YYYY-MM-DD
+Last Updated: 2025-09-23
 
 ## Summary
 
-Enforce strong typing and centralized validation across all boundaries to prevent unsafe inputs and type drift.
+Boundary safety via centralized validation and standardized error responses across all ingress points; no unsafe types. Performance target: validation overhead p95 < 5 ms per request.
 
 ## Problem / Opportunity
 
-Unvalidated input and loose typing introduce security and reliability risks.
+Unvalidated inputs and unsafe typing cause security incidents, runtime faults, and type drift. Centralized, contract-first validation prevents invalid states early and ensures consistent errors.
 
 ## Goals
 
-- 100% inbound requests validated via shared schemas
-- Standardized error shape across services
-- Eliminate `any` and non-null assertions
+- 100% inbound validation using shared schemas.
+- Standardized error shape with stable, enumerated error codes (contracts).
+- Zero `any` and zero non-null assertions; enforced by lint/tsconfig per DS-002/DS-003.
 
 ## Non-Goals
 
-- Custom DSL for validation (reuse Zod)
-
-## User Stories
-
-1. As a developer, I receive early runtime validation errors with clear messages.
-2. As a security auditor, I confirm all ingress points enforce schemas.
-3. As a maintainer, I rely on inferred types to avoid duplication.
+- Logging/observability policies and redaction rules (defer to R-029 and R-063–R-067).
 
 ## Functional Scope
 
-- Zod validation for params/body/headers
-- Central error mapper → standardized payload
-- Type inference exported for internal use
+- Zod validation for params, query, body, and headers for HTTP routes, plus background job and internal queue payloads.
+- Central error mapper to standardized payload with enumerated codes (reference contracts package); do not restate logging.
+- Type inference exported and reused (infer types from Zod schemas; avoid duplication).
 
 ## Out of Scope
 
-- Automatic client generation (future consideration)
+- Client SDK generation; code-mods for auto-insertion; detailed logging/metrics.
 
 ## Acceptance Criteria
 
-- GIVEN an endpoint without validation THEN lint/CI fails.
-- GIVEN invalid input THEN response returns standardized error with code.
-- Codebase contains zero `any` and zero non-null assertions (enforced by lint rules + DS-002/DS-003).
+- Missing validation import on any boundary file → CI fails.
+- Invalid input → standardized error shape with a stable error code.
+- Repo-wide zero `any` and zero non-null assertions (lint and tsconfig gates).
 
-## Metrics / KPIs
+## Performance
 
-- Production incidents due to unvalidated input < 1%
+- Validation overhead p95 < 5 ms per request/job/queue message.
 
-## Risks & Mitigations
+## Security / Privacy
 
-- Risk: Performance overhead → Mitigation: precompile schemas / cache parse results.
-
-## Dependencies
-
-- Contracts-first development (R-024)
-
-## Security / Privacy Considerations
-
-- Input redaction for restricted fields in error logs.
-
-## Performance Considerations
-
-- Validation adds <5 ms p95 per request.
+- Error payloads/redactions follow R-029 Logging & Context PRD policy. See `docs/prd/r-029-contextual-error-logging-prd.md`.
 
 ## Operational Considerations
 
-- CI check enumerating endpoints vs validation imports.
+- CI check enumerating `routes/api/**/+server.ts` endpoints versus schema imports; fails on gaps.
 
-## Open Questions
+## Traceability Matrix
 
-- Do we need a code-mod to auto-insert validation wrappers?
-
-## Alternatives Considered
-
-- Ad-hoc manual validation (rejected: inconsistent)
-
-## Definition of Done
-
-- All endpoints validated, zero lint violations, error mapping tests pass.
+- R-004 ↔ Goals/Acceptance ↔ Tech Spec: CI scanner, `validateRequest`, `mapZodError` ↔ tests (schema, negative, mapper)
+- R-017, R-026–R-027 ↔ Functional Scope ↔ Tech Spec: schema layer & inference ↔ unit tests
+- R-028 & R-030 ↔ Error shape ↔ Tech Spec: enumerated codes ↔ mapper tests
+- R-029 ↔ Link only (Logging & Context PRD); no duplication here
+- DS-002/DS-003 ↔ Acceptance ↔ ESLint/tsconfig rules ↔ lint CI gate

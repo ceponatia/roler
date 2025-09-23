@@ -30,6 +30,8 @@ export default [
       parserOptions: { ecmaVersion: 2023, sourceType: 'module' }
     },
     rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/consistent-type-imports': ['warn', { prefer: 'type-imports' }],
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'warn',
@@ -52,6 +54,15 @@ export default [
         require: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly'
+      }
+    }
+  },
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly'
       }
     }
   },
