@@ -2,20 +2,19 @@
   "name": "@roler/docs-site",
   "private": true,
   "version": "0.1.0",
-  "type": "commonjs",
   "scripts": {
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "serve": "docusaurus serve",
+    "start": "docusaurus start --config docusaurus.config.ts",
+    "build": "docusaurus build --config docusaurus.config.ts",
+    "serve": "docusaurus serve --config docusaurus.config.ts",
 
-    "gen:openapi": "pnpm -C ../schemas build && tsx scripts/gen-openapi.ts",
+    "gen:openapi": "pnpm -w -F @roler/schemas build && tsx scripts/gen-openapi.ts",
     "gen:typedoc": "typedoc",
 
     "docs:openapi": "pnpm gen:openapi",
     "docs:ts": "pnpm gen:typedoc",
-    "docs:openapi:pages": "docusaurus gen-api-docs openapi .",
+  "docs:openapi:pages": "docusaurus gen-api-docs roler --plugin-id openapi",
 
-    "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build",
+    "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build --config docusaurus.config.ts",
     "clean": "rimraf docs/api docs/openapi openapi.json build .docusaurus"
   },
   "devDependencies": {

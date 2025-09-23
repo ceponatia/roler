@@ -4,7 +4,7 @@
 
 # Interface: RetrieverLike\<TCandidate\>
 
-Defined in: [index.ts:17](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/testutils/src/index.ts#L17)
+Defined in: [index.ts:17](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/testutils/src/index.ts#L17)
 
 ## Type Parameters
 
@@ -18,7 +18,7 @@ Defined in: [index.ts:17](https://github.com/ceponatia/roler/blob/1efd6363aec6d6
 
 > **retrieve**(`opts`): `Promise`\<`Readonly`\<\{ `candidates`: readonly `TCandidate`[]; `vectorMs`: `number`; \}\>\>
 
-Defined in: [index.ts:18](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/testutils/src/index.ts#L18)
+Defined in: [index.ts:18](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/testutils/src/index.ts#L18)
 
 #### Parameters
 

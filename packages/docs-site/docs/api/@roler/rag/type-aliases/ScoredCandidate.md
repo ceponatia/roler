@@ -6,4 +6,4 @@
 
 > **ScoredCandidate** = `Readonly`\<\{ `chunkId`: [`Ulid`](Ulid.md); `composite`: `number`; `diversityBoost`: `number`; `entityId`: [`Ulid`](Ulid.md); `recency`: `number`; `sim`: `number`; `updatedAt`: [`IsoDateTime`](IsoDateTime.md); \}\>
 
-Defined in: [rag/src/lib/scoring.ts:17](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/rag/src/lib/scoring.ts#L17)
+Defined in: [rag/src/lib/scoring.ts:17](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/rag/src/lib/scoring.ts#L17)

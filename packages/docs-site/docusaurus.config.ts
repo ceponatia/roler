@@ -38,9 +38,8 @@ export default {
       'docusaurus-plugin-openapi-docs',
       {
         id: 'openapi',
-        // keep this the same docs plugin id you use elsewhere (your config worked before);
-        // if you ever hit a sidebar registration issue, try 'default'
-        docsPluginId: 'classic',
+        // Match the docs plugin id emitted by the classic preset (default)
+        docsPluginId: 'default',
         config: {
           roler: {
             // ⬅️ both paths now local to the package root
@@ -59,6 +58,7 @@ export default {
       items: [
         { type: 'docSidebar', sidebarId: 'apiSidebar', position: 'left', label: 'API (TS)' },
         { type: 'docSidebar', sidebarId: 'openapiSidebar', position: 'left', label: 'OpenAPI' },
+        { to: '/docs/api/', label: 'Docs Home', position: 'left' },
       ],
     },
   },

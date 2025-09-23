@@ -4,7 +4,7 @@
 
 # Interface: Retriever
 
-Defined in: [rag/src/lib/retriever.ts:17](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/rag/src/lib/retriever.ts#L17)
+Defined in: [rag/src/lib/retriever.ts:17](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/rag/src/lib/retriever.ts#L17)
 
 ## Methods
 
@@ -12,7 +12,7 @@ Defined in: [rag/src/lib/retriever.ts:17](https://github.com/ceponatia/roler/blo
 
 > **retrieve**(`opts`): `Promise`\<`Readonly`\<\{ `candidates`: readonly `Readonly`\<\{ `chunkId`: [`Ulid`](../type-aliases/Ulid.md); `diversityBoost?`: `number`; `entityId`: [`Ulid`](../type-aliases/Ulid.md); `similarity`: `number`; `updatedAt`: [`IsoDateTime`](../type-aliases/IsoDateTime.md); \}\>[]; `vectorMs`: `number`; \}\>\>
 
-Defined in: [rag/src/lib/retriever.ts:18](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/rag/src/lib/retriever.ts#L18)
+Defined in: [rag/src/lib/retriever.ts:18](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/rag/src/lib/retriever.ts#L18)
 
 #### Parameters
 

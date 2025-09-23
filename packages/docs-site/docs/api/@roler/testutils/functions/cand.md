@@ -6,7 +6,7 @@
 
 > **cand**\<`T`\>(`id`, `ent`, `sim`, `updated`): `T`
 
-Defined in: [index.ts:26](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/testutils/src/index.ts#L26)
+Defined in: [index.ts:26](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/testutils/src/index.ts#L26)
 
 ## Type Parameters
 

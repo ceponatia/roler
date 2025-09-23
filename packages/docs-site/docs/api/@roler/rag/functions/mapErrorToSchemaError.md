@@ -6,7 +6,7 @@
 
 > **mapErrorToSchemaError**(`err`): `object`
 
-Defined in: [rag/src/lib/errors.ts:7](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/rag/src/lib/errors.ts#L7)
+Defined in: [rag/src/lib/errors.ts:7](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/rag/src/lib/errors.ts#L7)
 
 ## Parameters
 

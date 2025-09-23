@@ -6,7 +6,7 @@
 
 > **createGatedRetrievalOrchestrator**(`deps`, `baseConfig?`, `opts?`): (`request`, `overrides?`) => `Promise`\<\{ `errors`: `object`[]; `issuedAt?`: `string`; `items`: readonly `object`[]; `partial`: `boolean`; `partialReason?`: `"SOFT_TIMEOUT"` \| `"HARD_TIMEOUT"` \| `"ADAPTIVE_LIMIT"`; `requestId?`: `string` & `BRAND`\<`"Ulid"`\>; `stats`: \{ `candidateCount`: `number`; `filteredCount`: `number`; `kRequested`: `number`; `kUsed`: `number`; \}; `timings`: \{ `cacheMs`: `number`; `postProcessMs`: `number`; `totalMs`: `number`; `vectorMs`: `number`; \}; \}\>
 
-Defined in: [rag/src/lib/feature-gated.ts:10](https://github.com/ceponatia/roler/blob/1efd6363aec6d66587551f7c0b65cf6ffafb4079/packages/rag/src/lib/feature-gated.ts#L10)
+Defined in: [rag/src/lib/feature-gated.ts:10](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/rag/src/lib/feature-gated.ts#L10)
 
 ## Parameters
 
