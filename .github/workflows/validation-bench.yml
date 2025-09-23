@@ -1,0 +1,26 @@
+name: validation-bench
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+      - name: Build packages
+        run: pnpm -w -s build
+      - name: Run validation bench (p95 gate)
+        run: node packages/http-utils/dist/bench/validate-bench.js | tee bench.json && node -e 'const x=require("fs").readFileSync("bench.json","utf8"); const j=JSON.parse(x); const gate=5; if (j.p95Ms>gate) { console.error(`p95 ${j.p95Ms}ms exceeds gate ${gate}ms`); process.exit(1); }'

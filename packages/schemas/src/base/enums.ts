@@ -29,6 +29,11 @@ export const ErrorCodeEnum = z.enum([
   'refine',
   'policy',
   'safety',
+  // Validation standard codes (R-004)
+  'VAL_SCHEMA_VIOLATION',
+  'VAL_MISSING_FIELD',
+  'VAL_TYPE_MISMATCH',
+  'VAL_UNAUTHORIZED_FIELD',
   // Retrieval-specific (R-002)
   'RETR_TIMEOUT_SOFT',
   'RETR_TIMEOUT_HARD',

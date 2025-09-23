@@ -5,7 +5,8 @@
     { "path": "./packages/schemas" },
   { "path": "./packages/extensions" },
   { "path": "./packages/rag" },
-  { "path": "./packages/db" }
+  { "path": "./packages/db" },
+  { "path": "./packages/http-utils" }
   ],
   "exclude": ["node_modules", "dist", "build", "scripts", "examples", "templates", "website"]
 }

@@ -1,6 +1,6 @@
 ---
 title: R-002 Low-Latency Retrieval Technical Specification
-status: Accepted
+status: Completed
 last-updated: 2025-09-04
 related-prd: ../prd/r-002-low-latency-retrieval-prd.md
 revision: 0.1.0
@@ -313,5 +313,3 @@ Matrix linking tests: performance benchmark → p95 assertion; timeout simulatio
 
 This design establishes a low-latency, deterministic retrieval pipeline with adaptive controls, structured observability, and graceful degradation strategies meeting the ≤250 ms p95 objective while preserving context quality and security constraints.
 
----
-END OF DOCUMENT

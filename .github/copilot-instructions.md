@@ -9,6 +9,15 @@ Auth: SPA → API routes (Zod-validated) → JWT/Redis session (GM vs Player rol
 ## Fundamental Rules
 
 - The gh-pages package is an isolated project, do not add it to the root package.json, tsconfig.json, pnpm workspace, or CI workflows.
+- When making updates or changes to `docs/design/` or `docs/prd/`, update the `last-updated` field and `status` (Draft, In-Progress, Completed, Accepted, Approved).
+- Follow the coding conventions in `docs/coding-conventions.md`.
+- Follow the design specs and PRDs in `docs/design/` and `docs/prd/`. Stay in-scope without recommending out-of-scope features.
+- Add new packages under `packages/` with their own `package.json`, `tsconfig.json`, and `vitest.config.ts`.
+- Export all public symbols through the package root only (no deep imports).
+- Update root `tsconfig.json` paths when adding new packages.
+- Add new scripts under `scripts/` with `.mjs` extension.
+- Use ESM only; no CommonJS unless required for compatibility.
+- Add tests and ensure coverage for new code in packages.
 - Obey in-file comments; ask if uncertain.
 - No `any`, no non-null `!`, no unchecked casting.
 - Zod at every external boundary (HTTP, DB raw, env). Use inferred types internally.
