@@ -3,9 +3,6 @@ engines:
   semgrep:
     exclude_paths:
       - ".github/*/**"
-      - "docs/**"
-    - "packages/docs-site/docs/**"
-    - "packages/docs-site/content/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -21,9 +18,6 @@ engines:
   eslint-9:
     exclude_paths:
       - ".github/*/**"
-      - "docs/**"
-    - "packages/docs-site/docs/**"
-    - "packages/docs-site/content/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -39,3 +33,5 @@ exclude_paths:
   - ".github/*/**"
   - "packages/docs-site/docs/**"
   - "packages/docs-site/content/**"
+  - "docs/**"
+  - "coverage/**"
