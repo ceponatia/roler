@@ -8,7 +8,7 @@ Last Updated: 2025-09-01
 
 ## Summary
 
-Augment all error logs with contextual metadata (requestId, gameId where relevant, user role) to improve traceability, triage speed, and forensic analysis while maintaining redaction guarantees.
+Augment all error logs with contextual metadata (requestId, gameId where relevant, user role) to improve traceability, triage speed, and forensic analysis while maintaining redaction guarantees. This PRD does not define validation mechanics; standardized error codes and shapes come from R-004 contracts.
 
 ## Problem / Opportunity
 
@@ -19,6 +19,7 @@ Sparse logs without context require costly correlation and delay incident respon
 - Ensure every error log entry includes standardized correlation fields.
 - Provide helper to attach domain-specific context (entityId, jobId) uniformly.
 - Maintain privacy by excluding restricted attributes (align with R-067, R-077).
+- Cross-reference standardized error codes from R-004 (no redefining codes here).
 
 ## Non-Goals
 
@@ -64,7 +65,7 @@ Sparse logs without context require costly correlation and delay incident respon
 
 ## Dependencies
 
-- Standardized error shape (R-028).
+- Standardized error shape and codes (R-004, R-028, R-030).
 - Structured logging & tracing infrastructure (R-019).
 
 ## Security / Privacy Considerations
