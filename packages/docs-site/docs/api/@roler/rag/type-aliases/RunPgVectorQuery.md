@@ -1,0 +1,27 @@
+[**Documentation**](../../../README.md)
+
+***
+
+# Type Alias: RunPgVectorQuery()
+
+> **RunPgVectorQuery** = (`embedding`, `k`, `args`) => `Promise`\<readonly [`PgVectorRow`](PgVectorRow.md)[]\>
+
+Defined in: [rag/src/lib/retriever.ts:29](https://github.com/ceponatia/roler/blob/3285898e6e20febeb11523af0dddefd8f892e902/packages/rag/src/lib/retriever.ts#L29)
+
+## Parameters
+
+### embedding
+
+readonly `number`[]
+
+### k
+
+`number`
+
+### args
+
+`Readonly`\<\{ `filters?`: `Readonly`\<`Record`\<`string`, `string` \| `number` \| `boolean`\>\>; `namespace?`: `string`; \}\>
+
+## Returns
+
+`Promise`\<readonly [`PgVectorRow`](PgVectorRow.md)[]\>

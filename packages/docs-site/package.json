@@ -1,0 +1,40 @@
+{
+  "name": "@roler/docs-site",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "start": "docusaurus start --config docusaurus.config.ts",
+    "build": "docusaurus build --config docusaurus.config.ts",
+    "serve": "docusaurus serve --config docusaurus.config.ts",
+
+  "gen:openapi": "pnpm -C ../schemas build && tsx scripts/gen-openapi.ts",
+    "gen:typedoc": "typedoc",
+
+    "docs:openapi": "pnpm gen:openapi",
+    "docs:ts": "pnpm gen:typedoc",
+  "docs:openapi:pages": "docusaurus gen-api-docs roler --plugin-id openapi",
+
+    "docs:all": "pnpm docs:openapi && pnpm docs:ts && pnpm docs:openapi:pages && docusaurus build --config docusaurus.config.ts",
+    "clean": "rimraf docs/api docs/openapi openapi.json build .docusaurus"
+  },
+  "devDependencies": {
+    "@asteasolutions/zod-to-openapi": "^7.3.4",
+    "@docusaurus/core": "^3.8.1",
+    "@docusaurus/preset-classic": "^3.8.1",
+    "@mdx-js/react": "^3.0.1",
+    "@types/node": "^24.5.0",
+    "docusaurus-plugin-openapi-docs": "^4.5.1",
+    "docusaurus-theme-openapi-docs": "^4.5.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typedoc": "^0.28.13",
+    "typedoc-plugin-markdown": "^4.8.1",
+    "typescript": "^5.9.2",
+    "zod": "^3.25.76"
+  },
+  "dependencies": {
+    "@roler/schemas": "workspace:*"
+  }
+}

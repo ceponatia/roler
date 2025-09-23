@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm
         with:
           node: '20'
-          pnpm: '10.13.1'
+          # pnpm version omitted; action will use package.json#packageManager
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

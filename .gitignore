@@ -29,10 +29,6 @@ packages/*/coverage/
 
 #Dependencies
 node_modules/
-gh-pages/build/
-gh-pages/.docusaurus/
-gh-pages/.cache-loader/
-gh-pages/.cache/
 
 #Environment and configuration
 .env
@@ -40,3 +36,16 @@ gh-pages/.cache/
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# TypeDoc output
+docs/api
+openapi.json
+docs/openapi.html
+
+# Docusaurus build output
+.build
+build/
+.docusaurus/
+
+# Cache
+.cache/

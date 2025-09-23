@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   plugins: [
     tsconfigPaths({
-      // Limit scanning to the RAG test tsconfig to avoid parsing unrelated repo configs (like gh-pages)
+      // Limit scanning to the RAG test tsconfig to avoid parsing unrelated repo configs
       projects: [new URL('./tsconfig.test.json', import.meta.url).pathname],
       ignoreConfigErrors: true
     })

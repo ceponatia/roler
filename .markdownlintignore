@@ -1,0 +1,15 @@
+# Generated documentation (TypeDoc / OpenAPI)
+packages/docs-site/docs/
+packages/docs-site/content/
+packages/docs-site/docs/api/
+packages/docs-site/docs/openapi/
+
+# Build artifacts and caches
+coverage/
+packages/**/dist/
+packages/docs-site/website/build/
+.docusaurus/
+.cache/
+
+# Single-file outputs
+packages/docs-site/openapi.json

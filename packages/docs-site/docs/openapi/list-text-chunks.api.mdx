@@ -1,0 +1,63 @@
+---
+id: list-text-chunks
+title: "List text chunks"
+description: "List text chunks"
+sidebar_label: "List text chunks"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVF1vEzEQ/CvRigeQLs21SEj4LQ8ICi1EqPBAdEjOeZNz66/ae6HRyf+92rskpG2qIvF0J+94dzwzdgcRU/AuYQLRwVlZ8kdhqqMOpL0DARc60cgvR4R3NKqb1t0kKKD2jtARw2UIRteS4ZPrxHs6SHWDVvIfbQKCAL+4xpqggBB9wEh6mKgkHaJkjHIDBWhCm17erdUBJlHUbsUYSYSRqf+el+P30/Gnz18uv87GVz/Hv6ru7F1+BbkA/8dhvOq3diDd5tsSxPxpM3StBTGHWjrvoMrF8xDtEklXI1S52g04/w+GS41GzSQ1x1pY7S7Qrbh4mgtgc/4BhnaBSnHpRW2tV2ietswFKG3RJT0Yva1qR7jCOEzUlgUpC8C72rRJr/Fyt0ixxT0PVNOjpJc+WkkgOB04Jm0Rci4g4m2rIyrWemDHMlukozmTSmmOpDSzB+dyrTFyYXDL5XFjreAwG39tPPRjq3f13JSlNOlp6z7rVc594cgde3jBLFLjFQhYIQ2RaUDARAY9YeB4D0wY1xhTn942GhDQEAUxmRhfS9P4ROJtWZaQqwK0W/peLE2sAHz3BuNoOjsfvQ7Rk2cR30AB3HBgVp6cnpTsevCJrOw9d9LicdIPTrX3hDGTYKR23Kjn2G0PNAcZ9FbP3ZGqApg1F7tuIRP+iCZnXr5tMW5AzKsC1jLqwcY5p6BBqTD2GtzgBgRM6xoDC7eWpu2flsevFOuxF/njhyvI+R4Fu7fY
+sidebar_class_name: "get api-method"
+info_path: ../docs/openapi/roler-api-prototype
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List text chunks"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/api/text-chunks"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List text chunks
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"List of text chunks","content":{"application/json":{"schema":{"type":"object","properties":{"data":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string","pattern":"^[0-9A-HJKMNP-TV-Z]{26}$"},"ownerType":{"anyOf":[{"type":"string","enum":["canon"]},{"type":"string","enum":["instance"]}]},"ownerId":{"type":"string","pattern":"^[0-9A-HJKMNP-TV-Z]{26}$"},"fieldPath":{"type":"string","minLength":1},"text":{"type":"string","minLength":1},"embedding":{"type":"object","properties":{"model":{"type":"string"},"dimension":{"type":"integer","minimum":0,"exclusiveMinimum":true},"embeddedAt":{"type":"string","format":"date-time"}},"required":["model"]},"meta":{"type":"object","additionalProperties":{"nullable":true}}},"required":["id","ownerType","ownerId","fieldPath","text"],"additionalProperties":false}}},"required":["data"]}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

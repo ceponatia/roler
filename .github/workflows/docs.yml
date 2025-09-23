@@ -1,0 +1,73 @@
+name: Docs Build & Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: docs-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: ${{ !contains(github.event.head_commit.message, '[skip docs]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node: '20'
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      # Build ONLY schemas; do not recurse (avoids prisma/db)
+      - name: Build schemas only (no root, no db)
+        run: pnpm -C packages/schemas build
+
+      # Optional: sanity check site root now that it's flattened
+      - name: Debug site dir
+        run: |
+          ls -la packages/docs-site | sed -n '1,120p'
+          test -f packages/docs-site/docusaurus.config.ts && echo "Found docusaurus.config.ts"
+
+      - name: Generate OpenAPI JSON
+        run: pnpm -C packages/docs-site docs:openapi
+
+      - name: Generate TypeDoc Markdown
+        run: pnpm -C packages/docs-site docs:ts
+
+      - name: Generate OpenAPI Pages (MDX)
+        run: pnpm -C packages/docs-site docs:openapi:pages
+
+      - name: Build Docusaurus
+        run: pnpm -C packages/docs-site build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # build output is at the package root now (no /website)
+          path: packages/docs-site/build
+
+  deploy:
+    if: ${{ github.event_name != 'pull_request' && !contains(github.event.head_commit.message, '[skip docs]') }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -3,7 +3,6 @@ engines:
   semgrep:
     exclude_paths:
       - ".github/*/**"
-      - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -19,7 +18,6 @@ engines:
   eslint-9:
     exclude_paths:
       - ".github/*/**"
-      - "docs/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -30,7 +28,10 @@ engines:
       - "packages/**/test-utils/**"
 exclude_paths:
   - "packages/extensions/test-utils/test-fs.ts"
-  - "gh-pages/**"
   - "packages/**/dist/**"
   - "packages/db/prisma/migrations/**"
   - ".github/*/**"
+  - "packages/docs-site/docs/**"
+  - "packages/docs-site/content/**"
+  - "docs/**"
+  - "coverage/**"
