@@ -7,7 +7,7 @@
     "build": "docusaurus build --config docusaurus.config.ts",
     "serve": "docusaurus serve --config docusaurus.config.ts",
 
-    "gen:openapi": "pnpm -w -F @roler/schemas build && tsx scripts/gen-openapi.ts",
+  "gen:openapi": "pnpm -C ../schemas build && tsx scripts/gen-openapi.ts",
     "gen:typedoc": "typedoc",
 
     "docs:openapi": "pnpm gen:openapi",
