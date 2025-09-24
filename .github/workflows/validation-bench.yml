@@ -23,4 +23,4 @@ jobs:
       - name: Build packages
         run: pnpm -w -s build
       - name: Run validation bench (p95 gate)
-        run: node packages/http-utils/dist/bench/validate-bench.js | tee bench.json && node -e 'const x=require("fs").readFileSync("bench.json","utf8"); const j=JSON.parse(x); const gate=5; if (j.p95Ms>gate) { console.error(`p95 ${j.p95Ms}ms exceeds gate ${gate}ms`); process.exit(1); }'
+        run: node packages/http-utils/dist/bench/validate-bench.js | tee bench.json && node scripts/bench-gate.mjs bench.json 5

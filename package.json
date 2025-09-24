@@ -19,7 +19,10 @@
     "test:ci": "pnpm -r --workspace-concurrency=1 test:ci && pnpm coverage:merge",
     "coverage:merge": "node scripts/merge-lcov.mjs",
     "mutate:rag": "pnpm --filter rag mutate",
-    "ci:boundary-schemas": "node scripts/ci-boundary-schemas.mjs"
+    "ci:boundary-schemas": "node scripts/ci-boundary-schemas.mjs",
+    "rtm:codemod": "tsx scripts/rtm-codemod.ts",
+    "rtm:codemod:write": "tsx scripts/rtm-codemod.ts --write",
+    "rtm:lint": "tsx scripts/rtm-lint.ts"
   },
   "keywords": [],
   "author": "",
