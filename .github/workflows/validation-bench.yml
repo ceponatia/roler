@@ -6,21 +6,37 @@ on:
   push:
     branches: [ main ]
 
+env:
+  NODE_VERSION: '20'
+
 jobs:
   bench:
+    # Only run when explicitly tagged with [validation] in the head commit message (push)
+    # or PR title/body (pull_request). Prevents unnecessary perf runs.
+    if: |
+      (github.event_name == 'push' && contains(github.event.head_commit.message, '[validation]')) ||
+      (github.event_name == 'pull_request' && (
+        contains(github.event.pull_request.title, '[validation]') ||
+        contains(github.event.pull_request.body || '', '[validation]')
+      ))
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-node-pnpm
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install deps
+          node: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Build packages
-        run: pnpm -w -s build
+
+      - name: Build (schemas)
+        run: pnpm -r --filter @roler/schemas build
+
+      - name: Build (http-utils)
+        run: pnpm -r --filter @roler/http-utils build
+
       - name: Run validation bench (p95 gate)
-        run: node packages/http-utils/dist/bench/validate-bench.js | tee bench.json && node -e 'const x=require("fs").readFileSync("bench.json","utf8"); const j=JSON.parse(x); const gate=5; if (j.p95Ms>gate) { console.error(`p95 ${j.p95Ms}ms exceeds gate ${gate}ms`); process.exit(1); }'
+        run: node packages/http-utils/dist/bench/validate-bench.js | tee bench.json && node scripts/bench-gate.mjs bench.json 5
