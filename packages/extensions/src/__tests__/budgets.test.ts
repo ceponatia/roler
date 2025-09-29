@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { DefaultHookBudgets, effectiveHookBudget } from './budgets.js';
+import { DefaultHookBudgets, effectiveHookBudget } from '../budgets.js';
 
 describe('budgets', () => {
   it('uses defaults when no override', () => {

@@ -2,9 +2,9 @@
 
 Requirement ID: R-006
 Source: requirements.md Section 2
-Status: Draft
+Status: Accepted
 Owner: PRODUCT
-Last Updated: YYYY-MM-DD
+Last Updated: 2025-09-29
 
 ## Summary
 

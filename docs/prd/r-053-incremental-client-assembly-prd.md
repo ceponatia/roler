@@ -2,9 +2,9 @@
 
 Requirement ID: R-053
 Source: requirements.md Section 12 (Streaming & Realtime)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-01
+Last Updated: 2025-09-29
 
 ## Summary
 

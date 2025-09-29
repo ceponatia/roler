@@ -1,6 +1,6 @@
 ---
 title: R-008 Developer Usability Technical Specification
-status: Draft
+Status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-008-developer-usability-prd.md
 revision: 0.1.0

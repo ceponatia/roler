@@ -2,7 +2,7 @@
 
 Standard ID: DS-XXX
 Category: (Typing | Validation | Error Handling | Architecture | Logging | Security | Build | Testing | Other)
-Status: Draft | In Review | Approved | Deprecated
+Status: Accepted | In Review | Approved | Deprecated
 Owner: OWNER_NAME
 Last Updated: YYYY-MM-DD
 Version: 1.0.0

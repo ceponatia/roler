@@ -1,6 +1,6 @@
 ---
 title: R-009 Transparent Normalization Technical Specification
-status: Draft
+Status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-009-transparent-normalization-prd.md
 revision: 0.1.0

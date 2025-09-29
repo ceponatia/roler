@@ -2,9 +2,9 @@
 
 Requirement ID: R-091
 Source: requirements.md Section 19
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-02
+Last Updated: 2025-09-29
 
 ## Summary
 

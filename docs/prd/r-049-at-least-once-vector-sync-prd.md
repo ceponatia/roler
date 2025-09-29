@@ -2,9 +2,9 @@
 
 Requirement ID: R-049
 Source: requirements.md Section 11 (Jobs & Asynchronous Processing)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-01
+Last Updated: 2025-09-29
 
 ## Summary
 

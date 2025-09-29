@@ -2,9 +2,9 @@
 
 Requirement ID: R-004
 Source: requirements.md Section 2
-Status: Draft
+Status: Accepted
 Owner: PRODUCT
-Last Updated: 2025-09-23
+Last Updated: 2025-09-29
 
 ## Summary
 

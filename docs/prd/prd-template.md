@@ -2,7 +2,7 @@
 
 Requirement ID: R-XXX
 Source: requirements.md Section SECTION_NUMBER
-Status: Draft | In Review | Approved
+Status: Accepted | In Review | Approved
 Owner: OWNER_NAME
 Last Updated: YYYY-MM-DD
 

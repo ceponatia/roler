@@ -2,9 +2,9 @@
 
 Requirement ID: R-042
 Source: requirements.md Section 10 (Retrieval / RAG)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-01
+Last Updated: 2025-09-29
 
 ## Summary
 
