@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
 import { createTempWorkspace, writeJson, writeModule } from '../../test-utils/test-fs.js';
-
 import { extensionsApiVersion, loadExtensions } from '../index.js';
 
 describe('loader error paths', () => {

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { composeStateTransactions } from '../transactions.js';
+
 import type { StateTransaction } from '@roler/schemas';
 
 describe('composeStateTransactions edge cases', () => {

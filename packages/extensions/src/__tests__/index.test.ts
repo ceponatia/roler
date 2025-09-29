@@ -1,9 +1,7 @@
 import path from 'node:path';
-
 import { describe, it, expect } from 'vitest';
 
 import { createTempWorkspace, writeJson, writeModule } from '../../test-utils/test-fs.js';
-
 import { createExtension, discoverExtensions, loadExtensions, loadExtensionsFromConfig, extensionsApiVersion, shouldEnableExtensions, loadExtensionsGuarded, loadExtensionsFromConfigGuarded } from '../index.js';
 
 describe('@roler/extensions basics', () => {
