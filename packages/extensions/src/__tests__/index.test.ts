@@ -1,8 +1,10 @@
 import path from 'node:path';
+
 import { describe, it, expect } from 'vitest';
 
-import { createExtension, discoverExtensions, loadExtensions, loadExtensionsFromConfig, extensionsApiVersion, shouldEnableExtensions, loadExtensionsGuarded, loadExtensionsFromConfigGuarded } from './index.js';
-import { createTempWorkspace, writeJson, writeModule } from '../test-utils/test-fs.js';
+import { createTempWorkspace, writeJson, writeModule } from '../../test-utils/test-fs.js';
+
+import { createExtension, discoverExtensions, loadExtensions, loadExtensionsFromConfig, extensionsApiVersion, shouldEnableExtensions, loadExtensionsGuarded, loadExtensionsFromConfigGuarded } from '../index.js';
 
 describe('@roler/extensions basics', () => {
   it('creates a validated extension bundle', () => {
@@ -33,8 +35,13 @@ describe('@roler/extensions basics', () => {
     const empty = await loadExtensionsGuarded({ rootDir: root, coreApiVersion: extensionsApiVersion }, { EXTENSIONS_ENABLED: '0' });
     expect(empty.length).toBe(0);
 
-    const reg = await loadExtensionsGuarded({ rootDir: root, coreApiVersion: extensionsApiVersion }, { EXTENSIONS_ENABLED: '1' });
-    expect(reg.length).toBe(1);
+    // Baseline unguarded load should discover the extension
+    const baseline = await loadExtensions({ rootDir: root, coreApiVersion: extensionsApiVersion });
+    expect(baseline.length).toBe(1);
+
+    // When env is omitted, default enablement (schema defaults) should allow loading.
+    const reg = await loadExtensionsGuarded({ rootDir: root, coreApiVersion: extensionsApiVersion });
+    expect(reg.length).toBe(baseline.length);
 
     const emptyCfg = await loadExtensionsFromConfigGuarded(root, { coreApiVersion: extensionsApiVersion, extensions: [{ id: 'e1' }] }, { EXTENSIONS_ENABLED: 'off' });
     expect(emptyCfg.length).toBe(0);
@@ -66,7 +73,12 @@ describe('@roler/extensions basics', () => {
     await writeJson(root, 'packages/e2/package.json', { name: 'e2', version: '0.0.0', rolerExtension: { entry: 'dist/extension.js' } });
     await writeModule(root, 'packages/e2/dist/extension.js', 'export const manifest = { id:"e2", name:"E2", version:"0.2.0", description:"x", coreApiRange:"^1.0.0", peerExtensions:[], capabilities:[], priority:0, concurrencyLimit:4, killSwitchEnabled:true, stateTransactionSupport:false };');
 
-    const reg = await loadExtensions({ rootDir: root, coreApiVersion: extensionsApiVersion });
+  // Ensure written modules exist before invoking loader (mitigates fs latency on some CI)
+  const fs = await import('node:fs/promises');
+  const p = await import('node:path');
+  await fs.lstat(p.join(root, 'packages/e1/dist/extension.js'));
+  await fs.lstat(p.join(root, 'packages/e2/dist/extension.js'));
+  const reg = await loadExtensions({ rootDir: root, coreApiVersion: extensionsApiVersion });
     expect(reg.map(r => r.manifest.id)).toEqual(['e1','e2']);
   });
 
@@ -88,7 +100,12 @@ describe('@roler/extensions basics', () => {
       capabilityAllowlist: ['cap-a','cap-b']
   };
 
-    const reg = await loadExtensionsFromConfig(root, config);
+  // Assert underlying module files exist before attempting load (defensive for CI FS flakiness)
+  const fs = await import('node:fs/promises');
+  const pathMod = await import('node:path');
+  await fs.lstat(pathMod.join(root, 'packages/e1/dist/extension.js'));
+  await fs.lstat(pathMod.join(root, 'packages/e2/dist/extension.js'));
+  const reg = await loadExtensionsFromConfig(root, config);
     // orderOverrides should put e2 first
     expect(reg.map(r => r.manifest.id)).toEqual(['e2','e1']);
     // overrides.killSwitchEnabled === false -> disabled true in registry
