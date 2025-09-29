@@ -64,6 +64,10 @@ export default [
         console: 'readonly',
         process: 'readonly'
       }
+    },
+    rules: {
+      // Allow CLI scripts to use console output without lint/Codacy warnings
+      'no-console': 'off'
     }
   },
   {

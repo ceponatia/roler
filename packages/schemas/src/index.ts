@@ -48,3 +48,7 @@ export * from './system/env/extensions-runtime-env.schema.js';
 export * from './game-instance.schema.js';
 export * from './text-chunk.schema.js';
 export * from './canon-release.schema.js';
+
+// Validation utilities (R-004)
+export * from './validation/map-zod-error.js';
+export * from './validation/validate.js';

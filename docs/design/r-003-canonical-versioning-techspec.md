@@ -1,6 +1,6 @@
 ---
 title: R-003 Canonical Versioning Technical Specification
-status: Approved
+status: Completed
 last-updated: 2025-09-04
 related-prd: ../prd/r-003-canonical-versioning-prd.md
 revision: 0.1.0
@@ -316,6 +316,3 @@ Mapped: version creation test â†’ lineage parent check; merge divergence test â†
 ## 25. Summary
 
 Defines an append-only canonical versioning foundation with deterministic diff & merge primitives, robust integrity safeguards, and performance-conscious design meeting p95 latency goals while enabling future semantic enhancements.
-
----
-END OF DOCUMENT

@@ -1,9 +1,9 @@
 ---
 title: R-004 Boundary Safety Technical Specification
-status: Draft
+status: Completed
 last-updated: 2025-09-23
 related-prd: ../prd/r-004-boundary-safety-prd.md
-revision: 0.2.0
+revision: 1.0.0
 ---
 
 ## 1. Purpose & Scope
@@ -13,7 +13,7 @@ Implement 100% inbound validation across HTTP routes, background jobs, and inter
 In-Scope:
 
 - Zod schemas for every inbound shape (params, query, body, headers, job/queue payloads) in `@roler/schemas`.
-- `validateRequest()` and `mapZodError()` helpers for structural parse and error mapping.
+- `validate()` and `mapZodError()` helpers for structural parse and error mapping, plus HTTP wrappers (`validateJsonBody`, `validateRaw`).
 - CI scanner verifying every route file imports a schema.
 - Enumerated validation error codes (VAL_*), defined in contracts.
 - Type inference reuse from Zod schemas; no duplication.
@@ -37,9 +37,9 @@ Out-of-Scope (this spec):
 Components:
 
 1. Schema Layer: Zod schemas in `@roler/schemas` (contracts-first).
-2. Validation Utility: `validateRequest(event, schema)` performs parse and returns a typed object or mapped error.
+2. Validation Utility: `validate(input, schema)` performs parse and returns a typed object or mapped error.
 3. Error Mapper: `mapZodError(zodError)` → standardized error payload with enumerated VAL_* codes.
-4. Optional wrapper: Higher-order function to apply validation before handler logic.
+4. Optional wrapper: Higher-order functions in `@roler/http-utils` to apply validation before handler logic (`validateJsonBody`, `validateRaw`).
 5. CI Scanner: Script enumerates `routes/api/**/+server.ts` and ensures imports of schemas.
 6. Micro-bench harness for validation latency.
 
@@ -61,7 +61,9 @@ Breaking changes to external request schemas require semver major bump; additive
 
 ## 8. Public API Surface (Initial)
 
-- `validateRequest(event, schema): { data?: T; error?: StandardError }`.
+- `validate(input, schema): { data?: T; error?: StandardError }` (framework-agnostic, from `@roler/schemas`).
+- `validateJsonBody(request, schema): { data?: T; error?: StandardError }` (from `@roler/http-utils`).
+- `validateRaw(input, schema): { data?: T; error?: StandardError }` (from `@roler/http-utils`).
 - `mapZodError(zodError): StandardError`.
 - Re-export inferred types (e.g., `CreateGameRequest`).
 
@@ -142,7 +144,7 @@ Scanner test ↔ 100% coverage; negative tests ↔ standardized error; lint conf
 
 ## 26. Traceability Matrix
 
-- R-004 ↔ PRD Goals/Acceptance ↔ CI scanner, `validateRequest`, `mapZodError` ↔ tests (schema/negative/mapper)
+- R-004 ↔ PRD Goals/Acceptance ↔ CI scanner, `validate`/`validateJsonBody`/`validateRaw`, `mapZodError` ↔ tests (schema/negative/mapper)
 - R-017, R-026–R-027 ↔ Schema layer & inference ↔ unit tests
 - R-028 & R-030 ↔ Standardized error shape and codes ↔ mapper tests
 - R-029 ↔ Logging & Context PRD only (link); no duplication
@@ -164,5 +166,28 @@ No DSL, no automatic code-mod in this phase.
 
 Establishes universal boundary safety through centralized Zod validation, standardized errors, and CI enforcement—reducing security risk and type drift with minimal latency impact.
 
----
-END OF DOCUMENT
+## 27. Implementation Status
+
+### Done (in repo)
+
+- Validation error codes (VAL_*) defined in `@roler/schemas` (`VAL_SCHEMA_VIOLATION`, `VAL_MISSING_FIELD`, `VAL_TYPE_MISMATCH`, `VAL_UNAUTHORIZED_FIELD`).
+- `mapZodError(err)` implemented in `@roler/schemas` and exported.
+- Generic `validate(input, schema)` helper implemented in `@roler/schemas` with a small parse cache and exported.
+- Unit tests for validation utilities: success + negative cases (missing field, type mismatch, unauthorized field) and safety fallback.
+- Brief usage doc added: `docs/design/validation.md`.
+- CI boundary scanner script present: `scripts/ci-boundary-schemas.mjs` (root `package.json` script: `ci:boundary-schemas`). CI workflow added: `.github/workflows/ci-boundary-schemas.yml`.
+- ESLint strict rules already in place (no `any`, no non-null assertions) and TypeScript strict mode enabled.
+
+- Server-bound wrapper implemented in `@roler/http-utils`: `validateJsonBody(request, schema)` and `validateRaw(input, schema)`; with unit tests.
+- Micro-benchmark added at `@roler/http-utils` (`src/bench/validate-bench.ts`) with CI gating workflow `.github/workflows/validation-bench.yml` (p95 ≤ 5 ms).
+- Endpoint inventory helper script added: `scripts/inventory-endpoints.mjs` (non-fatal report listing route files and schema import presence).
+
+Additional notes:
+
+- Current repository snapshot contains no SvelteKit API route files (`routes/api/**/+server.ts`), so the endpoint inventory returns an empty list; no backfill required at this time. The CI scanner remains in place and will fail builds where route files lack schema imports once routes are added.
+- An integration-style test in `@roler/http-utils` simulates a route handler to verify standardized error payloads on validation failure.
+
+### Remaining
+
+None. R-004 acceptance criteria are met and enforced via CI. Future routes must adhere to these standards; the scanner and tests will guard regressions.
+

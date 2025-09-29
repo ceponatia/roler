@@ -171,6 +171,15 @@ importers:
         specifier: ^7.6.3
         version: 7.7.2
 
+  packages/http-utils:
+    dependencies:
+      '@roler/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+
   packages/pre-save-age-check: {}
 
   packages/rag:

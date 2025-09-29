@@ -1,6 +1,6 @@
 ---
 title: R-001 Extensible Framework Technical Specification
-status: Draft
+status: Completed
 last-updated: 2025-09-05
 related-prd: ../prd/r-001-extensible-framework-prd.md
 revision: 0.1.0

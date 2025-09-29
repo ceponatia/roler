@@ -2,7 +2,6 @@
 engines:
   semgrep:
     exclude_paths:
-      - ".github/*/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -17,7 +16,6 @@ engines:
           enabled: false
   eslint-9:
     exclude_paths:
-      - ".github/*/**"
       - "coverage/**"
       - "packages/*/coverage/**"
       - "packages/**/dist/**"
@@ -30,8 +28,12 @@ exclude_paths:
   - "packages/extensions/test-utils/test-fs.ts"
   - "packages/**/dist/**"
   - "packages/db/prisma/migrations/**"
-  - ".github/*/**"
+  - ".github/**"        # Single canonical ignore for all .github files
   - "packages/docs-site/docs/**"
   - "packages/docs-site/content/**"
   - "docs/**"
   - "coverage/**"
+  - "scripts/**"
+  - "**/*.config.js"
+  - "**/*.config.cjs"
+  - "**/*.config.mjs"

@@ -1,3 +1,7 @@
+// Requirement: R-001 Extensible Framework
+// PRD: docs/prd/r-001-extensible-framework-prd.md
+// Tech Spec: docs/design/r-001-extensible-framework-techspec.md
+// This module provides the extension authoring façade and loader/registry per R-001.
 import { ExtensionManifestSchema, parseExtensionsEnv, type ExtensionManifest, type ExtensionRegistrationConfig } from '@roler/schemas';
 import { parseExtensionsRuntimeEnv } from '@roler/schemas';
 import { pathToFileURL } from 'node:url';

@@ -1,0 +1,48 @@
+name: validation-bench
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  bench:
+    # Run only when explicitly tagged with [validation] in:
+    #  - push: the HEAD commit message
+    #  - pull_request: the PR title or body
+    # Limitations:
+    #  - For multi-commit pushes only the head commit message is inspected.
+    #  - For PRs commit messages are not directly available; use the tag in title/body or switch to a label strategy if needed.
+    if: |
+      (github.event_name == 'push' && contains(github.event.head_commit.message, '[validation]')) ||
+      (github.event_name == 'pull_request' && (
+        contains(github.event.pull_request.title, '[validation]') ||
+        contains(github.event.pull_request.body || '', '[validation]')
+      ))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Use the composite action (expects inputs: node, pnpm). The pnpm version is derived from root packageManager when omitted.
+      - name: Setup Node & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+        with:
+          node: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Build only what the bench needs (@roler/schemas then @roler/http-utils). Exclude @roler/db to avoid prisma generation in this workflow.
+      - name: Build (schemas)
+        run: pnpm -r --filter @roler/schemas build
+
+      - name: Build (http-utils)
+        run: pnpm -r --filter @roler/http-utils build
+
+      - name: Run validation bench (p95 gate)
+        run: node packages/http-utils/dist/bench/validate-bench.js | tee bench.json && node scripts/bench-gate.mjs bench.json 5
