@@ -1,6 +1,6 @@
 ---
 title: R-005 Pluggable Vector Store Technical Specification
-status: Draft
+Status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-005-pluggable-vector-store-prd.md
 revision: 0.1.0

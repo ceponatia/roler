@@ -2,9 +2,9 @@
 
 Requirement ID: R-031
 Source: requirements.md Section 8 (Authentication & Authorization)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-01
+Last Updated: 2025-09-29
 
 ## Summary
 

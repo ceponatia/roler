@@ -1,6 +1,6 @@
 ---
 title: R-010 Reactive Frontend Technical Specification
-status: Draft
+Status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-010-reactive-frontend-prd.md
 revision: 0.1.0

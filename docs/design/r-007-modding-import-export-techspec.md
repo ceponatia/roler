@@ -1,6 +1,6 @@
 ---
 title: R-007 Modding Import / Export Technical Specification
-status: Draft
+Status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-007-modding-import-export-prd.md
 revision: 0.1.0

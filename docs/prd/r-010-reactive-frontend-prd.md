@@ -2,9 +2,9 @@
 
 Requirement ID: R-010
 Source: requirements.md Section 3
-Status: Draft
+Status: Accepted
 Owner: PRODUCT
-Last Updated: YYYY-MM-DD
+Last Updated: 2025-09-29
 
 ## Summary
 

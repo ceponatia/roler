@@ -2,9 +2,9 @@
 
 Requirement ID: R-044
 Source: requirements.md Section 10 (Retrieval / RAG)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-01
+Last Updated: 2025-09-29
 
 ## Summary
 
@@ -102,7 +102,7 @@ Non-deterministic prompt construction (unordered concatenation, inconsistent sep
 
 Simplified assembly example:
 
-```text
+```json
 ATTRIBUTES:\n- eyes.color: blue\n\nCHUNKS:\n1. <chunk text>
 ```
 

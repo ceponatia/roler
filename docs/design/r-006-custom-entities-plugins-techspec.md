@@ -1,6 +1,6 @@
 ---
 title: R-006 Custom Entities & Plugins Technical Specification
-status: Draft
+Status: Accepted
 last-updated: 2025-09-04
 related-prd: ../prd/r-006-custom-entities-plugins-prd.md
 revision: 0.1.0

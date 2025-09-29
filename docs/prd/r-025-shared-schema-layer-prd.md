@@ -2,9 +2,9 @@
 
 Requirement ID: R-025
 Source: requirements.md Section 6 (Validation & Schema Strategy)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-09-01
+Last Updated: 2025-09-29
 
 ## Summary
 
@@ -105,14 +105,10 @@ Without a centralized schema layer, shape definitions fragment across codebases,
 
 Proposed directory tree snippet:
 
-```text
 packages/contracts/
   env/
   http/
   dto/
   errors/
   index.ts
-```
 
----
-Template compliance confirmed.

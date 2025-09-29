@@ -2,6 +2,9 @@
 
 Requirement ID: R-022
 Source: requirements.md Section 4
+Status: Accepted
+Owner: Product
+Last Updated: 2025-09-29
 
 ## Summary
 

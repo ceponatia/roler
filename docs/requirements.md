@@ -2,7 +2,7 @@
 
 Version: 1.0
 Source Basis: `.github/copilot-instructions.md` (architecture & coding standards directive)
-Status: Draft (baseline extracted from existing engineering instructions)
+Status: Accepted (baseline extracted from existing engineering instructions)
 
 ## 1. Project Overview
 

@@ -2,9 +2,9 @@
 
 Requirement ID: R-013
 Source: requirements.md Section 3 (Platform & Technology)
-Status: Draft
+Status: Accepted
 Owner: Product
-Last Updated: 2025-08-29
+Last Updated: 2025-09-29
 
 ## Summary
 
