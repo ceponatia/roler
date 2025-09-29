@@ -1,3 +1,9 @@
+
+// Requirement: R-004 Boundary Safety
+// PRD: docs/prd/r-004-boundary-safety-prd.md
+// Tech Spec: docs/design/r-004-boundary-safety-techspec.md
+// Validates inbound HTTP request payloads using shared Zod schemas and maps errors to stable codes (DS-006/DS-017/DS-018).
+
 import { mapZodError, validate, type ValidateResult } from '@roler/schemas';
 
 import type { z } from 'zod';

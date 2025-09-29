@@ -1,3 +1,6 @@
+// Requirement: R-002 Low-Latency Retrieval
+// See: docs/prd/r-002-low-latency-retrieval-prd.md and docs/design/r-002-low-latency-retrieval-techspec.md
+// The orchestrator coordinates retriever, cache, post-processing, and deadlines per R-002 latency targets.
 import { PartialReturnReasonEnum, RetrievalRequestSchema, RetrievalResponseSchema } from '@roler/schemas';
 
 import { adaptiveRetrieve } from './adaptive.js';

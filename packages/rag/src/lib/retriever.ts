@@ -1,3 +1,5 @@
+// Requirement: R-002 Low-Latency Retrieval
+// Retriever strategy and interfaces for pgvector-backed search with caching hooks.
 import type { Candidate, IsoDateTime, Ulid } from './scoring.js';
 
 // Retriever interface returning raw vector candidates + timing (no post-processing here)

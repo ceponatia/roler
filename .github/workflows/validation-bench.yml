@@ -11,8 +11,13 @@ env:
 
 jobs:
   bench:
-    # Only run when explicitly tagged with [validation] in the head commit message (push)
-    # or PR title/body (pull_request). Prevents unnecessary perf runs.
+
+    # Run only when explicitly tagged with [validation] in:
+    #  - push: the HEAD commit message
+    #  - pull_request: the PR title or body
+    # Limitations:
+    #  - For multi-commit pushes only the head commit message is inspected.
+    #  - For PRs commit messages are not directly available; use the tag in title/body or switch to a label strategy if needed.
     if: |
       (github.event_name == 'push' && contains(github.event.head_commit.message, '[validation]')) ||
       (github.event_name == 'pull_request' && (
@@ -24,6 +29,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+
+      # Use the composite action (expects inputs: node, pnpm). The pnpm version is derived from root packageManager when omitted.
       - name: Setup Node & pnpm
         uses: ./.github/actions/setup-node-pnpm
         with:

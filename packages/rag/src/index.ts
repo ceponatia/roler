@@ -1,3 +1,7 @@
+// Requirement: R-002 Low-Latency Retrieval
+// PRD: docs/prd/r-002-low-latency-retrieval-prd.md
+// Tech Spec: docs/design/r-002-low-latency-retrieval-techspec.md
+// Public exports for retrieval orchestrator and helpers implement the low-latency strategy (pgvector-first, caching, deadlines).
 export * from './lib/config.js';
 export * from './lib/scoring.js';
 export * from './lib/retriever.js';
