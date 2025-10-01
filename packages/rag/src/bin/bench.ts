@@ -13,7 +13,7 @@ import { getRetrievalMetricsSnapshot, resetMetrics } from '../lib/metrics.js';
 import { createRetrievalOrchestrator } from '../lib/orchestrator.js';
 import { createQueryResultCache } from '../lib/query-result-cache.js';
 
-import type { Retriever } from '../lib/retriever.js';
+import type { Retriever, RetrieverAdapterKind } from '../lib/retriever.js';
 import type { Candidate, IsoDateTime, Ulid } from '../lib/scoring.js';
 import type { RetrievalConfig } from '@roler/schemas';
 
@@ -90,7 +90,9 @@ function makeRows(count: number): readonly Candidate[] {
 }
 
 function makeRetriever(rows: readonly Candidate[], vectorMs: number): Retriever {
+  const kind: RetrieverAdapterKind = 'pgvector';
   return {
+    kind,
     async retrieve(opts) {
       // simulate vector time budget
       await new Promise((r) => setTimeout(r, vectorMs));

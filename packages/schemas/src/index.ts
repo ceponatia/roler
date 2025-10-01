@@ -29,6 +29,8 @@ export * from './system/versioning/index.js';
 export * from './rag/embedding.js';
 export * from './rag/retrieval.js';
 export * from './rag/retrieval-low-latency.js';
+// Pluggable Vector Store (R-005)
+export * from './rag/retriever-config.js';
 export * from './llm/propose-change.js';
 export * from './llm/retrieve-context.js';
 export * from './llm/create-scene.js';

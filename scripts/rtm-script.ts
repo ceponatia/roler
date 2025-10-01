@@ -1,21 +1,24 @@
-// scripts/rtm-lint.ts
+// scripts/rtm-script.ts
 import fs from "node:fs";
 import path from "node:path";
 
 type Row = {
-  requirement: string;
-  prd: string;
-  techspec: string;
+  id: string;
+  summary: string;
+  acceptanceCriteria: string;
+  specAdr: string;
   impl: string;
   tests: string;
+  evidence: string;
   status: string;
-  notes: string;
+  owner: string;
 };
 
-const RTM_PATH = path.resolve("docs/rtm.md");
+const RTM_PATH = path.resolve("docs/traceability/rtm.md");
 const REQ_PATH = path.resolve("docs/requirements.md");
 
 const STATUS_SET = new Set(["Planned", "Implemented", "Tested", "Verified"]);
+const TBD_REGEX = /^\[TBD\]$/i;
 const RE_REQ_ID = /\bR-(\d{3})\b/g;
 
 function fail(msg: string): never {
@@ -53,13 +56,13 @@ function extractAllRequirementIdsFromRequirementsMd(md: string): string[] {
 function parseRtmTable(md: string): Row[] {
   const lines = md.split(/\r?\n/);
   const headerIdx = lines.findIndex((ln) =>
-    /^\|\s*Requirement\s*\|\s*PRD Ref\s*\|\s*Techspec Ref\s*\|\s*Implementation\s*\|\s*Tests\s*\|\s*Status\s*\|\s*Notes\s*\|/i.test(
+    /^\|\s*ID\s*\|\s*Summary\s*\|\s*Acceptance Criteria\s*\|\s*Spec\/ADR\s*\|\s*Impl\s*\(PRs\)\s*\|\s*Tests\s*\|\s*Evidence\s*\|\s*Status\s*\|\s*Owner\s*\|/i.test(
       ln,
     ),
   );
   if (headerIdx === -1) {
     fail(
-      "Could not find RTM table with header: | Requirement | PRD Ref | Techspec Ref | Implementation | Tests | Status | Notes |",
+      "Could not find RTM table with header: | ID | Summary | Acceptance Criteria | Spec/ADR | Impl (PRs) | Tests | Evidence | Status | Owner |",
     );
   }
 
@@ -79,12 +82,12 @@ function parseRtmTable(md: string): Row[] {
       .slice(1, -1)
       .map((c) => c.trim());
 
-    if (cells.length !== 7) {
-      fail(`RTM row has ${cells.length} cells (expected 7):\n${ln}`);
+    if (cells.length !== 9) {
+      fail(`RTM row has ${cells.length} cells (expected 9):\n${ln}`);
     }
 
-    const [requirement, prd, techspec, impl, tests, status, notes] = cells;
-    rows.push({ requirement, prd, techspec, impl, tests, status, notes });
+    const [id, summary, acceptanceCriteria, specAdr, impl, tests, evidence, status, owner] = cells;
+    rows.push({ id, summary, acceptanceCriteria, specAdr, impl, tests, evidence, status, owner });
   }
   if (rows.length === 0) fail("RTM table has no data rows.");
   return rows;
@@ -115,32 +118,30 @@ function main() {
   // Map RTM
   const seen = new Map<string, Row>();
   for (const row of rows) {
-    if (!/^R-\d{3}$/.test(row.requirement)) {
-      fail(`Invalid requirement ID format in RTM row: "${row.requirement}"`);
+    if (!/^R-\d{3}$/.test(row.id)) {
+      fail(`Invalid requirement ID format in RTM row: "${row.id}"`);
     }
-    if (seen.has(row.requirement)) {
-      fail(`Duplicate RTM row for ${row.requirement}`);
+    if (seen.has(row.id)) {
+      fail(`Duplicate RTM row for ${row.id}`);
     }
     if (!STATUS_SET.has(row.status)) {
-      fail(`Invalid Status "${row.status}" for ${row.requirement} (allowed: ${[...STATUS_SET].join(", ")})`);
+      fail(`Invalid Status "${row.status}" for ${row.id} (allowed: ${[...STATUS_SET].join(", ")})`);
     }
 
-    // Enforce TBD rules
-    const implTbd = row.impl === "[TBD]";
-    const testsTbd = row.tests === "[TBD]";
-    const prdTbd = row.prd === "[TBD]";
-    const techTbd = row.techspec === "[TBD]";
+  const isTbd = (cell: string) => TBD_REGEX.test(cell.trim());
+    const implTbd = isTbd(row.impl);
+    const testsTbd = isTbd(row.tests);
+    const specTbd = isTbd(row.specAdr);
 
     if (row.status === "Implemented" || row.status === "Tested" || row.status === "Verified") {
-      if (implTbd) fail(`${row.requirement}: Implementation must not be [TBD] when status is ${row.status}`);
-      if (prdTbd) warn(`${row.requirement}: PRD Ref is [TBD] but status is ${row.status}`);
-      if (techTbd) warn(`${row.requirement}: Techspec Ref is [TBD] but status is ${row.status}`);
+      if (implTbd) fail(`${row.id}: Implementation must not be [TBD] when status is ${row.status}`);
+      if (specTbd) warn(`${row.id}: Spec/ADR is [TBD] but status is ${row.status}`);
     }
     if (row.status === "Tested" || row.status === "Verified") {
-      if (testsTbd) fail(`${row.requirement}: Tests must not be [TBD] when status is ${row.status}`);
+      if (testsTbd) fail(`${row.id}: Tests must not be [TBD] when status is ${row.status}`);
     }
 
-    seen.set(row.requirement, row);
+    seen.set(row.id, row);
   }
 
   // Coverage check

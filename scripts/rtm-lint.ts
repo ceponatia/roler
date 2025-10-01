@@ -10,9 +10,8 @@ const RTM_PATH = fileArg
   : path.resolve("docs/traceability/rtm.md");
 
 const content = readFileSync(RTM_PATH, "utf8");
-const hasHeader = /\|\s*Requirement\s*\|\s*PRD Ref\s*\|\s*Techspec Ref\s*\|\s*Implementation\s*\|\s*Tests\s*\|\s*Status\s*\|\s*Notes\s*\|/.test(
-  content,
-);
+const modernHeader = /\|\s*ID\s*\|\s*Summary\s*\|\s*Acceptance Criteria\s*\|\s*Spec\/ADR\s*\|\s*Impl\s*\(PRs\)\s*\|\s*Tests\s*\|\s*Evidence\s*\|\s*Status\s*\|\s*Owner\s*\|/i;
+const hasHeader = modernHeader.test(content);
 if (!hasHeader) {
   console.error("RTM header not found.");
   process.exit(1);

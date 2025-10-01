@@ -5,6 +5,11 @@
 export * from './lib/config.js';
 export * from './lib/scoring.js';
 export * from './lib/retriever.js';
+// R-005 Pluggable Vector Store: expose typed retriever surface and adapters
+export * from './lib/retriever/types.js';
+export * from './lib/retriever/adapters/pgvector-adapter.js';
+export * from './lib/retriever/adapters/qdrant-adapter.js';
+export * from './lib/retriever/factory.js';
 export * from './lib/postprocess.js';
 export * from './lib/adaptive.js';
 export * from './lib/orchestrator.js';

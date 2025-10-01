@@ -1,5 +1,12 @@
 // Lightweight in-memory counters and HDR-style histograms (fixed bins) for retrieval
 
+import {
+  getDualReadMetricsSnapshot,
+  resetDualReadMetrics
+} from './retriever/dual-read-metrics.js';
+
+import type { DualReadMetricsSnapshot } from './retriever/dual-read-metrics.js';
+
 export type CounterKeys =
   | 'retrieval_total'
   | 'retrieval_cache_hit'
@@ -53,13 +60,14 @@ export function observe(key: HistoKeys, value: number): void {
 export type MetricsSnapshot = Readonly<{
   counters: Readonly<Counters>;
   histograms: Readonly<Record<HistoKeys, { readonly p50: number; readonly p95: number; readonly count: number }>>;
+  dualRead: DualReadMetricsSnapshot;
 }>;
 
 export function getRetrievalMetricsSnapshot(): MetricsSnapshot {
   const hist = Object.fromEntries(
     (Object.keys(histos) as HistoKeys[]).map((k) => [k, quantiles(histos[k])])
   ) as MetricsSnapshot['histograms'];
-  return { counters: { ...counters }, histograms: hist } as const;
+  return { counters: { ...counters }, histograms: hist, dualRead: getDualReadMetricsSnapshot() } as const;
 }
 
 export function resetMetrics(): void {
@@ -70,6 +78,79 @@ export function resetMetrics(): void {
     h.sum = 0;
     h.count = 0;
   }
+  resetDualReadMetrics();
+}
+
+export type MetricDatum = Readonly<{
+  name: string;
+  value: number;
+  labels?: Readonly<Record<string, string>>;
+}>;
+
+const HISTOGRAM_METRIC_NAMES: Record<HistoKeys, string> = {
+  latency_total_ms: 'retr_latency_total_ms',
+  latency_vector_ms: 'retr_latency_vector_ms',
+  latency_post_ms: 'retr_latency_post_ms',
+  latency_cache_ms: 'retr_latency_cache_ms'
+};
+
+const COUNTER_METRIC_NAMES: Record<CounterKeys, string> = {
+  retrieval_total: 'retrieval_total',
+  retrieval_cache_hit: 'retrieval_cache_hit',
+  retrieval_cache_miss: 'retrieval_cache_miss',
+  retrieval_adaptive_used: 'retrieval_adaptive_used',
+  retrieval_partial: 'retrieval_partial'
+};
+
+export function getRetrievalMetricSeries(): readonly MetricDatum[] {
+  const snapshot = getRetrievalMetricsSnapshot();
+  const metrics: MetricDatum[] = [];
+
+  for (const key of Object.keys(snapshot.counters) as CounterKeys[]) {
+    pushMetric(metrics, COUNTER_METRIC_NAMES[key], snapshot.counters[key]);
+  }
+
+  for (const key of Object.keys(snapshot.histograms) as HistoKeys[]) {
+    const hist = snapshot.histograms[key];
+    const baseName = HISTOGRAM_METRIC_NAMES[key];
+    pushMetric(metrics, baseName, hist.p50, { quantile: 'p50' });
+    pushMetric(metrics, baseName, hist.p95, { quantile: 'p95' });
+    pushMetric(metrics, `${baseName}_samples_total`, hist.count);
+  }
+
+  const { backendLatency, dualRead } = snapshot.dualRead;
+  for (const [backend, hist] of Object.entries(backendLatency)) {
+    if (!hist) continue;
+    pushMetric(metrics, 'retr_backend_latency_ms', hist.p50, { backend, quantile: 'p50' });
+    pushMetric(metrics, 'retr_backend_latency_ms', hist.p95, { backend, quantile: 'p95' });
+    pushMetric(metrics, 'retr_backend_latency_samples_total', hist.count, { backend });
+  }
+
+  const { deltaLatencyMs, deltaScore, samples, mismatches, shadowErrors } = dualRead;
+  pushMetric(metrics, 'retr_dual_delta_latency_ms', deltaLatencyMs.p50, { quantile: 'p50' });
+  pushMetric(metrics, 'retr_dual_delta_latency_ms', deltaLatencyMs.p95, { quantile: 'p95' });
+  pushMetric(metrics, 'retr_dual_delta_latency_samples_total', deltaLatencyMs.count);
+
+  pushMetric(metrics, 'retr_dual_delta_score', deltaScore.p50, { quantile: 'p50' });
+  pushMetric(metrics, 'retr_dual_delta_score', deltaScore.p95, { quantile: 'p95' });
+  pushMetric(metrics, 'retr_dual_delta_score_samples_total', deltaScore.count);
+
+  pushMetric(metrics, 'retr_dual_samples_total', samples);
+  pushMetric(metrics, 'retr_dual_mismatch_total', mismatches);
+  pushMetric(metrics, 'retr_dual_shadow_errors_total', shadowErrors);
+
+  return metrics;
+}
+
+function pushMetric(
+  metrics: MetricDatum[],
+  name: string,
+  value: number,
+  labels?: Readonly<Record<string, string>>
+): void {
+  if (!Number.isFinite(value)) return;
+  const entry: MetricDatum = labels ? { name, value, labels: Object.freeze({ ...labels }) } : { name, value };
+  metrics.push(entry);
 }
 
 function makeHistogram(): Histogram {

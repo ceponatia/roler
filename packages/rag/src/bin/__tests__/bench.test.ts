@@ -1,5 +1,5 @@
 import { withArgs, captureLogs } from '@roler/testutils';
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getRetrievalMetricsSnapshot, resetMetrics } from '../../lib/metrics.js';
 import { main as benchMain } from '../bench.js';
@@ -27,7 +27,7 @@ describe('bench main()', () => {
   });
 
   it('runs in miss mode and prints valid JSON summary', async () => {
-  const { logs, restore } = captureLogs();
+    const { logs, restore } = captureLogs();
 
     const code = await withArgs(['--n', '10', '--mode', 'miss', '--limit', '6', '--vectorMs', '1'], async () => benchMain());
     expect(code).toBe(0);
@@ -44,28 +44,65 @@ describe('bench main()', () => {
 
     const snap = getRetrievalMetricsSnapshot();
     expect(snap.counters.retrieval_total).toBeGreaterThan(0);
-  restore();
+    restore();
   });
 
   it('prewarms cache in hit mode and reports cache hits', async () => {
-  const { logs, restore } = captureLogs();
+    const { logs, restore } = captureLogs();
 
     await withArgs(['--n', '6', '--mode', 'hit', '--limit', '5', '--vectorMs', '1'], async () => benchMain());
     const out = JSON.parse(logs[logs.length - 1] ?? '{}') as BenchOut;
     // In hit mode, we should see at least one cache hit recorded
     expect(out.counters['retrieval_cache_hit']).toBeGreaterThanOrEqual(1);
     expect(out.counters['retrieval_total']).toBeGreaterThan(0);
-  restore();
+    restore();
   });
 
   it('honors gate-p95 and exits non-zero when exceeded (using tiny gate)', async () => {
-  const { logs, restore } = captureLogs();
+    const { logs, restore } = captureLogs();
 
     const code = await withArgs(['--n', '3', '--mode', 'miss', '--gate-p95', '0'], async () => benchMain());
     // With a 0ms gate, any non-zero latency should fail; tolerate race by allowing either 0 or 1
     expect([0, 1]).toContain(code);
     const out = JSON.parse(logs[logs.length - 1] ?? '{}') as BenchOut;
     expect(out.p95).toBeGreaterThanOrEqual(0);
-  restore();
+    restore();
+  });
+
+  it('passes the gate when p95 is within the threshold', async () => {
+    const { restore } = captureLogs();
+
+    const code = await withArgs(
+      ['--n', '5', '--mode', 'miss', '--gate-p95', '500', '--vectorMs', '1'],
+      async () => benchMain()
+    );
+
+    expect(code).toBe(0);
+    restore();
+  });
+
+  it('ignores the gate when p95 is not finite', async () => {
+    const { logs, restore } = captureLogs();
+    const originalFloor = Math.floor;
+    let callCount = 0;
+    const floorSpy = vi.spyOn(Math, 'floor').mockImplementation((value: number) => {
+      callCount += 1;
+      if (callCount === 2) return Number.NaN;
+      return originalFloor(value);
+    });
+
+    try {
+      const code = await withArgs(
+        ['--n', '5', '--mode', 'miss', '--gate-p95', '10', '--vectorMs', '1'],
+        async () => benchMain()
+      );
+
+      expect(code).toBe(0);
+      const out = JSON.parse(logs[logs.length - 1] ?? '{}') as BenchOut;
+      expect(Number.isFinite(out.p95)).toBe(false);
+    } finally {
+      floorSpy.mockRestore();
+      restore();
+    }
   });
 });

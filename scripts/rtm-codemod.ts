@@ -41,45 +41,6 @@ function chooseStatus(cell: string): string {
   return cell.trim() || "Planned";
 }
 
-function normalizeRefCell(cell: string, baseDir: string): string {
-  const trimmed = cell.trim();
-
-  // If explicitly [TBD], keep it
-  if (/^\[TBD\]$/i.test(trimmed)) return "[TBD]";
-
-  // If the cell has mixed content like "[TBD] somepath", split by ; or spaces and test each
-  const candidates = trimmed
-    // strip backticks/markdown links while preserving relative path-ish tokens
-    .replace(/`/g, "")
-    .split(/[;,\n]+/g)
-    .map(s => s.trim())
-    .filter(Boolean);
-
-  if (candidates.length === 0) return "[TBD]";
-
-  // Keep only paths that exist; if none exist, return [TBD]
-  const existing: string[] = [];
-  for (const cand of candidates) {
-    if (cand.toLowerCase() === "[tbd]") continue;
-
-    // allow markdown links: [text](path)
-    const linkMatch = cand.match(/\[[^\]]*\]\(([^)]+)\)/);
-    const rel = linkMatch ? linkMatch[1] : cand;
-
-    // ignore obvious non-path notes
-    if (/^https?:\/\//i.test(rel)) continue;
-
-    // resolve relative to repo root and the baseDir (doc folder)
-    const p = path.resolve(rel);
-    const p2 = path.resolve(baseDir, rel);
-    if (fs.existsSync(p)) existing.push(rel);
-    else if (fs.existsSync(p2)) existing.push(path.relative(process.cwd(), p2));
-  }
-
-  if (existing.length === 0) return "[TBD]";
-  return existing.join("; ");
-}
-
 function main() {
   if (!fs.existsSync(RTM_PATH)) {
     console.error(`❌ RTM not found: ${RTM_PATH}`);
@@ -90,7 +51,7 @@ function main() {
 
   // Find the table header line (single-table RTM)
   const headerIdx = lines.findIndex(ln =>
-    /^\|\s*Requirement\s*\|\s*PRD Ref\s*\|\s*Techspec Ref\s*\|\s*Implementation\s*\|\s*Tests\s*\|\s*Status\s*\|\s*Notes\s*\|/i.test(
+    /^\|\s*ID\s*\|\s*Summary\s*\|\s*Acceptance Criteria\s*\|\s*Spec\/ADR\s*\|\s*Impl\s*\(PRs\)\s*\|\s*Tests\s*\|\s*Evidence\s*\|\s*Status\s*\|\s*Owner\s*\|/i.test(
       ln,
     ),
   );
@@ -110,8 +71,8 @@ function main() {
   while (i < lines.length && lines[i].trim().startsWith("|")) {
     const raw = lines[i];
     const cells = raw.split("|").slice(1, -1).map(c => c.trim());
-    if (cells.length !== 7) {
-      console.error(`❌ Row has ${cells.length} cells (expected 7):\n${raw}`);
+    if (cells.length !== 9) {
+      console.error(`❌ Row has ${cells.length} cells (expected 9):\n${raw}`);
       process.exit(1);
     }
     rows.push({ raw, cells, idx: i });
@@ -120,29 +81,15 @@ function main() {
 
   let changes = 0;
   let statusFixes = 0;
-  let prdFixes = 0;
-  let techFixes = 0;
 
   for (const r of rows) {
-    const [_req, prd, tech, _impl, _tests, status, _notes] = r.cells;
+    const status = r.cells[7];
 
     // 1) Normalize Status
     const newStatus = chooseStatus(status);
     if (newStatus !== status) {
-      r.cells[5] = newStatus;
+      r.cells[7] = newStatus;
       statusFixes++;
-    }
-
-    // 2) Normalize PRD/Techspec refs against filesystem existence
-    const newPrd = normalizeRefCell(prd, path.dirname(RTM_PATH));
-    if (newPrd !== prd) {
-      r.cells[1] = newPrd;
-      prdFixes++;
-    }
-    const newTech = normalizeRefCell(tech, path.dirname(RTM_PATH));
-    if (newTech !== tech) {
-      r.cells[2] = newTech;
-      techFixes++;
     }
 
     // Rebuild the raw row
@@ -159,8 +106,6 @@ function main() {
   console.log(`🔧 RTM codemod preview for ${path.relative(process.cwd(), RTM_PATH)}:`);
   console.log(`   • Rows changed: ${changes}`);
   console.log(`   • Status normalized: ${statusFixes}`);
-  console.log(`   • PRD refs adjusted: ${prdFixes}`);
-  console.log(`   • Techspec refs adjusted: ${techFixes}`);
 
   if (!WRITE) {
     console.log("ℹ️  Dry run (no changes written). Pass --write to save.");

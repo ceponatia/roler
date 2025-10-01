@@ -1,10 +1,9 @@
 ---
 title: R-005 Pluggable Vector Store Technical Specification
-Status: Accepted
-last-updated: 2025-09-04
+Status: Completed
+last-updated: 2025-10-01
 related-prd: ../prd/r-005-pluggable-vector-store-prd.md
 revision: 0.1.0
----
 
 ## 1. Purpose & Scope
 
@@ -84,6 +83,7 @@ Dual-read doubles query load; restrict behind sampleRate and limited window. Nor
 ## 12. Observability & Metrics
 
 Metrics: retr_backend_latency_ms{backend}, retr_dual_delta_score, retr_dual_delta_latency_ms, retr_dual_mismatch_total.
+Variance alerting: emit `RETR_DUAL_VARIANCE_HIGH` when (a) absolute score delta ≥ 0.2, (b) absolute latency delta ≥ 80ms, (c) top candidate mismatch, or (d) the shadow adapter errors. Alerts surface via the dual-read wrapper `onEvent` hook for downstream structured logging.
 
 ## 13. Failure Modes & Degradation
 
@@ -154,6 +154,13 @@ No automatic fallback or consensus write.
 ## 25. Summary
 
 Defines a pluggable vector retrieval layer ensuring backend flexibility with controlled dual-read evaluation and standardized scoring.
+
+## Outstanding TODOs
+
+- [x] Implement production-ready Qdrant adapter plus swap smoke tests validating pgvector ↔ Qdrant transitions, with adapter-specific regression tests ensuring raw score pass-through to the normalizer.
+- [x] Wire dual-read metrics (`retr_backend_latency_ms`, delta histograms) into the central metrics exporter, exposing labeled series via `getRetrievalMetricSeries()` for downstream Prometheus and structured logging sinks.
+- [x] Emit `RETR_DUAL_VARIANCE_HIGH` events (and related structured logs) when variance thresholds are exceeded or shadow adapters fail.
+- [x] Author operational docs (`docs/operations/retriever.md`, `docs/operations/variance-monitoring.md`, `docs/operations/dual-read-swap-runbook.md`) covering configuration, rollout, and rollback procedures.
 
 ---
 END OF DOCUMENT
