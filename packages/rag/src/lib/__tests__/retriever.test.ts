@@ -11,18 +11,19 @@ describe('createPgVectorRetriever', () => {
   it('maps rows to candidates and reports vectorMs', async () => {
     const rows: readonly PgVectorRow[] = [
       { chunk_id: ULID(1), entity_id: ULID(2), similarity: 0.91, updated_at: NOW },
-      { chunk_id: ULID(3), entity_id: ULID(4), similarity: 1.2, updated_at: NOW } // will clamp
+      { chunk_id: ULID(3), entity_id: ULID(4), similarity: 1.2, updated_at: NOW } // raw value passes through
     ];
     const runQuery = vi.fn().mockResolvedValue(rows);
     const retriever = createPgVectorRetriever({ runQuery });
     const res = await retriever.retrieve({ embedding: [0.1, 0.2], k: 10 });
 
-  expect(runQuery).toHaveBeenCalledOnce();
-  expect(res.candidates.length).toBe(2);
-  expect(res.candidates.map((c) => c.chunkId)).toEqual(rows.map((r) => r.chunk_id));
+    expect(retriever.kind).toBe('pgvector');
+    expect(runQuery).toHaveBeenCalledOnce();
+    expect(res.candidates.length).toBe(2);
+    expect(res.candidates.map((c) => c.chunkId)).toEqual(rows.map((r) => r.chunk_id));
   const maxSim = Math.max(...res.candidates.map((c) => c.similarity));
-  expect(maxSim).toBe(1);
-  expect(res.vectorMs).toBeGreaterThanOrEqual(0);
+  expect(maxSim).toBe(1.2);
+    expect(res.vectorMs).toBeGreaterThanOrEqual(0);
   });
 
   it('passes through namespace and filters to runQuery', async () => {

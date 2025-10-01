@@ -11,7 +11,8 @@ describe('ErrorCodeEnum (extended for R-002)', () => {
       'RETR_INVALID_REQUEST',
       'RETR_VECTOR_EXEC_ERROR',
       'RETR_CACHE_FAILURE',
-      'RETR_INSUFFICIENT_RESULTS'
+      'RETR_INSUFFICIENT_RESULTS',
+      'RETR_DUAL_VARIANCE_HIGH'
     ] as const) {
       expect(values).toContain(code);
     }

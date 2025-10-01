@@ -42,4 +42,20 @@ describe('query result cache', () => {
     expect(c.get(k2)).toBeUndefined();
     expect(c.size()).toBe(2);
   });
+
+  it('exposes capacity, metrics, and ignores unknown invalidations', () => {
+    const c = createQueryResultCache(3);
+    expect(c.capacity()).toBe(3);
+    // Invalidate before anything stored; should be a no-op
+    c.invalidateByEntity(ULID_C as any);
+    expect(c.size()).toBe(0);
+
+    const key = makeQueryKey('known');
+    c.set(key, { itemIds: [ULID_A] as any, scores: [0.7], stampMs: 42, entities: [ULID_C] as any });
+    expect(c.metrics()).toEqual({ hits: 0, misses: 0, evictions: 0 });
+
+    c.clear();
+    expect(c.size()).toBe(0);
+    expect(c.metrics()).toEqual({ hits: 0, misses: 0, evictions: 0 });
+  });
 });
