@@ -1,5 +1,6 @@
 import type { Candidate, IsoDateTime, Ulid } from '../../scoring.js';
-import type { RetrieveOpts, RetrieveResult, Retriever, RetrieverAdapterKind } from '../types.js';
+import type { RetrieveOpts, RetrieveResult, RetrieverAdapter, RetrieverAdapterKind } from '../types.js';
+import type { PgVectorAdapterConfig } from '@roler/schemas';
 
 const ADAPTER_KIND: RetrieverAdapterKind = 'pgvector';
 
@@ -16,11 +17,17 @@ export type RunPgVectorQuery = (
   args: Readonly<{ namespace?: string; filters?: Readonly<Record<string, string | number | boolean>> }>
 ) => Promise<readonly PgVectorRow[]>;
 
-export function createPgVectorRetriever(deps: Readonly<{ runQuery: RunPgVectorQuery }>): Retriever {
-  const { runQuery } = deps;
+export type PgVectorRetrieverDeps = Readonly<{
+  config: PgVectorAdapterConfig;
+  runQuery: RunPgVectorQuery;
+}>;
+
+export function createPgVectorRetriever(deps: PgVectorRetrieverDeps): RetrieverAdapter {
+  const { runQuery, config } = deps;
 
   return {
     kind: ADAPTER_KIND,
+    config,
     async retrieve(opts: RetrieveOpts): Promise<RetrieveResult> {
       const start = performance.now();
       const rows = await runQuery(opts.embedding, opts.k, { namespace: opts.namespace, filters: opts.filters });
@@ -35,6 +42,6 @@ export function createPgVectorRetriever(deps: Readonly<{ runQuery: RunPgVectorQu
 
       return { candidates, vectorMs } as const;
     }
-  };
+  } satisfies RetrieverAdapter;
 }
 

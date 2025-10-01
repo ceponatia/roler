@@ -178,7 +178,7 @@ function compareTopCandidates(primary: readonly Candidate[], shadow: readonly Ca
 }
 
 function normalizeId(value: Candidate['chunkId'] | undefined): string | null {
-  return typeof value === 'string' ? value : value ?? null;
+  return typeof value === 'string' ? value : null;
 }
 
 function detectComparisonVariance(sample: Readonly<{ scoreDelta: number; latencyDeltaMs: number; mismatch: boolean }>): readonly VarianceCause[] {

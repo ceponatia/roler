@@ -35,12 +35,12 @@ describe('pgvector ↔ Qdrant adapter swap smoke tests', () => {
     const registry: RetrieverFactoryRegistry = {
       pgvector: (cfg) => {
         if (cfg.kind !== 'pgvector') throw new Error('config mismatch');
-        const retriever = createPgVectorRetriever({
+        return createPgVectorRetriever({
+          config: cfg,
           async runQuery() {
             return pgRows;
           }
         });
-        return { ...retriever, config: cfg };
       },
       qdrant: (cfg) => {
         if (cfg.kind !== 'qdrant') throw new Error('config mismatch');
@@ -103,12 +103,12 @@ describe('pgvector ↔ Qdrant adapter swap smoke tests', () => {
     const registry: RetrieverFactoryRegistry = {
       pgvector: (cfg) => {
         if (cfg.kind !== 'pgvector') throw new Error('config mismatch');
-        const retriever = createPgVectorRetriever({
+        return createPgVectorRetriever({
+          config: cfg,
           async runQuery() {
             return pgRows;
           }
         });
-        return { ...retriever, config: cfg };
       },
       qdrant: (cfg) => {
         if (cfg.kind !== 'qdrant') throw new Error('config mismatch');
@@ -171,12 +171,12 @@ describe('pgvector ↔ Qdrant adapter swap smoke tests', () => {
     const registry: RetrieverFactoryRegistry = {
       pgvector: (cfg) => {
         if (cfg.kind !== 'pgvector') throw new Error('config mismatch');
-        const retriever = createPgVectorRetriever({
+        return createPgVectorRetriever({
+          config: cfg,
           async runQuery() {
             return pgRows;
           }
         });
-        return { ...retriever, config: cfg };
       },
       qdrant: (cfg) => {
         if (cfg.kind !== 'qdrant') throw new Error('config mismatch');
@@ -186,7 +186,7 @@ describe('pgvector ↔ Qdrant adapter swap smoke tests', () => {
             return qdrantResponse;
           }
         });
-      }
+      },
     };
 
     const result = createRetriever({
@@ -234,12 +234,12 @@ describe('pgvector ↔ Qdrant adapter swap smoke tests', () => {
     const registry: RetrieverFactoryRegistry = {
       pgvector: (cfg) => {
         if (cfg.kind !== 'pgvector') throw new Error('config mismatch');
-        const retriever = createPgVectorRetriever({
+        return createPgVectorRetriever({
+          config: cfg,
           async runQuery() {
             return pgRows;
           }
         });
-        return { ...retriever, config: cfg };
       },
       qdrant: (cfg) => {
         if (cfg.kind !== 'qdrant') throw new Error('config mismatch');

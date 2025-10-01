@@ -1,6 +1,6 @@
 # Requirements Traceability Matrix (RTM)
 
- last-updated: 2025-10-01
+last-updated: 2025-10-01
 status: In-Progress
 
 This matrix is the source of truth for requirement-to-implementation traceability. Each row corresponds to a

@@ -18,6 +18,7 @@ const RTM_PATH = path.resolve("docs/traceability/rtm.md");
 const REQ_PATH = path.resolve("docs/requirements.md");
 
 const STATUS_SET = new Set(["Planned", "Implemented", "Tested", "Verified"]);
+const TBD_REGEX = /^\[TBD\]$/i;
 const RE_REQ_ID = /\bR-(\d{3})\b/g;
 
 function fail(msg: string): never {
@@ -127,7 +128,7 @@ function main() {
       fail(`Invalid Status "${row.status}" for ${row.id} (allowed: ${[...STATUS_SET].join(", ")})`);
     }
 
-    const isTbd = (cell: string) => /^\[TBD\]$/i.test(cell.trim());
+  const isTbd = (cell: string) => TBD_REGEX.test(cell.trim());
     const implTbd = isTbd(row.impl);
     const testsTbd = isTbd(row.tests);
     const specTbd = isTbd(row.specAdr);
